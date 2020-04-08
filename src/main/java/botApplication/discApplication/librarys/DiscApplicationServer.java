@@ -1,8 +1,10 @@
 package botApplication.discApplication.librarys;
 
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class DiscApplicationServer implements Serializable {
 
@@ -18,8 +20,11 @@ public class DiscApplicationServer implements Serializable {
     private boolean setupDone = false;
     private String certificationMessageId = "";
     private String certificationChannelId = "";
-    private String memberRoleId = "";
-    private String tempGamerRoleId = "";
+    private String defaultMemberRoleId = "";
+    private String defaultTempGamerRoleId = "";
+    private ArrayList<DiscRole> roles = new ArrayList<>();
+
+    private ArrayList<String> autoChannels = new ArrayList<>();
 
     public DiscApplicationServer(Guild guild) {
         this.serverName = guild.getName();
@@ -90,19 +95,52 @@ public class DiscApplicationServer implements Serializable {
         this.certificationChannelId = certificationChannelId;
     }
 
-    public String getMemberRoleId() {
-        return memberRoleId;
+    public String getCertificationMessageId() {
+        return certificationMessageId;
     }
 
-    public void setMemberRoleId(String memberRoleId) {
-        this.memberRoleId = memberRoleId;
+    public void setCertificationMessageId(String certificationMessageId) {
+        this.certificationMessageId = certificationMessageId;
     }
 
-    public String getTempGamerRoleId() {
-        return tempGamerRoleId;
+    public ArrayList<String> getAutoChannels() {
+        return autoChannels;
     }
 
-    public void setTempGamerRoleId(String tempGamerRoleId) {
-        this.tempGamerRoleId = tempGamerRoleId;
+    public void setAutoChannels(ArrayList<String> autoChannels) {
+        this.autoChannels = autoChannels;
+    }
+
+    public String getDefaultMemberRoleId() {
+        return defaultMemberRoleId;
+    }
+
+    public void setDefaultMemberRoleId(String defaultMemberRoleId) {
+        this.defaultMemberRoleId = defaultMemberRoleId;
+    }
+
+    public String getDefaultTempGamerRoleId() {
+        return defaultTempGamerRoleId;
+    }
+
+    public void setDefaultTempGamerRoleId(String defaultTempGamerRoleId) {
+        this.defaultTempGamerRoleId = defaultTempGamerRoleId;
+    }
+
+    public ArrayList<DiscRole> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<DiscRole> roles) {
+        this.roles = roles;
+    }
+
+    public void addRole(DiscRole role){
+        for (DiscRole r:roles) {
+            if(r.getId().equals(role)){
+                roles.remove(r);
+            }
+        }
+        roles.add(role);
     }
 }

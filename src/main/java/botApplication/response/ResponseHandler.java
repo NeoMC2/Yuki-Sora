@@ -67,6 +67,9 @@ public class ResponseHandler {
                 }
             }
         } catch (Exception e){
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
+            if(engine.getProperties().debug)
+                e.printStackTrace();
             return false;
         }
         return false;

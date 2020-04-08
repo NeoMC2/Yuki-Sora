@@ -1,11 +1,10 @@
 package botApplication.discApplication.core;
 
+import botApplication.discApplication.commands.DiscCmdAutoChannel;
 import botApplication.discApplication.commands.DiscCmdSetup;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
-import botApplication.discApplication.listeners.DiscBotJoinListener;
-import botApplication.discApplication.listeners.DiscMessageListener;
-import botApplication.discApplication.listeners.DiscReactionListener;
+import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
@@ -104,7 +103,8 @@ public class DiscApplicationEngine {
 
     private void addBotCommands(){
         engine.getUtilityBase().printOutput(consMsgDef + " !Add commands!", false);
-        commandHandler.createNewCommand("setup", new DiscCmdSetup());
+        commandHandler.createNewCommand("setup", new DiscCmdSetup(engine));
+        commandHandler.createNewCommand("autochan", new DiscCmdAutoChannel());
     }
 
     private void addBotListeners(){
@@ -112,6 +112,8 @@ public class DiscApplicationEngine {
         builder.addEventListener(new DiscMessageListener(engine));
         builder.addEventListener(new DiscBotJoinListener(engine));
         builder.addEventListener(new DiscReactionListener(engine));
+        builder.addEventListener(new DiscChannelAddListener(engine));
+        builder.addEventListener(new DiscVoiceListener(engine));
     }
 
     public void shutdownBotApplication() {

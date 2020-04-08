@@ -1,5 +1,6 @@
 package botApplication.discApplication.listeners;
 
+import botApplication.discApplication.librarys.DiscApplicationServer;
 import core.Engine;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -19,7 +20,21 @@ public class DiscReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-        if(!exec(event.getReaction().getUsers().complete(), event.getMember().getUser().getId()))
+        if (event.getUser().isBot()) {
+            return;
+        }
+        DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
+        if (s != null) {
+            if (!s.isSetupDone()) {
+                return;
+            }
+        } else {
+            return;
+        }
+        if (!s.getCertificationMessageId().equals(event.getMessageId())) {
+            return;
+        }
+        if (!exec(event.getReaction().getUsers().complete(), event.getMember().getUser().getId()))
             return;
 
         switch (event.getReactionEmote().getName()) {
@@ -42,6 +57,21 @@ public class DiscReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
+        if (event.getUser().isBot()) {
+            return;
+        }
+        DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
+        if (s != null) {
+            if (!s.isSetupDone()) {
+                return;
+            }
+        } else {
+            return;
+        }
+        if (!s.getCertificationMessageId().equals(event.getMessageId())) {
+            return;
+        }
+
         switch (event.getReactionEmote().getName()) {
 
             //X-Emoji
@@ -62,12 +92,12 @@ public class DiscReactionListener extends ListenerAdapter {
 
     }
 
-    private boolean exec(List<User> users, String userId){
+    private boolean exec(List<User> users, String userId) {
         int found = 0;
-        for (User lUser:users) {
-            if(lUser.getId().equals(userId))
+        for (User lUser : users) {
+            if (lUser.getId().equals(userId))
                 found++;
         }
-        return found<2;
+        return found < 2;
     }
 }

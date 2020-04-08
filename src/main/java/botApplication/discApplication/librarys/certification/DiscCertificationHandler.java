@@ -16,22 +16,18 @@ public class DiscCertificationHandler {
     }
 
     public void addMemberCertification(Member member, Guild guild) {
-        if (!exec(guild))
-            return;
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.Member);
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
         usr.getServers().add(guild.getId());
         try {
-            member.getRoles().add(guild.getRoleById(server.getMemberRoleId()));
+            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultMemberRoleId())).complete();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
         }
     }
 
     public void removeCertification(Member member, Guild guild) {
-        if (!exec(guild))
-            return;
         DiscApplicationUser usr = null;
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(member.getUser().getId());
@@ -42,47 +38,29 @@ public class DiscCertificationHandler {
 
         if(usr != null){
             usr.getServers().remove(guild.getId());
-
-            if(usr.getDiscCertificationLevel() == DiscCertificationLevel.Member){
-                try {
-                    member.getRoles().remove(guild.getRoleById(server.getMemberRoleId()));
-                } catch (Exception e) {
-                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
-                }
-            }
-            if(usr.getDiscCertificationLevel() == DiscCertificationLevel.TempGamer){
-                try {
-                    member.getRoles().remove(guild.getRoleById(server.getTempGamerRoleId()));
-                } catch (Exception e) {
-                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
-                }
-            }
         }
-    }
 
-    public void addTempGameCertification(Member member, Guild guild) {
-        if (!exec(guild))
-            return;
-        DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.TempGamer);
-        DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
-
-        usr.getServers().add(guild.getId());
         try {
-            member.getRoles().add(guild.getRoleById(server.getTempGamerRoleId()));
+            guild.getController().removeRolesFromMember(member, guild.getRoleById(server.getDefaultMemberRoleId())).complete();
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
+        }
+        try {
+            guild.getController().removeRolesFromMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).complete();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
         }
     }
 
-    private boolean exec(Guild guild) {
-        if (engine.getDiscEngine().getFilesHandler().getServers().containsKey(guild.getId())) {
-            DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
-            if(server.getCertificationChannelId().equals("")||server.getMemberRoleId().equals("")||server.getTempGamerRoleId().equals("")){
-                return false;
-            } else {
-                return true;
-            }
+    public void addTempGameCertification(Member member, Guild guild) {
+        DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.TempGamer);
+        DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
+
+        usr.getServers().add(guild.getId());
+        try {
+            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).complete();
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
         }
-        return false;
     }
 }

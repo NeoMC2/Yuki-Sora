@@ -21,10 +21,16 @@ public class ConsoleCommandHandler {
         switch (args0.toLowerCase()) {
             case "save":
                 engine.saveProperties();
+                if(engine.getDiscEngine().isRunning()){
+                    engine.getDiscEngine().getFilesHandler().saveAllBotFiles();
+                }
                 break;
 
             case "load":
                 engine.loadProperties();
+                if(engine.getDiscEngine().isRunning()){
+                    engine.getDiscEngine().getFilesHandler().loadAllBotFiles();
+                }
                 break;
             case "debug":
                 if (engine.getProperties().debug) {
