@@ -49,7 +49,7 @@ public class DiscRole implements Serializable {
     public static DiscRole.RoleType getRoleTypeFromString(String s){
         DiscRole.RoleType roleType = null;
         if(s.toLowerCase().startsWith("group")){
-            switch (s.toLowerCase().substring(4)){
+            switch (s.toLowerCase().substring(5)){
                 case "1":
                     roleType = DiscRole.RoleType.Group1;
                     break;
@@ -78,10 +78,12 @@ public class DiscRole implements Serializable {
         }
         switch (s.toLowerCase()){
             case "admin":
+            case "adminiestrator":
                 roleType = DiscRole.RoleType.Admin;
                 break;
 
             case "mod":
+            case "moderator":
                 roleType = DiscRole.RoleType.Mod;
                 break;
 
@@ -89,7 +91,7 @@ public class DiscRole implements Serializable {
                 roleType = DiscRole.RoleType.Member;
                 break;
 
-            case "gamger":
+            case "gamer":
             case "tempgamer":
                 roleType = DiscRole.RoleType.TempGamer;
                 break;

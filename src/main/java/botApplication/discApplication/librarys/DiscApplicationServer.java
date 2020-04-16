@@ -22,6 +22,7 @@ public class DiscApplicationServer implements Serializable {
     private String certificationChannelId = "";
     private String defaultMemberRoleId = "";
     private String defaultTempGamerRoleId = "";
+    private String ruleText = "";
     private ArrayList<DiscRole> roles = new ArrayList<>();
 
     private ArrayList<String> autoChannels = new ArrayList<>();
@@ -137,10 +138,18 @@ public class DiscApplicationServer implements Serializable {
 
     public void addRole(DiscRole role){
         for (DiscRole r:roles) {
-            if(r.getId().equals(role)){
+            if(r.getId().equals(role.getId())){
                 roles.remove(r);
             }
         }
         roles.add(role);
+    }
+
+    public String getRuleText() {
+        return ruleText;
+    }
+
+    public void setRuleText(String ruleText) {
+        this.ruleText = ruleText;
     }
 }

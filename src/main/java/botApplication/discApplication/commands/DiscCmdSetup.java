@@ -12,10 +12,14 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.managers.GuildController;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class DiscCmdSetup implements DiscCommand {
 
     private Engine engine;
+
+    private final DiscRole.RoleType[] publicType = {DiscRole.RoleType.Admin, DiscRole.RoleType.Member, DiscRole.RoleType.Mod, DiscRole.RoleType.Group1, DiscRole.RoleType.Group2, DiscRole.RoleType.Group3, DiscRole.RoleType.Group4, DiscRole.RoleType.Group5, DiscRole.RoleType.Group6, DiscRole.RoleType.TempGamer};
 
     public DiscCmdSetup(Engine engine) {
         this.engine = engine;
@@ -30,27 +34,102 @@ public class DiscCmdSetup implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
+                case "settings":
+                    if (args.length >= 2) {
+                        if (args[1].equals("?")) {
+                            sendRoleTypes(event.getChannel());
+                            return;
+                        }
+                        switch (args[1].toLowerCase()) {
+                            case "channelrole":
+                            case "chrole":
+                            case "chanrole":
+                            case "chr":
+                            case "cr":
+                                if (args[2].toLowerCase().equals("list")) {
+                                    String msg = "";
+                                    try {
+                                        for (DiscRole.RoleType rtpy : engine.getDiscEngine().getSetupRoles().get(event.getGuild().getId())) {
+                                            msg = msg + rtpy.toString() + ", ";
+                                        }
+                                    } catch (Exception e) {
+                                        engine.getUtilityBase().printOutput("Error in chanrole list ", true);
+                                        e.printStackTrace();
+                                        return;
+                                    }
+                                    engine.getDiscEngine().getTextUtils().sendSucces("**List**\n\n" + msg, event.getChannel());
+                                    return;
+                                } else if(args[2].toLowerCase().equals("public")||args[2].toLowerCase().equals("all")){
+                                    ArrayList<DiscRole.RoleType> pblic = new ArrayList<>();
+                                    pblic.addAll(Arrays.asList(publicType));
+                                    engine.getDiscEngine().addSetupRole(event.getGuild().getId(), pblic);
+                                    engine.getDiscEngine().getTextUtils().sendSucces("New Roles defined!", event.getChannel());
+                                    return;
+                                }
+                                DiscRole.RoleType roleType = null;
+                                ArrayList<DiscRole.RoleType> roleTypes = new ArrayList<>();
+                                for (int i = 2; i < args.length; i++) {
+                                    roleType = DiscRole.getRoleTypeFromString(args[i]);
+                                    if (roleType == null) {
+                                        engine.getUtilityBase().printOutput("Invalid Role type", true);
+                                        continue;
+                                    }
+                                    roleTypes.add(roleType);
+                                }
+                                engine.getDiscEngine().addSetupRole(event.getGuild().getId(), roleTypes);
+                                engine.getDiscEngine().getTextUtils().sendSucces("New Roles defined!", event.getChannel());
+                                break;
+
+                            case "ruletxt":
+                            case "rule":
+                            case "rules":
+                                String text = "";
+                                for (int i = 2; i < args.length; i++) {
+                                    text = text + args[i] + " ";
+                                }
+                                server.setRuleText(text);
+                                engine.getDiscEngine().getTextUtils().sendSucces("New rule text defined!", event.getChannel());
+                                break;
+
+                            case "renewcertificationchannel":
+                            case "renewcert":
+                            case "certrenew":
+                            case "recert":
+                            case "certre":
+                                TextChannel certChannel = event.getGuild().getTextChannelById(server.getCertificationChannelId());
+                                try {
+                                    certChannel.getHistory().getRetrievedHistory().forEach(message -> message.delete().complete());
+                                } catch (Exception e) {
+                                }
+                                server.setCertificationMessageId(putCertMessageIntoChannel(certChannel, server));
+                                break;
+                        }
+                    } else {
+                        engine.getDiscEngine().getTextUtils().sendError("Zu wenig Argumente", event.getChannel(), false);
+                    }
+                    break;
+
                 case "create":
                     break;
 
                 case "add":
                     if (args.length > 2) {
-                        switch (args[1]){
+                        switch (args[1]) {
                             case "certchannel":
                                 server.setCertificationChannelId(args[2]);
                                 engine.getDiscEngine().getTextUtils().sendSucces("Setted certification channel!", event.getChannel());
                                 break;
 
                             case "role":
-                                if(args.length>2){
-                                    if(args[2].equals("?")){
+                                if (args.length > 2) {
+                                    if (args[2].equals("?")) {
                                         sendRoleTypes(event.getChannel());
                                         return;
                                     }
                                 }
                                 if (args.length >= 4) {
                                     Role role = event.getGuild().getRoleById(args[2]);
-                                    if(role==null){
+                                    if (role == null) {
                                         engine.getDiscEngine().getTextUtils().sendError("Die Rolle existiert nicht!", event.getChannel(), false);
                                         return;
                                     }
@@ -58,10 +137,13 @@ public class DiscCmdSetup implements DiscCommand {
                                     DiscRole.RoleType roleType = null;
                                     for (int i = 3; i < args.length; i++) {
                                         roleType = DiscRole.getRoleTypeFromString(args[i]);
-                                        if(roleType == null){
+                                        if (roleType == null) {
                                             engine.getUtilityBase().printOutput("Invalid Role type", true);
+                                            continue;
                                         }
                                         discRole.addRoleType(roleType);
+                                        discRole.setName(role.getName());
+                                        discRole.setId(role.getId());
                                     }
                                     server.addRole(discRole);
                                     engine.getDiscEngine().getTextUtils().sendSucces("Added Role!", event.getChannel());
@@ -74,7 +156,7 @@ public class DiscCmdSetup implements DiscCommand {
                         engine.getDiscEngine().getTextUtils().sendError("Zu wenig Argumente", event.getChannel(), false);
                     }
                     break;
-                    
+
                 case "deinstall":
                     engine.getDiscEngine().getTextUtils().sendCustomMessage("Bist du sicher, dass du diesen Server deinstallieren möchtest? Das bedeutet, dass alle gespeicherten Dateien dieses Servers verloren gehen.\n\nZum deinstallieren `yes/y/ja/j` schreiben\nZum abbrechen `no/nein/n`", event.getChannel(), "Deinstalation", Color.blue);
                     Response deinstallResponse = new Response(Response.ResponseTyp.Discord) {
@@ -103,7 +185,7 @@ public class DiscCmdSetup implements DiscCommand {
                     break;
 
                 case "start":
-                    if(server.isSetupDone()){
+                    if (server.isSetupDone()) {
                         engine.getDiscEngine().getTextUtils().sendCustomMessage("Es scheint so, als wäre das Setup bereits abgeschlossen!", event.getChannel(), "Setup abbruch", Color.red);
                         return;
                     }
@@ -132,6 +214,9 @@ public class DiscCmdSetup implements DiscCommand {
                     setupResponse.discGuildId = event.getGuild().getId();
                     engine.getResponseHandler().makeResponse(setupResponse);
                     break;
+
+                default:
+                    engine.getDiscEngine().getTextUtils().sendError("Unknown command arguments!", event.getChannel(), false);
             }
         }
     }
@@ -148,7 +233,7 @@ public class DiscCmdSetup implements DiscCommand {
 
     @Override
     public String help(Engine engine) {
-        return "**add**\ncertchannel <id> - adds certification channel\nrole <id> <types...> - adds role (type `-setup add role ?` to see the different types)";
+        return "start - starts install setup\ndeinstall - starts deinstall setup\n\n**add**\ncertchannel <id> - adds certification channel\nrole <id> <types...> - adds role (type `-setup add role ?` to see the different types)\n\n**settings**\nchannelrole <types.../all> - changes the role for channels you are going to create\nruletxt <text...> - changes the ruletext in the welcome channel\nrenewCertificationChannel - deletes old message and prints new one";
     }
 
     @Override
@@ -173,7 +258,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     return;
                                 }
                                 DiscRole member = testRoleAndReturnDiscRole(respondingEvent.getMessage().getContentRaw(), respondingEvent.getGuild(), DiscRole.RoleType.Member);
-                                if(member == null){
+                                if (member == null) {
                                     engine.getDiscEngine().getTextUtils().sendError("Die Rolle existiert nicht!", event.getChannel(), false);
                                     return;
                                 }
@@ -188,7 +273,7 @@ public class DiscCmdSetup implements DiscCommand {
                                             return;
                                         }
                                         DiscRole gamer = testRoleAndReturnDiscRole(respondingEvent.getMessage().getContentRaw(), respondingEvent.getGuild(), DiscRole.RoleType.TempGamer);
-                                        if(gamer == null){
+                                        if (gamer == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Die Rolle existiert nicht!", event.getChannel(), false);
                                             return;
                                         }
@@ -205,7 +290,7 @@ public class DiscCmdSetup implements DiscCommand {
                                                 engine.getDiscEngine().getTextUtils().sendCustomMessage("Sehr gut, es werden nun noch einige Konfigurationen vorgenommen und zum ende des Setups, wirst du nochmal benachrichtigt. Du kannst mithilfe des Setup Befehls jederzeit die Rollen oder Channel ändern!", event.getChannel(), "Setup", Color.MAGENTA);
                                                 TextChannel certChannel = respondingEvent.getGuild().getTextChannelById(respondingEvent.getMessage().getContentRaw());
                                                 respondingEvent.getGuild().getManager().setSystemChannel(certChannel);
-                                                server.setCertificationMessageId(putCertMessageIntoChannel(certChannel));
+                                                server.setCertificationMessageId(putCertMessageIntoChannel(certChannel, server));
                                                 server.setSetupDone(true);
                                                 apply(server);
                                             }
@@ -231,10 +316,14 @@ public class DiscCmdSetup implements DiscCommand {
                         GuildController gc = respondingEvent.getGuild().getController();
                         Role member = gc.createRole().setColor(Color.green).setName("Members").setHoisted(true).complete();
                         Role gamer = gc.createRole().setColor(Color.ORANGE).setName("🎮Gamers").setHoisted(true).complete();
-                        Channel channel = gc.createTextChannel("\uD83C\uDF8Awellcome").setPosition(0).complete();
+                        Channel channel = gc.createTextChannel("\uD83C\uDF8Awelcome").setPosition(0).complete();
                         TextChannel textChannel = respondingEvent.getGuild().getTextChannelById(channel.getId());
                         respondingEvent.getGuild().getManager().setSystemChannel(textChannel);
-                        server.setCertificationMessageId(putCertMessageIntoChannel(textChannel));
+
+                        server.addRole(testRoleAndReturnDiscRole(member.getId(), respondingEvent.getGuild(), DiscRole.RoleType.Member));
+                        server.addRole(testRoleAndReturnDiscRole(gamer.getId(), event.getGuild(), DiscRole.RoleType.TempGamer));
+
+                        server.setCertificationMessageId(putCertMessageIntoChannel(textChannel, server));
                         server.setCertificationChannelId(textChannel.getId());
 
                         server.setDefaultMemberRoleId(member.getId());
@@ -255,9 +344,9 @@ public class DiscCmdSetup implements DiscCommand {
         startResponse.discUserId = event.getAuthor().getId();
         engine.getResponseHandler().makeResponse(startResponse);
     }
-    
-    private void deinstallServer(GuildMessageReceivedEvent event, DiscApplicationServer server){
-        if(!server.isSetupDone()){
+
+    private void deinstallServer(GuildMessageReceivedEvent event, DiscApplicationServer server) {
+        if (!server.isSetupDone()) {
             engine.getDiscEngine().getTextUtils().sendError("Du kannst den Server nicht deinstallieren, er wurde nie installiert...es werden jedoch alle files gelöscht!", event.getChannel(), false);
             engine.getDiscEngine().getFilesHandler().getServers().remove(server.getServerID());
             return;
@@ -272,8 +361,12 @@ public class DiscCmdSetup implements DiscCommand {
         engine.getDiscEngine().getTextUtils().sendSucces("Deinstallation erfolgreich!", event.getChannel());
     }
 
-    private String putCertMessageIntoChannel(TextChannel certChanel){
-        final String certificationMessage = "Willkommen auf unserem Server. Gibt eigentlich auch nur eine Regel :D Benehmt euch :D wenn ihr das akzeptiert, drückt einfach den haken. Falls ihr nur hier seit um kurz mit uns zu zocken, drückt bitte den Controller Emoji. Viel spaß :D";
+    private String putCertMessageIntoChannel(TextChannel certChanel, DiscApplicationServer server) {
+        final String certificationMessage = "Bist du nur hier um kurz ein paar Runden zu zocken? Dann drück einfach \uD83C\uDFAE\n\nWenn du dem Server beitreten willst, drück einfach ✅\n\nAnsonsten ❌, das ändert aber nix loolz";
+        if (!server.getRuleText().equals("")) {
+            Message certMessageMessage = certChanel.sendMessage(new EmbedBuilder().setColor(Color.YELLOW).setDescription(server.getRuleText()).setTitle("Rules").build()
+            ).complete();
+        }
         Message certMessageMessage = certChanel.sendMessage(new EmbedBuilder().setColor(Color.CYAN).setDescription(certificationMessage).setTitle("Certification").build()
         ).complete();
         certChanel.addReactionById(certMessageMessage.getId(), "✅").complete();
@@ -282,14 +375,14 @@ public class DiscCmdSetup implements DiscCommand {
         return certMessageMessage.getId();
     }
 
-    private void apply(DiscApplicationServer server){
+    private void apply(DiscApplicationServer server) {
         engine.getDiscEngine().getFilesHandler().getServers().remove(server.getServerID());
         engine.getDiscEngine().getFilesHandler().getServers().put(server.getServerID(), server);
     }
 
     private DiscRole testRoleAndReturnDiscRole(String id, Guild g, DiscRole.RoleType roleType) {
         Role r = g.getRoleById(id);
-        if(r==null){
+        if (r == null) {
             return null;
         } else {
             DiscRole role = new DiscRole();
@@ -300,7 +393,7 @@ public class DiscCmdSetup implements DiscCommand {
         }
     }
 
-    private void sendRoleTypes(TextChannel textChannel){
+    private void sendRoleTypes(TextChannel textChannel) {
         engine.getDiscEngine().getTextUtils().sendHelp("**Types**\n\nmod\nadmin\ngamer\nmember\ngroup[1-6]", textChannel);
     }
 }

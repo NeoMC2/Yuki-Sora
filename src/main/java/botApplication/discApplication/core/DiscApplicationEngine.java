@@ -3,6 +3,7 @@ package botApplication.discApplication.core;
 import botApplication.discApplication.commands.DiscCmdAutoChannel;
 import botApplication.discApplication.commands.DiscCmdSetup;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
+import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.utils.DiscTextUtils;
@@ -15,6 +16,8 @@ import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 
 import javax.security.auth.login.LoginException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DiscApplicationEngine {
 
@@ -34,6 +37,8 @@ public class DiscApplicationEngine {
 
     private JDABuilder builder;
     private JDA botJDA;
+
+    private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
     public DiscApplicationEngine(Engine engine) {
         this.engine = engine;
@@ -156,5 +161,19 @@ public class DiscApplicationEngine {
 
     public DiscCertificationHandler getCertificationHandler() {
         return certificationHandler;
+    }
+
+    public HashMap<String, ArrayList<DiscRole.RoleType>> getSetupRoles() {
+        return setupRoles;
+    }
+
+    public void setSetupRoles(HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles) {
+        this.setupRoles = setupRoles;
+    }
+    public void addSetupRole(String guildId, ArrayList<DiscRole.RoleType> arr){
+        if(setupRoles.containsKey(guildId)){
+            setupRoles.remove(guildId);
+        }
+        setupRoles.put(guildId, arr);
     }
 }

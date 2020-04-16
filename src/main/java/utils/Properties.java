@@ -8,7 +8,7 @@ public class Properties implements Serializable {
 
     //Discord BotApplication stuff
     public String discBotApplicationToken = "";
-    public String discBotApplicationGame = "-notification help - to see help";
+    public String discBotApplicationGame = "Ich mag Züge";
     public String discBotApplicationPrefix = "-";
 
     //telegram BotApplication stuff
