@@ -19,8 +19,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>LATEST</version>
-            <type>jar</type>
+            <version>3.8.1_448</version>
         </dependency>
         <dependency>
             <groupId>com.github.pengrad</groupId>
@@ -39,7 +38,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>LATEST</version>
+                <version>3.2.3</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
