@@ -19,9 +19,9 @@ public class DiscChannelAddListener extends ListenerAdapter {
 
     private final DiscRole.RoleType[] permission1 = {DiscRole.RoleType.TempGamer, DiscRole.RoleType.Member, DiscRole.RoleType.Admin, DiscRole.RoleType.Mod};
 
-    private final Permission[] voiceAndTextPermission = {Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_READ, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_ATTACH_FILES};
-    private final Permission[] voicePermission = {Permission.VOICE_CONNECT, Permission.VOICE_SPEAK};
-    private final Permission[] textPermission = {Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_READ, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_ATTACH_FILES};
+    private final Permission[] voiceAndTextPermission = {Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_READ, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_ATTACH_FILES , Permission.VIEW_CHANNEL};
+    private final Permission[] voicePermission = {Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.VIEW_CHANNEL};
+    private final Permission[] textPermission = {Permission.MESSAGE_MENTION_EVERYONE, Permission.MESSAGE_WRITE, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_READ, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_ATTACH_FILES, Permission.VIEW_CHANNEL};
 
     public DiscChannelAddListener(Engine engine) {
         this.engine = engine;
