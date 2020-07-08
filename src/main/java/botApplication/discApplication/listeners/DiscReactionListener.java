@@ -1,6 +1,8 @@
 package botApplication.discApplication.listeners;
 
+import botApplication.discApplication.commands.DiscCmdVote;
 import botApplication.discApplication.librarys.DiscApplicationServer;
+import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
@@ -29,6 +31,12 @@ public class DiscReactionListener extends ListenerAdapter {
                 return;
             }
         } else {
+            return;
+        }
+
+        Poll p = getPoll(event.getMessageId());
+        if(p!=null){
+            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), engine);
             return;
         }
         if (!s.getCertificationMessageId().equals(event.getMessageId())) {
@@ -68,22 +76,29 @@ public class DiscReactionListener extends ListenerAdapter {
         } else {
             return;
         }
-        if (!s.getCertificationMessageId().equals(event.getMessageId())) {
+
+        Poll p = getPoll(event.getMessageId());
+        if(p!=null){
+            p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), engine);
             return;
         }
 
-        switch (event.getReactionEmote().getName()) {
+        if (!s.getCertificationMessageId().equals(event.getMessageId())) {
+            return;
+        } else {
+            switch (event.getReactionEmote().getName()) {
 
-            //X-Emoji
-            case "❌":
-                break;
+                //X-Emoji
+                case "❌":
+                    break;
 
-            //haken-Emoji
-            //Game-Emoji
-            case "✅":
-            case "\uD83C\uDFAE":
-                engine.getDiscEngine().getCertificationHandler().removeCertification(event.getMember(), event.getGuild());
-                break;
+                //haken-Emoji
+                //Game-Emoji
+                case "✅":
+                case "\uD83C\uDFAE":
+                    engine.getDiscEngine().getCertificationHandler().removeCertification(event.getMember(), event.getGuild());
+                    break;
+            }
         }
     }
 
@@ -99,5 +114,13 @@ public class DiscReactionListener extends ListenerAdapter {
                 found++;
         }
         return found < 2;
+    }
+
+    private Poll getPoll(String msgId){
+        for (Poll p: engine.getDiscEngine().getVoteCmd().getPolls()) {
+            if(p.getMessageId().equals(msgId))
+                return p;
+        }
+        return null;
     }
 }

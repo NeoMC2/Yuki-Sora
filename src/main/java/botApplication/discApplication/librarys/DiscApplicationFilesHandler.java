@@ -1,10 +1,13 @@
 package botApplication.discApplication.librarys;
 
+import botApplication.discApplication.commands.DiscCmdVote;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
+import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DiscApplicationFilesHandler {
@@ -56,6 +59,12 @@ public class DiscApplicationFilesHandler {
 
     public void loadAllBotFiles(){
         engine.getUtilityBase().printOutput("~load all bot files!",true);
+
+        try {
+            engine.getDiscEngine().getVoteCmd().setPolls((ArrayList<Poll>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/vote/votes.dat"));
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput("!!Votes cant load!!",true);
+        }
         try {
             servers = (HashMap<String, DiscApplicationServer>) engine.getFileUtils().loadObject(engine.getFileUtils().getHome() + "/bot/utilize/servers.server");
         } catch (Exception e) {
@@ -77,6 +86,10 @@ public class DiscApplicationFilesHandler {
             engine.getUtilityBase().printOutput("!!Recreate Users data!!",true);
             users = new HashMap<>();
         }
+        if(engine.getDiscEngine().getVoteCmd().getPolls()==null){
+            engine.getUtilityBase().printOutput("!!Recreate Vote data!!",true);
+            engine.getDiscEngine().getVoteCmd().setPolls(new ArrayList<Poll>());
+        }
 
         engine.getUtilityBase().printOutput("~finished loading bot files",true);
     }
@@ -84,16 +97,22 @@ public class DiscApplicationFilesHandler {
     public void saveAllBotFiles(){
         engine.getUtilityBase().printOutput("~safe all bot files!",true);
         try {
+            engine.getFileUtils().saveObject(engine.getFileUtils().home + "/vote/votes.dat", engine.getDiscEngine().getVoteCmd().getPolls());
+        } catch (Exception e) {
+            if(engine.getProperties().debug){e.printStackTrace();}
+            engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - Votes", false);
+        }
+        try {
             engine.getFileUtils().saveObject(engine.getFileUtils().getHome() + "/bot/utilize/servers.server", servers);
         } catch (Exception e) {
             if(engine.getProperties().debug){e.printStackTrace();}
-            engine.getUtilityBase().printOutput("ERROR IN SAVE OWO", false);
+            engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - servers", false);
         }
         try {
             engine.getFileUtils().saveObject(engine.getFileUtils().getHome() + "/bot/utilize/users.users", users);
         } catch (Exception e) {
             e.printStackTrace();
-            engine.getUtilityBase().printOutput("ERROR IN SAVE OWO", false);
+            engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - users", false);
         }
         engine.getUtilityBase().printOutput("~finished saving all bot files",true);
     }

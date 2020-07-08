@@ -3,12 +3,18 @@ package botApplication.discApplication.listeners;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.awt.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscMessageListener extends ListenerAdapter {
 
@@ -20,8 +26,7 @@ public class DiscMessageListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReceived(GuildMessageReceivedEvent event) {
-
-        if(event.getMessage().getContentRaw().length()>400){
+        if(event.getMessage().getContentRaw().length()>2000){
             return;
         }
 
@@ -33,6 +38,8 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
             handleSecret(event);
+            if (event.getMessage().getContentRaw().startsWith("."))
+                pictureSelect(event);
                     if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {
                         boolean hasPermission = false;
                         try {
@@ -54,7 +61,6 @@ public class DiscMessageListener extends ListenerAdapter {
                             if (!commandWorked) {
                                 engine.getUtilityBase().printOutput(messageInfo(event.getGuild()) + "command " + event.getMessage().getContentRaw() + " doesnt exist!",true);
                                 //engine.getDiscEngine().getTextUtils().deletUserMessage(1, event);
-                                engine.getDiscEngine().getTextUtils().sendError("DicCommand " + event.getMessage().getContentRaw() + "  existiert nicht!\n\nSchreibe **" + engine.getProperties().discBotApplicationPrefix + "help** um eine auflistung der Commands zu erhalten.", event.getChannel(), engine.getProperties().middleTime, true);
                             }
                         } else {
                             engine.getUtilityBase().printOutput(messageInfo(event.getGuild()) + " bot has not the permission!",true);
@@ -101,10 +107,6 @@ public class DiscMessageListener extends ListenerAdapter {
             //contains
             for (int i = 0; msgArgs.length > i; i++) {
                 switch (msgArgs[i].toLowerCase()) {
-                    case "lol":
-                    case "lool":
-                        sendNormalText(event, "Ja loool eyyy was ist lol? XD");
-                        return;
                     case "anime":
                         sendNormalText(event, "Who said Anime :O");
                         return;
@@ -129,6 +131,7 @@ public class DiscMessageListener extends ListenerAdapter {
     }
 
     private void sendGuildCommand(GuildMessageReceivedEvent event){
+        engine.getUtilityBase().printOutput("Called bot command: " + event.getMessage().getContentRaw() + " from: " + event.getGuild().getName() + " from: " + event.getAuthor().getName(), true);
         DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
         DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
         try {
@@ -150,5 +153,46 @@ public class DiscMessageListener extends ListenerAdapter {
             engine.getUtilityBase().printOutput("-----\n[Send server command failed]\n-----",true);
             e.printStackTrace();
         }
+    }
+
+    private void pictureSelect(GuildMessageReceivedEvent event) {
+        DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
+        String c = event.getMessage().getContentDisplay();
+        c = c.substring(1);
+        String[] ca = c.split(" ");
+        if(ca.length<1){
+            EmbedBuilder b = new EmbedBuilder()
+                    .setDescription("You can't " + ca[0] + " yourself!")
+                    .setColor(Color.yellow)
+                    .setImage("https://i.kym-cdn.com/photos/images/newsfeed/001/671/387/17c.jpg");
+        }
+        String to = "";
+        String pic = "";
+        Color color = Color.cyan;
+        JSONObject grp = (JSONObject) engine.getPics().get(ca[0]);
+        if(!event.getChannel().isNSFW() && grp.get("nsfw").equals("true")){
+            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.nsfwNotAllowedChan", user.getLang()), event.getChannel(), false);
+            return;
+        } else {
+            JSONArray pics;
+            try {
+                pics = (JSONArray) grp.get("arr");
+            } catch (Exception e){
+                return;
+            }
+            pic = (String) pics.get(ThreadLocalRandom.current().nextInt(0, pics.size()));
+            to = grp.get("prn") + " " + ca[1];
+            try {
+                color = Color.decode((String) grp.get("color"));
+            } catch (Exception e) {
+
+            }
+        }
+        EmbedBuilder b = new EmbedBuilder()
+                .setColor(color)
+                .setImage(pic)
+                .setAuthor(event.getAuthor().getName() + " " + to, null, event.getAuthor().getAvatarUrl());
+
+        event.getChannel().sendMessage(b.build()).queue();
     }
 }

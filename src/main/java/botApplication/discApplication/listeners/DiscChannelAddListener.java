@@ -6,6 +6,7 @@ import core.Engine;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.VoiceChannel;
 import net.dv8tion.jda.core.events.channel.category.CategoryCreateEvent;
 import net.dv8tion.jda.core.events.channel.text.TextChannelCreateEvent;
 import net.dv8tion.jda.core.events.channel.voice.VoiceChannelCreateEvent;
@@ -34,6 +35,9 @@ public class DiscChannelAddListener extends ListenerAdapter {
             if (!s.isSetupDone()) {
                 return;
             }
+            if(!s.isSetupMode()){
+                return;
+            }
         } else {
             return;
         }
@@ -58,6 +62,14 @@ public class DiscChannelAddListener extends ListenerAdapter {
             if (!s.isSetupDone()) {
                 return;
             }
+            if(!s.isSetupMode()){
+                return;
+            }
+            for (VoiceChannel vc:DiscVoiceListener.active) {
+                if(vc.getId().equals(event.getChannel().getId())){
+                    return;
+                }
+            }
         } else {
             return;
         }
@@ -81,6 +93,9 @@ public class DiscChannelAddListener extends ListenerAdapter {
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s != null) {
             if (!s.isSetupDone()) {
+                return;
+            }
+            if(!s.isSetupMode()){
                 return;
             }
         } else {

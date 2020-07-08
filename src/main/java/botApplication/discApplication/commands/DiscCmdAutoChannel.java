@@ -25,12 +25,12 @@ public class DiscCmdAutoChannel implements DiscCommand {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
                         if(newAutoChannel != null){
                             server.getAutoChannels().add(newAutoChannel.getId());
-                            engine.getDiscEngine().getTextUtils().sendSucces("Autochannel erfolgreich erstellt!", event.getChannel());
+                            engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.created", user.getLang()), event.getChannel());
                         } else {
-                            engine.getDiscEngine().getTextUtils().sendError("Der Channel existiert nicht!", event.getChannel(), false);
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
                         }
                     } else {
-                        engine.getDiscEngine().getTextUtils().sendError("Zu wenig argumente!", event.getChannel(), false);
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notEnoughArgs", user.getLang()), event.getChannel(), false);
                     }
                     break;
 
@@ -45,12 +45,12 @@ public class DiscCmdAutoChannel implements DiscCommand {
                                     break;
                                 }
                             }
-                            engine.getDiscEngine().getTextUtils().sendSucces("Autochannel erfolgreich entfernt!", event.getChannel());
+                            engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.removed", user.getLang()), event.getChannel());
                         } else {
-                            engine.getDiscEngine().getTextUtils().sendError("Der Channel existiert nicht!", event.getChannel(), false);
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
                         }
                     } else {
-                        engine.getDiscEngine().getTextUtils().sendError("Zu wenig argumente!", event.getChannel(), false);
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
                     }
                     break;
 
@@ -65,7 +65,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     break;
             }
         } else {
-            engine.getDiscEngine().getTextUtils().sendError("Zu wenig argumente!", event.getChannel(), false);
+            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notEnoughArgs", user.getLang()), event.getChannel(), false);
         }
     }
 
@@ -80,8 +80,8 @@ public class DiscCmdAutoChannel implements DiscCommand {
     }
 
     @Override
-    public String help(Engine engine) {
-        return "add <VC-ID> - Fügt einen Auto-Channel hinzu\nremove <VC-ID> - entfernt einen Auto-Channel\nlist - zeigt eine Liste der Auto-Channels";
+    public String help(Engine engine, DiscApplicationUser user) {
+        return engine.lang("cmd.autochan.help", user.getLang());
     }
 
     @Override

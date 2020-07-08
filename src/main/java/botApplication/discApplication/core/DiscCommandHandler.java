@@ -23,7 +23,7 @@ public class DiscCommandHandler {
                 } catch (Exception ignored) {
                 }
                 if (args0.equalsIgnoreCase("help")) {
-                    cmd.engine.getDiscEngine().getTextUtils().sendHelp(commands.get(cmd.invoke).help(cmd.engine), cmd.event.getChannel());
+                    cmd.engine.getDiscEngine().getTextUtils().sendHelp(commands.get(cmd.invoke).help(cmd.engine, cmd.user), cmd.event.getChannel());
                 } else {
                     commands.get(cmd.invoke).actionServer(cmd.args, cmd.event, cmd.server, cmd.user, cmd.engine);
                 }
@@ -45,7 +45,7 @@ public class DiscCommandHandler {
                 }
 
                 if (args0.equalsIgnoreCase("help")) {
-                    cmd.engine.getDiscEngine().getTextUtils().sendHelp(commands.get(cmd.invoke).help(cmd.engine), cmd.event.getChannel());
+                    cmd.engine.getDiscEngine().getTextUtils().sendHelp(commands.get(cmd.invoke).help(cmd.engine, cmd.user), cmd.event.getChannel());
                 } else {
                     commands.get(cmd.invoke).actionPrivate(cmd.args, cmd.event, cmd.user, cmd.engine);
                 }
@@ -53,8 +53,13 @@ public class DiscCommandHandler {
         }
     }
 
-    public void createNewCommand(String ivoke, DiscCommand cmd) {
-        commands.put(ivoke, cmd);
-        commandIvokes.add(ivoke);
+    public String createNewCommand(String ivoke, DiscCommand cmd) {
+        if(commandIvokes.contains(ivoke)){
+            return "Command " + ivoke + " already exist!";
+        } else {
+            commands.put(ivoke, cmd);
+            commandIvokes.add(ivoke);
+            return "Command " + ivoke + " added!";
+        }
     }
 }

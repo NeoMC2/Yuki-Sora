@@ -17,6 +17,7 @@ public class DiscApplicationUser implements Serializable {
     private long telegramId;
     private DiscCertificationLevel discCertificationLevel;
     private ArrayList<String> servers = new ArrayList<>();
+    private String lang = "en";
 
     public DiscApplicationUser(User user, DiscCertificationLevel discCertificationLevel) {
         this.userName = user.getName();
@@ -78,5 +79,13 @@ public class DiscApplicationUser implements Serializable {
 
     public void setServers(ArrayList<String> servers) {
         this.servers = servers;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 }

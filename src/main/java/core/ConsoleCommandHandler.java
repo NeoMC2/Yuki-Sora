@@ -28,30 +28,24 @@ public class ConsoleCommandHandler {
 
             case "load":
                 engine.loadProperties();
+                engine.loadLanguage();
+                engine.loadPics();
                 if(engine.getDiscEngine().isRunning()){
                     engine.getDiscEngine().getFilesHandler().loadAllBotFiles();
                 }
                 break;
             case "debug":
-                if (engine.getProperties().debug) {
-                    engine.getProperties().debug = false;
-                } else {
-                    engine.getProperties().debug = true;
-                }
+                engine.getProperties().debug = !engine.getProperties().debug;
                 System.out.println("Debug is now " + engine.getProperties().debug);
                 break;
 
             case "showtime":
-                if (engine.getProperties().showTime) {
-                    engine.getProperties().showTime = false;
-                } else {
-                    engine.getProperties().showTime = true;
-                }
+                engine.getProperties().showTime = !engine.getProperties().showTime;
                 System.out.println("Show time is now " + engine.getProperties().showTime);
                 break;
 
             case "startbot":
-                engine.discApplicationEngine.startBotApplication();
+                engine.getDiscEngine().startBotApplication();
                 break;
 
             case "stopbot":

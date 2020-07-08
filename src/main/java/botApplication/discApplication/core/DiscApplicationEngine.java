@@ -1,7 +1,6 @@
 package botApplication.discApplication.core;
 
-import botApplication.discApplication.commands.DiscCmdAutoChannel;
-import botApplication.discApplication.commands.DiscCmdSetup;
+import botApplication.discApplication.commands.*;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
@@ -38,6 +37,8 @@ public class DiscApplicationEngine {
     private JDABuilder builder;
     private JDA botJDA;
 
+    private DiscCmdVote voteCmd;
+
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
     public DiscApplicationEngine(Engine engine) {
@@ -58,6 +59,8 @@ public class DiscApplicationEngine {
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot start initialized!", false);
         isRunning = true;
 
+        initPreCmds();
+
         filesHandler = new DiscApplicationFilesHandler(engine);
         filesHandler.loadAllBotFiles();
 
@@ -69,8 +72,8 @@ public class DiscApplicationEngine {
         builder.setToken(engine.getProperties().discBotApplicationToken);
         builder.setAutoReconnect(true);
         builder.setStatus(OnlineStatus.ONLINE);
-        setBotApplicationGame(null, Game.GameType.DEFAULT);
         addBotCommands();
+        setBotApplicationGame(null, Game.GameType.DEFAULT);
         addBotListeners();
         try {
             botJDA = builder.build();
@@ -81,6 +84,11 @@ public class DiscApplicationEngine {
             return;
         }
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot successfully started!", false);
+    }
+
+    private void initPreCmds(){
+        engine.getUtilityBase().printOutput(consMsgDef + " !Init pre CMDS!", false);
+        voteCmd = new DiscCmdVote(engine);
     }
 
     private void setBotApplicationGame(String game, Game.GameType type) {
@@ -110,6 +118,10 @@ public class DiscApplicationEngine {
         engine.getUtilityBase().printOutput(consMsgDef + " !Add commands!", false);
         commandHandler.createNewCommand("setup", new DiscCmdSetup(engine));
         commandHandler.createNewCommand("autochan", new DiscCmdAutoChannel());
+        commandHandler.createNewCommand("move", new DiscCmdMove());
+        commandHandler.createNewCommand("vote", voteCmd);
+        commandHandler.createNewCommand("rps", new DiscCmdRockPaperScissors());
+        commandHandler.createNewCommand("help", new DiscCmdHelp());
     }
 
     private void addBotListeners(){
@@ -170,10 +182,12 @@ public class DiscApplicationEngine {
     public void setSetupRoles(HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles) {
         this.setupRoles = setupRoles;
     }
-    public void addSetupRole(String guildId, ArrayList<DiscRole.RoleType> arr){
-        if(setupRoles.containsKey(guildId)){
-            setupRoles.remove(guildId);
-        }
+    public void addSetupRole(String guildId, ArrayList<DiscRole.RoleType> arr) {
+        setupRoles.remove(guildId);
         setupRoles.put(guildId, arr);
+    }
+
+    public DiscCmdVote getVoteCmd() {
+        return voteCmd;
     }
 }

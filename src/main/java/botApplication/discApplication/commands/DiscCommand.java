@@ -13,6 +13,6 @@ public interface DiscCommand {
     void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine);
     boolean calledPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine);
     void actionPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine);
-    String help(Engine engine);
+    String help(Engine engine, DiscApplicationUser user);
     void actionTelegram(Member member, Engine engine, DiscApplicationUser user, String[] args);
 }

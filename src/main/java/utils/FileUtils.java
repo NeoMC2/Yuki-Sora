@@ -100,7 +100,7 @@ public class FileUtils {
         }
     }
 
-    private void createFileRootAndFile(File file) {
+    public void createFileRootAndFile(File file) {
         String pas = file.getAbsolutePath().replace("\\", "/");
         String[] path = pas.split("/");
         String pat = path[0];

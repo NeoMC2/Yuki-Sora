@@ -2,7 +2,6 @@ package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import core.Engine;
-import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.PermissionOverride;
 import net.dv8tion.jda.core.entities.VoiceChannel;
@@ -19,7 +18,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     private Engine engine;
 
-    private ArrayList<VoiceChannel> active = new ArrayList<>();
+    public static ArrayList<VoiceChannel> active = new ArrayList<>();
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;

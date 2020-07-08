@@ -5,6 +5,7 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.Role;
 
 public class DiscCertificationHandler {
 
@@ -24,6 +25,13 @@ public class DiscCertificationHandler {
             guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultMemberRoleId())).complete();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
+        }
+        for (String s:server.getDefaultRoles()) {
+            Role r = guild.getRoleById(s);
+            try {
+                guild.getController().addRolesToMember(member, r).queue();
+            } catch (Exception e){
+            }
         }
     }
 
@@ -49,6 +57,14 @@ public class DiscCertificationHandler {
             guild.getController().removeRolesFromMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).complete();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
+        }
+
+        for (String s:server.getDefaultRoles()) {
+            Role r = guild.getRoleById(s);
+            try {
+                guild.getController().removeRolesFromMember(member, r).queue();
+            } catch (Exception e){
+            }
         }
     }
 

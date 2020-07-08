@@ -1,7 +1,6 @@
 package botApplication.discApplication.librarys;
 
 import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.VoiceChannel;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,12 +16,16 @@ public class DiscApplicationServer implements Serializable {
     private boolean musicListenerEnabled = false;
     private String musicListenerName = "djNexus";
 
+    private ArrayList<String> defaultRoles = new ArrayList<>();
+
+    private boolean setupMode = false;
     private boolean setupDone = false;
     private String certificationMessageId = "";
     private String certificationChannelId = "";
     private String defaultMemberRoleId = "";
     private String defaultTempGamerRoleId = "";
     private String ruleText = "";
+    private String welcomeText = "Bist du nur hier um kurz ein paar Runden zu zocken? Dann drück einfach \\uD83C\\uDFAE\\n\\nWenn du dem Server beitreten willst, drück einfach ✅\\n\\nAnsonsten ❌, das ändert aber nix loolz";
     private ArrayList<DiscRole> roles = new ArrayList<>();
 
     private ArrayList<String> autoChannels = new ArrayList<>();
@@ -151,5 +154,32 @@ public class DiscApplicationServer implements Serializable {
 
     public void setRuleText(String ruleText) {
         this.ruleText = ruleText;
+    }
+
+    public boolean isSetupMode() {
+        return setupMode;
+    }
+
+    public void setSetupMode(boolean setupMode) {
+        this.setupMode = setupMode;
+    }
+
+    public String getWelcomeText() {
+        return welcomeText;
+    }
+
+    public void setWelcomeText(String welcomeText) {
+        this.welcomeText = welcomeText;
+    }
+
+    public ArrayList<String> getDefaultRoles() {
+        if(defaultRoles == null) {
+            defaultRoles = new ArrayList<>();
+        }
+        return defaultRoles;
+    }
+
+    public void setDefaultRoles(ArrayList<String> defaultRoles) {
+        this.defaultRoles = defaultRoles;
     }
 }
