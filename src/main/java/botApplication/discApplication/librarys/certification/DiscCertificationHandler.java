@@ -7,6 +7,9 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class DiscCertificationHandler {
 
     private final String consMsgDef = "[Certification Handler]";
@@ -17,25 +20,22 @@ public class DiscCertificationHandler {
     }
 
     public void addMemberCertification(Member member, Guild guild) {
+        ArrayList<Role> roles = new ArrayList<>();
+        engine.getUtilityBase().printOutput(consMsgDef + " !Add member certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.Member);
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
         usr.getServers().add(guild.getId());
-        try {
-            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultMemberRoleId())).complete();
-        } catch (Exception e) {
-            engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
-        }
+        roles.add(guild.getRoleById(server.getDefaultMemberRoleId()));
         for (String s:server.getDefaultRoles()) {
-            Role r = guild.getRoleById(s);
-            try {
-                guild.getController().addRolesToMember(member, r).queue();
-            } catch (Exception e){
-            }
+           roles.add(guild.getRoleById(s));
         }
+        guild.getController().addRolesToMember(member, roles).queue();
     }
 
     public void removeCertification(Member member, Guild guild) {
+        ArrayList<Role> roles = new ArrayList<>();
+        engine.getUtilityBase().printOutput(consMsgDef + " !Remove member certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
         DiscApplicationUser usr = null;
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(member.getUser().getId());
@@ -45,36 +45,27 @@ public class DiscCertificationHandler {
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
         if(usr != null){
-            usr.getServers().remove(guild.getId());
+            usr.getServers().remove(server);
         }
 
-        try {
-            guild.getController().removeRolesFromMember(member, guild.getRoleById(server.getDefaultMemberRoleId())).complete();
-        } catch (Exception e) {
-            engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
-        }
-        try {
-            guild.getController().removeRolesFromMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).complete();
-        } catch (Exception e) {
-            engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
-        }
+        roles.add(guild.getRoleById(server.getDefaultMemberRoleId()));
+        roles.add(guild.getRoleById(server.getDefaultTempGamerRoleId()));
 
         for (String s:server.getDefaultRoles()) {
-            Role r = guild.getRoleById(s);
-            try {
-                guild.getController().removeRolesFromMember(member, r).queue();
-            } catch (Exception e){
-            }
+            roles.add(guild.getRoleById(s));
         }
+
+        guild.getController().removeRolesFromMember(member, roles).queue();
     }
 
     public void addTempGameCertification(Member member, Guild guild) {
+        engine.getUtilityBase().printOutput(consMsgDef + " !Add Temp Gamer certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.TempGamer);
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
         usr.getServers().add(guild.getId());
         try {
-            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).complete();
+            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).queue();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
         }

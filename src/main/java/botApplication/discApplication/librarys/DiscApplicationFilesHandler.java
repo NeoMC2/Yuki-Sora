@@ -39,8 +39,8 @@ public class DiscApplicationFilesHandler {
 
     public DiscApplicationServer createNewServer(Guild guild) throws Exception{
         if(servers.containsKey(guild.getId())){
-            engine.getUtilityBase().printOutput("Override Server! Id: " + guild.getId() + " name: " + guild.getName(), true);
-            servers.remove(guild.getId());
+            engine.getUtilityBase().printOutput("Server already exist! Id: " + guild.getId() + " name: " + guild.getName(), true);
+            return servers.get(guild.getId());
         }
         DiscApplicationServer server = new DiscApplicationServer(guild);
         servers.put(guild.getId(), server);
@@ -49,8 +49,8 @@ public class DiscApplicationFilesHandler {
 
     public DiscApplicationUser createNewUser(User user, DiscCertificationLevel discCertificationLevel) {
         if(users.containsKey(user.getId())){
-            engine.getUtilityBase().printOutput("Override User! Id: " + user.getId() + " name: " + user.getName(), true);
-            users.remove(user.getId());
+            engine.getUtilityBase().printOutput("User already exist! Id: " + user.getId() + " name: " + user.getName(), true);
+            return users.get(user.getId());
         }
         DiscApplicationUser botUser = new DiscApplicationUser(user, discCertificationLevel);
         users.put(user.getId(), botUser);

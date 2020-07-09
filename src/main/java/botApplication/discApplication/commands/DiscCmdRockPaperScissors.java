@@ -58,7 +58,7 @@ public class DiscCmdRockPaperScissors implements DiscCommand {
                 return;
         }
 
-        int asw = 0;
+        int asw = 2;
         if (u == pc) {
             asw = 0;
 
@@ -67,17 +67,19 @@ public class DiscCmdRockPaperScissors implements DiscCommand {
                 if (pc == Rps.Paper) {
                     asw = 1;
                 }
-            } else if (u == Rps.Rock) {
+            }
+
+            if (u == Rps.Rock) {
                 if (pc == Rps.Scissors) {
                     asw = 1;
 
                 }
-            } else if (u == Rps.Paper) {
+            }
+
+            if (u == Rps.Paper) {
                 if (pc == Rps.Rock) {
                     asw = 1;
                 }
-            } else {
-                asw = 2;
             }
         }
 

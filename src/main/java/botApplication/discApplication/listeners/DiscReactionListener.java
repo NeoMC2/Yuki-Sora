@@ -1,6 +1,5 @@
 package botApplication.discApplication.listeners;
 
-import botApplication.discApplication.commands.DiscCmdVote;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
@@ -35,7 +34,7 @@ public class DiscReactionListener extends ListenerAdapter {
         }
 
         Poll p = getPoll(event.getMessageId());
-        if(p!=null){
+        if (p != null) {
             p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), engine);
             return;
         }
@@ -78,7 +77,7 @@ public class DiscReactionListener extends ListenerAdapter {
         }
 
         Poll p = getPoll(event.getMessageId());
-        if(p!=null){
+        if (p != null) {
             p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), engine);
             return;
         }
@@ -87,13 +86,10 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         } else {
             switch (event.getReactionEmote().getName()) {
-
                 //X-Emoji
-                case "❌":
-                    break;
-
                 //haken-Emoji
                 //Game-Emoji
+                case "❌":
                 case "✅":
                 case "\uD83C\uDFAE":
                     engine.getDiscEngine().getCertificationHandler().removeCertification(event.getMember(), event.getGuild());
@@ -116,9 +112,9 @@ public class DiscReactionListener extends ListenerAdapter {
         return found < 2;
     }
 
-    private Poll getPoll(String msgId){
-        for (Poll p: engine.getDiscEngine().getVoteCmd().getPolls()) {
-            if(p.getMessageId().equals(msgId))
+    private Poll getPoll(String msgId) {
+        for (Poll p : engine.getDiscEngine().getVoteCmd().getPolls()) {
+            if (p.getMessageId().equals(msgId))
                 return p;
         }
         return null;
