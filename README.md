@@ -10,11 +10,11 @@ With the setup command you can edit different features of your guild.
 start - starts install setup  
 deinstall - starts deinstall setup  
 
-**add**
+**add**  
 certchannel <id> - adds certification channel  
 role \<id\> \<types...\> - adds role (type `-setup add role ?` to see the different types)
   
-**settings**
+**settings**  
 channelrole \<types.../all\> - changes the role for channels you are going to create  
 ruletxt <text...> - changes the ruletext in the welcome channel  
 renewCertificationChannel - deletes old message and prints new one  
