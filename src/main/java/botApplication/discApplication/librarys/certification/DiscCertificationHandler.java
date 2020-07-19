@@ -7,8 +7,8 @@ import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
 
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collections;
 
 public class DiscCertificationHandler {
 
@@ -31,6 +31,15 @@ public class DiscCertificationHandler {
            roles.add(guild.getRoleById(s));
         }
         guild.getController().addRolesToMember(member, roles).queue();
+
+        try {
+            if(!usr.isSaidHello()){
+                engine.getDiscEngine().getTextUtils().sendCustomMessage("We have a new Member here 🎊. Say hello to " + member.getUser().getName() + "!", guild.getTextChannelById(server.getWelcomeMessageChannel()), "Welcome", Color.YELLOW);
+                usr.setSaidHello(true);
+            }
+        } catch (Exception e){
+
+        }
     }
 
     public void removeCertification(Member member, Guild guild) {

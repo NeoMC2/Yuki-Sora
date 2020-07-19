@@ -1,10 +1,13 @@
 package core;
 
+import botApplication.discApplication.librarys.DiscApplicationUser;
+
 import java.util.Scanner;
 
 public class ConsoleCommandHandler {
 
     Engine engine;
+    DiscApplicationUser user = null;
 
     public ConsoleCommandHandler(Engine engine) {
         this.engine = engine;
@@ -96,8 +99,30 @@ public class ConsoleCommandHandler {
                 engine.shutdown();
                 break;
 
+            case "makeadmin":
+                try {
+                    user = engine.getDiscEngine().getFilesHandler().getUserById(command.split(" ")[1]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    engine.getUtilityBase().printOutput("User not found or error!", false);
+                    return;
+                }
+                user.setAdmin(true);
+                break;
+
+            case "undoadmin":
+                try {
+                    user = engine.getDiscEngine().getFilesHandler().getUserById(command.split(" ")[1]);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    engine.getUtilityBase().printOutput("User not found or error!", false);
+                    return;
+                }
+                user.setAdmin(false);
+                break;
+
             case "help":
-                System.out.println("savespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nshowtime - shows time at console output");
+                System.out.println("makeadmin <user id> - adds admin status\nundoadmin <user id> - removes admin status\nsavespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nshowtime - shows time at console output");
                 break;
 
             default:
@@ -114,7 +139,11 @@ public class ConsoleCommandHandler {
             Scanner scanner = new Scanner(System.in);
             while (true) {
                 line = scanner.nextLine();
-                handleConsoleCommand(line);
+                try {
+                    handleConsoleCommand(line);
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {

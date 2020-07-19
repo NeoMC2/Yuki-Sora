@@ -1,8 +1,8 @@
 package botApplication.discApplication.librarys;
 
-import botApplication.discApplication.commands.DiscCmdVote;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.poll.Poll;
+import botApplication.discApplication.librarys.transaktion.job.Job;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -16,6 +16,8 @@ public class DiscApplicationFilesHandler {
     private HashMap<String, DiscApplicationUser> users = new HashMap<>();
 
     private Engine engine;
+
+    private ArrayList<Job> jobs = new ArrayList<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;
@@ -60,6 +62,12 @@ public class DiscApplicationFilesHandler {
     public void loadAllBotFiles(){
         engine.getUtilityBase().printOutput("~load all bot files!",true);
 
+        try {
+            jobs = engine.getDiscEngine().getTransaktionHandler().parseJsonToJobs(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/jobs.json"));
+        } catch (Exception e) {
+            e.printStackTrace();
+            engine.getUtilityBase().printOutput("!!Jobs cant load!!",true);
+        }
         try {
             engine.getDiscEngine().getVoteCmd().setPolls((ArrayList<Poll>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/vote/votes.dat"));
         } catch (Exception e) {
@@ -123,5 +131,9 @@ public class DiscApplicationFilesHandler {
 
     public HashMap<String, DiscApplicationUser> getUsers() {
         return users;
+    }
+
+    public ArrayList<Job> getJobs() {
+        return jobs;
     }
 }

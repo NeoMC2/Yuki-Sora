@@ -33,7 +33,7 @@ public class DiscCmdVote implements DiscCommand {
         if (event.getMember().hasPermission(Permission.ADMINISTRATOR)) {
             return true;
         } else {
-            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.noadmin", user.getLang()), event.getChannel(), engine.getProperties().middleTime, false);
+            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.noadmin", user.getLang(), null), event.getChannel(), engine.getProperties().middleTime, false);
             return false;
         }
     }
@@ -55,7 +55,7 @@ public class DiscCmdVote implements DiscCommand {
                         if(tchan == null){
                          return;
                         } else {
-                            Poll poll = new Poll();
+                            Poll poll = new Poll(event.getGuild().getId());
                             poll.setChannel(tchan.getId());
                             poll.setCreator(event.getAuthor().getId());
                             poll.setHeading("Select your language");
@@ -81,7 +81,7 @@ public class DiscCmdVote implements DiscCommand {
                     int ansCounter = 1;
                     String unFString = event.getMessage().getContentRaw();
                     String[] cmArgs = unFString.split("§");
-                    Poll poll = new Poll();
+                    Poll poll = new Poll(event.getGuild().getId());
                     poll.setCreator(event.getMember().getUser().getId());
                     for (String cmArg : cmArgs) {
                         cmArg.replace("\"", "");
@@ -178,9 +178,14 @@ public class DiscCmdVote implements DiscCommand {
                         if (args[1].equals(p.getMessageId())) {
                             polls.remove(p);
                             event.getGuild().getTextChannelById(p.getChannel()).deleteMessageById(p.getMessageId()).queue();
+                            engine.getDiscEngine().getTextUtils().sendSucces("Removed!", event.getChannel());
                             return;
                         }
                     }
+                    break;
+
+                default:
+                    engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
                     break;
             }
     }
@@ -197,7 +202,7 @@ public class DiscCmdVote implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return engine.lang("cmd.vote.help", user.getLang());
+        return engine.lang("cmd.vote.help", user.getLang(), null);
     }
 
     @Override

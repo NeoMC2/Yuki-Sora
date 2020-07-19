@@ -65,9 +65,6 @@ public class FileUtils {
             object = (JSONObject) parser.parse(reader);
             reader.close();
         } catch (Exception e) {
-            if(engine.getProperties().debug){
-                e.printStackTrace();
-            }
             System.out.println("ERRORORORRO!!!!");
             throw new Exception("File load error");
         }

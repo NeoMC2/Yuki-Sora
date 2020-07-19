@@ -2,17 +2,12 @@ package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.response.ResponseHandler;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.concurrent.ThreadLocalRandom;
+import java.util.Set;
 
 public class Engine {
 
@@ -25,7 +20,7 @@ public class Engine {
     private DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
     private ResponseHandler responseHandler = new ResponseHandler(this);
 
-    public java.util.Properties lang;
+    public JSONObject lang;
     public JSONObject pics;
 
     public void boot(String[] args) {
@@ -41,6 +36,7 @@ public class Engine {
         if (args.length > 0) {
             switch (args[0]) {
                 case "test":
+
                     break;
                 case "start":
                     discApplicationEngine.startBotApplication();
@@ -49,22 +45,37 @@ public class Engine {
         }
     }
 
+    private void convertPropertiesToLangJson(){
+        JSONObject jsonObject = new JSONObject();
+        JSONObject ger = new JSONObject();
+        JSONObject eng = new JSONObject();
+
+        jsonObject.put("de", ger);
+        jsonObject.put("en", eng);
+
+        //lang should be a prop file
+        Set<Object> langKey = lang.keySet();
+
+        for (Object l:langKey) {
+            String s = (String) l;
+            if(s.startsWith("de")){
+                ger.put(s.substring(3), lang.get(s));
+            }
+
+            if(s.startsWith("en")){
+                eng.put(s.substring(3), lang.get(s));
+            }
+        }
+
+        fileUtils.saveJsonFile(fileUtils.home + "/lang/lang.json", jsonObject);
+    }
+
     public void loadLanguage(){
         getUtilityBase().printOutput(consMsgDef + " !Load language!", false);
-        lang = new java.util.Properties();
-        String filePath = new File(fileUtils.home + "/lang/lang.prop").getAbsolutePath();
-        File file = new File(filePath);
-        getUtilityBase().printOutput("[File loader] Loading Object Flile: " + filePath,false);
-        FileInputStream stream = null;
         try {
-            stream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
+            lang = fileUtils.loadJsonFile(fileUtils.home + "/lang/lang.json");
+        } catch (Exception e) {
             getUtilityBase().printOutput(consMsgDef + " !!!Error loading language, not found!!!", false);
-        }
-        try {
-            lang.load(stream);
-        } catch (IOException e) {
-            getUtilityBase().printOutput(consMsgDef + " !!!Error loading language!!!", false);
         }
     }
 
@@ -107,18 +118,46 @@ public class Engine {
         System.exit(0);
     }
 
-    public String lang(String phrase, String langg){
+    public String lang(String phrase, String langg, String[] arg){
         if(langg==null || langg == ""){
             langg="en";
         }
-        String t = lang.getProperty(langg + "." + phrase);
+        String t = (String) ((JSONObject) lang.get(langg)).get(phrase);
         if(t == ""||t==null){
-            t = lang.getProperty("en" + "." + phrase);
+            t = (String) ((JSONObject) lang.get("en")).get(phrase);
+        }
+        try {
+            t = langC(t, arg);
+        } catch (Exception e){
         }
         if(t == ""||t==null){
             return "```@languageSupportError```";
         }
         return t.replace("\\n", "\n");
+    }
+
+    private String langC(String p, String[] arg){
+        String newString = p;
+        char[] pArr = p.toCharArray();
+        for (int i = 0; i < pArr.length; i++) {
+            char c = pArr[i];
+            if(c == '%'){
+                int j = Integer.parseInt(String.valueOf(pArr[i+1]));
+                for (int k = i +1; k < pArr.length; k++) {
+                    char cc = pArr[k];
+                    if(cc == '%'){
+                        try {
+                            newString = langC(p.substring(0, i) + arg[j -1] + p.substring(k + 1), arg);
+                        } catch (Exception e){
+                            utilityBase.printOutput("[Language Support] !!!Error in parsing lang variables!!!", true);
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+        return newString;
     }
 
     public FileUtils getFileUtils() {

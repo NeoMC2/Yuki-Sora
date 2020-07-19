@@ -18,13 +18,16 @@ public class DiscApplicationServer implements Serializable {
 
     private ArrayList<String> defaultRoles = new ArrayList<>();
 
+    private String workChannelId;
+    private String shopChannelId;
+
     private boolean setupMode = false;
     private boolean setupDone = false;
     private String certificationMessageId = "";
     private String certificationChannelId = "";
     private String defaultMemberRoleId = "";
     private String defaultTempGamerRoleId = "";
-    private String ruleText = "";
+    private String welcomeMessageChannel = "";
     private String welcomeText = "Bist du nur hier um kurz ein paar Runden zu zocken? Dann drück einfach \\uD83C\\uDFAE\\n\\nWenn du dem Server beitreten willst, drück einfach ✅\\n\\nAnsonsten ❌, das ändert aber nix loolz";
     private ArrayList<DiscRole> roles = new ArrayList<>();
 
@@ -148,14 +151,6 @@ public class DiscApplicationServer implements Serializable {
         roles.add(role);
     }
 
-    public String getRuleText() {
-        return ruleText;
-    }
-
-    public void setRuleText(String ruleText) {
-        this.ruleText = ruleText;
-    }
-
     public boolean isSetupMode() {
         return setupMode;
     }
@@ -181,5 +176,29 @@ public class DiscApplicationServer implements Serializable {
 
     public void setDefaultRoles(ArrayList<String> defaultRoles) {
         this.defaultRoles = defaultRoles;
+    }
+
+    public String getWorkChannelId() {
+        return workChannelId;
+    }
+
+    public void setWorkChannelId(String workChannelId) {
+        this.workChannelId = workChannelId;
+    }
+
+    public String getShopChannelId() {
+        return shopChannelId;
+    }
+
+    public void setShopChannelId(String shopChannelId) {
+        this.shopChannelId = shopChannelId;
+    }
+
+    public String getWelcomeMessageChannel() {
+        return welcomeMessageChannel;
+    }
+
+    public void setWelcomeMessageChannel(String welcomeMessageChannel) {
+        this.welcomeMessageChannel = welcomeMessageChannel;
     }
 }

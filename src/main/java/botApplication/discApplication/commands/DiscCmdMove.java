@@ -16,7 +16,7 @@ public class DiscCmdMove implements DiscCommand {
         if (event.getMember().hasPermission(Permission.VOICE_MOVE_OTHERS)) {
             return true;
         } else {
-            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.noadmin", user.getLang()), event.getChannel(), engine.getProperties().middleTime, false);
+            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.noadmin", user.getLang(), null), event.getChannel(), engine.getProperties().middleTime, false);
             return false;
         }
     }
@@ -28,15 +28,15 @@ public class DiscCmdMove implements DiscCommand {
                 VoiceChannel vc = event.getMember().getVoiceState().getChannel();
                 VoiceChannel to = event.getGuild().getVoiceChannelById(args[1]);
                 if (vc == null) {
-                    engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notInValidChannel", user.getLang()), event.getChannel(), false);
+                    engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notInValidChannel", user.getLang(), null), event.getChannel(), false);
                 } else {
                     if (to != null) {
                         for (Member m : vc.getMembers()) {
                             event.getGuild().getController().moveVoiceMember(m, to).queue();
                         }
-                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.move.succes.moved", user.getLang()), event.getChannel());
+                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.move.succes.moved", user.getLang(), null), event.getChannel());
                     } else {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);
                     }
                 }
             }
@@ -44,9 +44,9 @@ public class DiscCmdMove implements DiscCommand {
             VoiceChannel vc = event.getGuild().getVoiceChannelById(args[0]);
             VoiceChannel to = event.getGuild().getVoiceChannelById(args[1]);
             if(vc == null) {
-                engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
+                engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);
             } else if (to == null) {
-                engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang()), event.getChannel(), false);
+                engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);
             } else {
                 for (Member m : vc.getMembers()) {
                     event.getGuild().getController().moveVoiceMember(m, to).queue();
@@ -67,7 +67,7 @@ public class DiscCmdMove implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return engine.lang("cmd.move.help", user.getLang());
+        return engine.lang("cmd.move.help", user.getLang(), null);
     }
 
     @Override

@@ -5,6 +5,7 @@ import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
 import botApplication.discApplication.listeners.*;
+import botApplication.discApplication.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
@@ -31,6 +32,7 @@ public class DiscApplicationEngine {
 
     private DiscCommandHandler commandHandler = new DiscCommandHandler();
     private DiscCommandParser commandParser = new DiscCommandParser();
+    private TransaktionHandler transaktionHandler;
 
     private DiscCertificationHandler certificationHandler;
 
@@ -58,6 +60,8 @@ public class DiscApplicationEngine {
         }
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot start initialized!", false);
         isRunning = true;
+
+        transaktionHandler = new TransaktionHandler(engine);
 
         initPreCmds();
 
@@ -122,6 +126,9 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("vote", voteCmd);
         commandHandler.createNewCommand("rps", new DiscCmdRockPaperScissors());
         commandHandler.createNewCommand("help", new DiscCmdHelp());
+        commandHandler.createNewCommand("job", new DiscCmdJob());
+        commandHandler.createNewCommand("admin", new DiscCmdAdmin());
+        commandHandler.createNewCommand("wallet", new DiscCmdWallet());
     }
 
     private void addBotListeners(){
@@ -189,5 +196,9 @@ public class DiscApplicationEngine {
 
     public DiscCmdVote getVoteCmd() {
         return voteCmd;
+    }
+
+    public TransaktionHandler getTransaktionHandler() {
+        return transaktionHandler;
     }
 }

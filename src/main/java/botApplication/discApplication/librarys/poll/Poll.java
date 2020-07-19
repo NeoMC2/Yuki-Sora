@@ -15,6 +15,7 @@ public class Poll implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
+    private String guildId = "";
     private String creator;
     private String heading;
     private String messageId;
@@ -22,6 +23,10 @@ public class Poll implements Serializable {
     private String channel;
     private Color color = Color.cyan;
     DiscCmdVote.PollType pollType = DiscCmdVote.PollType.Vote;
+
+    public Poll(String guildId) {
+        this.guildId = guildId;
+    }
 
     public String getCreator() {
         return creator;
@@ -77,6 +82,14 @@ public class Poll implements Serializable {
 
     public void setPollType(DiscCmdVote.PollType pollType) {
         this.pollType = pollType;
+    }
+
+    public String getGuildId() {
+        return guildId;
+    }
+
+    public void setGuildId(String guildId) {
+        this.guildId = guildId;
     }
 
     public Message update(String answer, int quant, Guild g, Member voter, Engine engine) {

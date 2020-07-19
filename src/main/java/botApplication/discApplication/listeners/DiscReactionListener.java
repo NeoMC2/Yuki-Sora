@@ -33,7 +33,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         }
 
-        Poll p = getPoll(event.getMessageId());
+        Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
             p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), engine);
             return;
@@ -76,7 +76,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         }
 
-        Poll p = getPoll(event.getMessageId());
+        Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
             p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), engine);
             return;
@@ -112,10 +112,14 @@ public class DiscReactionListener extends ListenerAdapter {
         return found < 2;
     }
 
-    private Poll getPoll(String msgId) {
+    private Poll getPoll(String msgId, String guildId) {
         for (Poll p : engine.getDiscEngine().getVoteCmd().getPolls()) {
-            if (p.getMessageId().equals(msgId))
-                return p;
+            try {
+                if (p.getGuildId().equals(guildId))
+                    if (p.getMessageId().equals(msgId))
+                        return p;
+            } catch (Exception e){
+            }
         }
         return null;
     }
