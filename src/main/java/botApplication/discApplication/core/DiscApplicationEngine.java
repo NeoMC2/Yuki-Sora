@@ -4,6 +4,7 @@ import botApplication.discApplication.commands.*;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
+import botApplication.discApplication.librarys.transaktion.monsters.FightHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.DiscTextUtils;
@@ -40,6 +41,8 @@ public class DiscApplicationEngine {
     private JDA botJDA;
 
     private DiscCmdVote voteCmd;
+
+    private ArrayList<FightHandler> fightHandlers = new ArrayList<>();
 
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
@@ -200,5 +203,9 @@ public class DiscApplicationEngine {
 
     public TransaktionHandler getTransaktionHandler() {
         return transaktionHandler;
+    }
+
+    public ArrayList<FightHandler> getFightHandlers() {
+        return fightHandlers;
     }
 }

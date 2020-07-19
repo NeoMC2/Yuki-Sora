@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.transaktion.job.UserJob;
+import botApplication.discApplication.librarys.transaktion.monsters.Monster;
 import net.dv8tion.jda.core.entities.User;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class DiscApplicationUser implements Serializable {
 
-    public static final long serialVersionUID = 42L;
+    private static final long serialVersionUID = 42L;
 
     private String userName;
     private String ytPlaylist;
@@ -26,6 +27,8 @@ public class DiscApplicationUser implements Serializable {
     private UserJob userJob;
     private int xp;
     private int level;
+
+    private ArrayList<Monster> monsters = new ArrayList<>();
 
     private boolean saidHello = false;
 
@@ -153,5 +156,13 @@ public class DiscApplicationUser implements Serializable {
 
     public void setSaidHello(boolean saidHello) {
         this.saidHello = saidHello;
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(ArrayList<Monster> monsters) {
+        this.monsters = monsters;
     }
 }
