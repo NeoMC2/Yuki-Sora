@@ -25,7 +25,7 @@ public class Monster extends Item implements Serializable {
     }
 
     public int attack(Attack attack, Monster enemy){
-        double dmg = ((level * (2/5) + 2 )) + attack.getBaseDamage() * (ThreadLocalRandom.current().nextInt(0, 15) - 100) / 100 * calculateAttackEfficiency(attack.getMonsterTypes(), enemy.getMonsterTypes());
+        double dmg = ((level * (2/5) + 2 ) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes());
         enemy.setHp((int) (enemy.getHp() - dmg));
         return (int) dmg;
     }
