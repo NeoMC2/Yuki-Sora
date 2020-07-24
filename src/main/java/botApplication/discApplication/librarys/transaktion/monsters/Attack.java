@@ -12,6 +12,7 @@ public class Attack implements Serializable {
     //private AttackType attackType;
     private String attackName;
     private ArrayList<Monster.MonsterType> monsterTypes = new ArrayList<>();
+    private int lvl;
 
     //public enum AttackType {
      //   Heal, Punch
@@ -47,5 +48,21 @@ public class Attack implements Serializable {
 
     public void setMonsterTypes(ArrayList<Monster.MonsterType> monsterTypes) {
         this.monsterTypes = monsterTypes;
+    }
+
+    public int getLvl() {
+        return lvl;
+    }
+
+    public void setLvl(int lvl) {
+        this.lvl = lvl;
+    }
+
+    public String toString(){
+        String s = "";
+        for (Monster.MonsterType m : monsterTypes) {
+            s += m.name() + " ";
+        }
+        return "Name: " + attackName + "\nLevel: " + lvl +  "\nPower: " + baseDamage + "\nAttack Type: " + s;
     }
 }

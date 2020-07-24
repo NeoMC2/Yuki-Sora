@@ -28,7 +28,7 @@ public class DiscApplicationServer implements Serializable {
     private String defaultMemberRoleId = "";
     private String defaultTempGamerRoleId = "";
     private String welcomeMessageChannel = "";
-    private String welcomeText = "Bist du nur hier um kurz ein paar Runden zu zocken? Dann drück einfach \\uD83C\\uDFAE\\n\\nWenn du dem Server beitreten willst, drück einfach ✅\\n\\nAnsonsten ❌, das ändert aber nix loolz";
+    private String welcomeText = "";
     private ArrayList<DiscRole> roles = new ArrayList<>();
 
     private ArrayList<String> autoChannels = new ArrayList<>();

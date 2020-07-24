@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys.transaktion;
 
+import javax.management.MBeanRegistration;
 import java.io.Serializable;
 
 public class Item implements Serializable {
@@ -12,6 +13,50 @@ public class Item implements Serializable {
 
     public enum Rarity {
         Normal, Epic, Legendary, Mystic
+    }
+
+    public static Rarity stringToRarity(String s){
+        switch (s.toLowerCase()){
+            case "normal":
+                return Rarity.Normal;
+            case "epic":
+                return Rarity.Epic;
+            case "legendary":
+                return Rarity.Legendary;
+            case "mystic":
+                return Rarity.Mystic;
+        }
+        return null;
+    }
+
+    public static String rarityToString(Rarity r){
+        switch (r){
+
+            case Normal:
+                return "normal";
+            case Epic:
+                return "epic";
+            case Legendary:
+                return "legendary";
+            case Mystic:
+                return "mystic";
+        }
+        return null;
+    }
+
+    public static int rarityToInt(Rarity r){
+        switch (r){
+
+            case Normal:
+                return 0;
+            case Epic:
+                return 1;
+            case Legendary:
+                return 2;
+            case Mystic:
+                return 3;
+        }
+        return 0;
     }
 
     public String getItemName() {
