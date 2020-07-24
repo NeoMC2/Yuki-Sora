@@ -1,9 +1,9 @@
 package botApplication.discApplication.transaktion;
 
-import botApplication.discApplication.librarys.transaktion.Item;
-import botApplication.discApplication.librarys.transaktion.job.Job;
-import botApplication.discApplication.librarys.transaktion.monsters.Attack;
-import botApplication.discApplication.librarys.transaktion.monsters.Monster;
+import botApplication.discApplication.librarys.item.Item;
+import botApplication.discApplication.librarys.job.Job;
+import botApplication.discApplication.librarys.item.monsters.Attack;
+import botApplication.discApplication.librarys.item.monsters.Monster;
 import core.Engine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -24,19 +24,19 @@ public class TransaktionHandler {
         Monster m = engine.getDiscEngine().getFilesHandler().getMonsters().get(r);
         if (Item.rarityToInt(minRarity) >= Item.rarityToInt(m.getItemRarity())) {
             int i = Item.rarityToInt(m.getItemRarity());
-            int r2 = ThreadLocalRandom.current().nextInt(0, 50);
+            int r2 = ThreadLocalRandom.current().nextInt(0, 100);
             if (i == 0) {
                 return m;
             } else if (i == 1) {
-                if (r2 > 10) {
-                    return m;
-                }
-            } else if (i == 2) {
                 if (r2 > 20) {
                     return m;
                 }
-            } else if (i == 3) {
+            } else if (i == 2) {
                 if (r2 > 30) {
+                    return m;
+                }
+            } else if (i == 3) {
+                if (r2 > 40) {
                     return m;
                 }
             }

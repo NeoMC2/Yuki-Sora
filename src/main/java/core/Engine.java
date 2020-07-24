@@ -86,7 +86,6 @@ public class Engine {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        utilityBase.printOutput(pics.toJSONString(), true);
     }
 
     public void loadProperties() {
@@ -119,20 +118,24 @@ public class Engine {
     }
 
     public String lang(String phrase, String langg, String[] arg){
-        if(langg==null || langg == ""){
+        if(langg==null || langg.equals("")){
             langg="en";
         }
         String t = (String) ((JSONObject) lang.get(langg)).get(phrase);
-        if(t == ""||t==null){
+        if(t!=null)
+        if(t.equals("")){
             t = (String) ((JSONObject) lang.get("en")).get(phrase);
         }
         try {
             t = langC(t, arg);
         } catch (Exception e){
         }
-        if(t == ""||t==null){
+        if(t!=null)
+        if(t.equals("")){
             return "```@languageSupportError```";
         }
+        if(t==null)
+            return "```@languageSupportError```";
         return t.replace("\\n", "\n");
     }
 

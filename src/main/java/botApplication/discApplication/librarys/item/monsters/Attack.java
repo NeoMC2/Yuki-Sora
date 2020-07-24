@@ -1,7 +1,6 @@
-package botApplication.discApplication.librarys.transaktion.monsters;
+package botApplication.discApplication.librarys.item.monsters;
 
 import java.io.Serializable;
-import java.io.SerializablePermission;
 import java.util.ArrayList;
 
 public class Attack implements Serializable {

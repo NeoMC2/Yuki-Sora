@@ -1,6 +1,5 @@
-package botApplication.discApplication.librarys.transaktion;
+package botApplication.discApplication.librarys.item;
 
-import javax.management.MBeanRegistration;
 import java.io.Serializable;
 
 public class Item implements Serializable {

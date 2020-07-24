@@ -2,14 +2,13 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.transaktion.job.UserJob;
+import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
-import java.nio.IntBuffer;
 
 public class DiscCmdAdmin implements DiscCommand{
     @Override

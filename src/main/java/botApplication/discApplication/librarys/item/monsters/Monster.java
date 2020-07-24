@@ -1,12 +1,9 @@
-package botApplication.discApplication.librarys.transaktion.monsters;
+package botApplication.discApplication.librarys.item.monsters;
 
-import botApplication.discApplication.librarys.transaktion.Item;
-
-import javax.naming.directory.Attributes;
+import botApplication.discApplication.librarys.item.Item;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
 
 public class Monster extends Item implements Serializable {
 
@@ -30,7 +27,7 @@ public class Monster extends Item implements Serializable {
     }
 
     public int attack(Attack attack, Monster enemy){
-        double dmg = ((level * (2/5) + 2 ) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes());
+        double dmg = (((level * (2/5)) + 2 ) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes());
         enemy.setHp((int) (enemy.getHp() - dmg));
         return (int) dmg;
     }
@@ -42,15 +39,11 @@ public class Monster extends Item implements Serializable {
             this.xp-=levelUpXp;
             level++;
             int newKp = (((2 * baseHp + dv) * level)/100)+ level + 10;
-            hp = hp + (newKp - maxHp);
-            maxHp = newKp;
+            maxHp += newKp;
+            hp += newKp;
         }
     }
 
-    /**
-     *
-     * @return 0 no extra dmg, 1 extra dmg, -1 extra defense, -2 cant attack
-     */
     public double calculateAttackEfficiency(ArrayList<MonsterType> typesAttack, ArrayList<MonsterType> typesDefend){
         int strength = 0;
         for (MonsterType own:typesAttack) {
@@ -546,7 +539,7 @@ public class Monster extends Item implements Serializable {
 
     public String toString(){
         String msg = "";
-        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "KP: " + hp + "\nTypes: ";
+        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nTypes: ";
         msg = addTypes(monsterTypes, msg);
         msg += "\n\n**Attacks:**\n";
         msg += "A1: \n";

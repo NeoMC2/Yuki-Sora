@@ -2,8 +2,8 @@ package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.poll.Poll;
-import botApplication.discApplication.librarys.transaktion.job.Job;
-import botApplication.discApplication.librarys.transaktion.monsters.Monster;
+import botApplication.discApplication.librarys.job.Job;
+import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;

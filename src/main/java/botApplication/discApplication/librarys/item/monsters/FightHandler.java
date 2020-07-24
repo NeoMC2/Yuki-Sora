@@ -1,4 +1,4 @@
-package botApplication.discApplication.librarys.transaktion.monsters;
+package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.response.Response;
@@ -70,23 +70,27 @@ public class FightHandler {
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(event.getAuthor().getId());
         } catch (Exception e) {
-            engine.getDiscEngine().getTextUtils().sendSucces("You Userdata can't found! Game abort!", textChannel);
+            engine.getDiscEngine().getTextUtils().sendError("You Userdata can't found! Game abort!", textChannel, false);
             engine.getDiscEngine().getFightHandlers().remove(this);
             return;
         }
         if(event.getAuthor().getId().equals(m1.getUser().getId())){
             try {
                 monsterM1 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) -1);
+                if(monsterM1==null)
+                    throw new Exception();
                 m1Choose = true;
             } catch (Exception e) {
-                engine.getDiscEngine().getTextUtils().sendSucces("This pokemon is invalid! Aborting!", textChannel);
+                engine.getDiscEngine().getTextUtils().sendError("This pokemon is invalid! Aborting!", textChannel, false);
             }
         } else {
             try {
                 monsterM2 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw())-1);
+                if(monsterM2==null)
+                    throw new Exception();
                 m2Choose = true;
             } catch (Exception e) {
-                engine.getDiscEngine().getTextUtils().sendSucces("This pokemon is invalid! Aborting!", textChannel);
+                engine.getDiscEngine().getTextUtils().sendError("This pokemon is invalid! Aborting!", textChannel, false);
             }
         }
         if(m1Choose && m2Choose)
@@ -124,53 +128,61 @@ public class FightHandler {
                 switch (respondingEvent.getMessage().getContentDisplay()){
                     case "a1":
                         a = m.getA1();
-                        showAttackInfo(m, e, m.attack(a, e), a);
-                        if(testWinner(e)) {
-                            m.earnXP(10);
-                            e.earnXP(3);
-                            printWinner(finalTurner, finalEnemy);
-                            return;
+                        if(isAttackValid(a, textChannel)){
+                            showAttackInfo(m, e, m.attack(a, e), a);
+                            if(testWinner(e)) {
+                                m.earnXP(10);
+                                e.earnXP(3);
+                                printWinner(finalTurner, finalEnemy);
+                                return;
+                            }
+                            makeNewRound();
                         }
-                        makeNewRound();
                         round();
                         break;
 
                     case "a2":
                         a = m.getA2();
-                        showAttackInfo(m, e, m.attack(a, e), a);
-                        if(testWinner(e)) {
-                            m.earnXP(10);
-                            e.earnXP(3);
-                            printWinner(finalTurner, finalEnemy);
-                            return;
+                        if(isAttackValid(a, textChannel)){
+                            showAttackInfo(m, e, m.attack(a, e), a);
+                            if(testWinner(e)) {
+                                m.earnXP(10);
+                                e.earnXP(3);
+                                printWinner(finalTurner, finalEnemy);
+                                return;
+                            }
+                            makeNewRound();
                         }
-                        makeNewRound();
                         round();
                         break;
 
                     case "a3":
                         a = m.getA3();
-                        showAttackInfo(m, e, m.attack(a, e), a);
-                        if(testWinner(e)) {
-                            m.earnXP(10);
-                            e.earnXP(3);
-                            printWinner(finalTurner, finalEnemy);
-                            return;
+                        if(isAttackValid(a, textChannel)){
+                            showAttackInfo(m, e, m.attack(a, e), a);
+                            if(testWinner(e)) {
+                                m.earnXP(10);
+                                e.earnXP(3);
+                                printWinner(finalTurner, finalEnemy);
+                                return;
+                            }
+                            makeNewRound();
                         }
-                        makeNewRound();
                         round();
                         break;
 
                     case "a4":
                         a = m.getA4();
-                        showAttackInfo(m, e, m.attack(a, e), a);
-                        if(testWinner(e)) {
-                            m.earnXP(10);
-                            e.earnXP(3);
-                            printWinner(finalTurner, finalEnemy);
-                            return;
+                        if(isAttackValid(a, textChannel)){
+                            showAttackInfo(m, e, m.attack(a, e), a);
+                            if(testWinner(e)) {
+                                m.earnXP(10);
+                                e.earnXP(3);
+                                printWinner(finalTurner, finalEnemy);
+                                return;
+                            }
+                            makeNewRound();
                         }
-                        makeNewRound();
                         round();
                         break;
 
@@ -181,7 +193,32 @@ public class FightHandler {
                         break;
 
                     case "info":
-                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp())}), textChannel, "Pokemon Info", Color.YELLOW);
+                        String sa1, sa2, sa3, sa4;
+                        try {
+                            sa1 = m.getA1().toString();
+                        } catch (Exception ex){
+                            sa1 = "not selected";
+                        }
+
+                        try {
+                            sa2 = m.getA2().toString();
+                        } catch (Exception ex){
+                            sa2 = "not selected";
+                        }
+
+                        try {
+                            sa3 = m.getA3().toString();
+                        } catch (Exception ex){
+                            sa3 = "not selected";
+                        }
+
+                        try {
+                            sa4 = m.getA4().toString();
+                        } catch (Exception ex){
+                            sa4 = "not selected";
+                        }
+
+                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp()), sa1, sa2, sa3, sa4}), textChannel, "Pokemon Info", Color.YELLOW);
                         round();
                         break;
 
@@ -202,6 +239,15 @@ public class FightHandler {
         gamerResponse.discChannelId = textChannel.getId();
         gamerResponse.discUserId = turner.getUser().getId();
         engine.getResponseHandler().makeResponse(gamerResponse);
+    }
+
+    private boolean isAttackValid(Attack a, TextChannel c){
+        if(a == null){
+            engine.getDiscEngine().getTextUtils().sendError("Ivalid attack!", c, false);
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack){

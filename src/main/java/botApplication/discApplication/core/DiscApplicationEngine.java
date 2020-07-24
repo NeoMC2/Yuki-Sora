@@ -4,7 +4,7 @@ import botApplication.discApplication.commands.*;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
-import botApplication.discApplication.librarys.transaktion.monsters.FightHandler;
+import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.DiscTextUtils;

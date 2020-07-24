@@ -1,4 +1,4 @@
-package botApplication.discApplication.librarys.transaktion.job;
+package botApplication.discApplication.librarys.job;
 
 import java.io.Serializable;
 

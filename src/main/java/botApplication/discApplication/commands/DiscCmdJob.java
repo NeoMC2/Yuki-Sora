@@ -2,12 +2,16 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.transaktion.job.Job;
-import botApplication.discApplication.librarys.transaktion.job.UserJob;
+import botApplication.discApplication.librarys.job.Job;
+import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 
 public class DiscCmdJob implements DiscCommand {
     @Override
@@ -43,6 +47,14 @@ public class DiscCmdJob implements DiscCommand {
                     if (user.getUserJob() == null) {
                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
                     } else {
+                        if(user.getLastWorkTime() != null){
+                            Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
+                            Date dFourHoursAgo = Date.from(fourHoursAgo);
+                            if(user.getLastWorkTime().after(dFourHoursAgo)){
+                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.job.error.workedAlready", user.getLang(), null), event.getChannel(), false);
+                                return;
+                            }
+                        }
                         int earned = 0;
                         try {
                             earned = user.getUserJob().work();
@@ -50,6 +62,7 @@ public class DiscCmdJob implements DiscCommand {
                             engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
                             return;
                         }
+                        user.setLastWorkTime(new Date());
                         user.addCoins(earned);
                         String msg = engine.lang("cmd.work.info.worked", user.getLang(), new String[]{user.getUserJob().getDoing(), String.valueOf(earned)});
                         msg = evolved(msg, user, engine);
@@ -100,7 +113,7 @@ public class DiscCmdJob implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return null;
+        return engine.lang("cmd.job.help", user.getLang(), null);
     }
 
     @Override
