@@ -2,8 +2,10 @@ package botApplication.discApplication.core;
 
 import botApplication.discApplication.commands.*;
 import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
+import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
+import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.DiscTextUtils;
@@ -14,6 +16,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -40,6 +43,8 @@ public class DiscApplicationEngine {
     private JDA botJDA;
 
     private DiscCmdVote voteCmd;
+
+    private ArrayList<FightHandler> fightHandlers = new ArrayList<>();
 
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
@@ -87,6 +92,7 @@ public class DiscApplicationEngine {
             isRunning = false;
             return;
         }
+        updateAllServerStats();
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot successfully started!", false);
     }
 
@@ -129,6 +135,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("job", new DiscCmdJob());
         commandHandler.createNewCommand("admin", new DiscCmdAdmin());
         commandHandler.createNewCommand("wallet", new DiscCmdWallet());
+        commandHandler.createNewCommand("pokemon", new DiscCmdMonster());
     }
 
     private void addBotListeners(){
@@ -138,6 +145,13 @@ public class DiscApplicationEngine {
         builder.addEventListener(new DiscReactionListener(engine));
         builder.addEventListener(new DiscChannelAddListener(engine));
         builder.addEventListener(new DiscVoiceListener(engine));
+    }
+
+    public void updateAllServerStats(){
+        for (Object s:filesHandler.getServers().values().toArray()) {
+            DiscApplicationServer se = (DiscApplicationServer) s;
+            se.updateServerStats(engine);
+        }
     }
 
     public void shutdownBotApplication() {
@@ -200,5 +214,13 @@ public class DiscApplicationEngine {
 
     public TransaktionHandler getTransaktionHandler() {
         return transaktionHandler;
+    }
+
+    public ArrayList<FightHandler> getFightHandlers() {
+        return fightHandlers;
+    }
+
+    public JDA getBotJDA() {
+        return botJDA;
     }
 }

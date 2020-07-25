@@ -39,7 +39,10 @@ public class DiscMessageListener extends ListenerAdapter {
             }
             handleSecret(event);
             if (event.getMessage().getContentRaw().startsWith(".")) {
-                pictureSelect(event);
+                try {
+                    pictureSelect(event);
+                } catch (Exception e) {
+                }
                 return;
             }
             if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {

@@ -2,7 +2,9 @@ package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.poll.Poll;
-import botApplication.discApplication.librarys.transaktion.job.Job;
+import botApplication.discApplication.librarys.job.Job;
+import botApplication.discApplication.librarys.item.monsters.Monster;
+import botApplication.discApplication.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
@@ -18,6 +20,7 @@ public class DiscApplicationFilesHandler {
     private Engine engine;
 
     private ArrayList<Job> jobs = new ArrayList<>();
+    private ArrayList<Monster> monsters;
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;
@@ -31,7 +34,7 @@ public class DiscApplicationFilesHandler {
         return server;
     }
 
-    public DiscApplicationUser getUserById(String id) throws Exception {
+    public DiscApplicationUser getUserById(String id) {
         DiscApplicationUser user = null;
         if(users.containsKey(id)){
             user = users.get(id);
@@ -39,7 +42,7 @@ public class DiscApplicationFilesHandler {
         return user;
     }
 
-    public DiscApplicationServer createNewServer(Guild guild) throws Exception{
+    public DiscApplicationServer createNewServer(Guild guild){
         if(servers.containsKey(guild.getId())){
             engine.getUtilityBase().printOutput("Server already exist! Id: " + guild.getId() + " name: " + guild.getName(), true);
             return servers.get(guild.getId());
@@ -62,8 +65,14 @@ public class DiscApplicationFilesHandler {
     public void loadAllBotFiles(){
         engine.getUtilityBase().printOutput("~load all bot files!",true);
 
+            try {
+                monsters = TransaktionHandler.parseJsonToMonster(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/monsters.json"));
+            } catch (Exception e) {
+                e.printStackTrace();
+                engine.getUtilityBase().printOutput("!!Pokemons cant load!!", true);
+            }
         try {
-            jobs = engine.getDiscEngine().getTransaktionHandler().parseJsonToJobs(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/jobs.json"));
+            jobs = TransaktionHandler.parseJsonToJobs(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/jobs.json"));
         } catch (Exception e) {
             e.printStackTrace();
             engine.getUtilityBase().printOutput("!!Jobs cant load!!",true);
@@ -135,5 +144,9 @@ public class DiscApplicationFilesHandler {
 
     public ArrayList<Job> getJobs() {
         return jobs;
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
     }
 }

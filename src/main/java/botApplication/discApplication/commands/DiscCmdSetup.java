@@ -42,6 +42,14 @@ public class DiscCmdSetup implements DiscCommand {
                             return;
                         }
                         switch (args[1].toLowerCase()) {
+
+                            case "membercount":
+                            case "mc":
+                                server.setMemberCountCategoryId(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("set!", event.getChannel());
+                                server.updateServerStats(engine);
+                                break;
+
                             case "channelrole":
                             case "chrole":
                             case "chanrole":

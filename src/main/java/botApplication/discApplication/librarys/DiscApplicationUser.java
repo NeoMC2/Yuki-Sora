@@ -1,7 +1,8 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
-import botApplication.discApplication.librarys.transaktion.job.UserJob;
+import botApplication.discApplication.librarys.job.UserJob;
+import botApplication.discApplication.librarys.item.monsters.Monster;
 import net.dv8tion.jda.core.entities.User;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.util.Date;
 
 public class DiscApplicationUser implements Serializable {
 
-    public static final long serialVersionUID = 42L;
+    private static final long serialVersionUID = 42L;
 
     private String userName;
     private String ytPlaylist;
@@ -27,12 +28,24 @@ public class DiscApplicationUser implements Serializable {
     private int xp;
     private int level;
 
+    private int maxMonsters = 10;
+
+    private ArrayList<Monster> monsters = new ArrayList<>();
+
     private boolean saidHello = false;
 
     public DiscApplicationUser(User user, DiscCertificationLevel discCertificationLevel) {
         this.userName = user.getName();
         this.userId = user.getId();
         this.discCertificationLevel = discCertificationLevel;
+    }
+
+    public boolean isMonsterInvFull(){
+        if(monsters.size() >= maxMonsters){
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String getUserName() {
@@ -153,5 +166,21 @@ public class DiscApplicationUser implements Serializable {
 
     public void setSaidHello(boolean saidHello) {
         this.saidHello = saidHello;
+    }
+
+    public ArrayList<Monster> getMonsters() {
+        return monsters;
+    }
+
+    public void setMonsters(ArrayList<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public int getMaxMonsters() {
+        return maxMonsters;
+    }
+
+    public void setMaxMonsters(int maxMonsters) {
+        this.maxMonsters = maxMonsters;
     }
 }

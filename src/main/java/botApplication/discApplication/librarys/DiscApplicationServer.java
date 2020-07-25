@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys;
 
+import core.Engine;
 import net.dv8tion.jda.core.entities.Guild;
 
 import java.io.Serializable;
@@ -28,14 +29,25 @@ public class DiscApplicationServer implements Serializable {
     private String defaultMemberRoleId = "";
     private String defaultTempGamerRoleId = "";
     private String welcomeMessageChannel = "";
-    private String welcomeText = "Bist du nur hier um kurz ein paar Runden zu zocken? Dann drück einfach \\uD83C\\uDFAE\\n\\nWenn du dem Server beitreten willst, drück einfach ✅\\n\\nAnsonsten ❌, das ändert aber nix loolz";
+    private String welcomeText = "";
     private ArrayList<DiscRole> roles = new ArrayList<>();
+
+    private String memberCountCategoryId = "";
 
     private ArrayList<String> autoChannels = new ArrayList<>();
 
     public DiscApplicationServer(Guild guild) {
         this.serverName = guild.getName();
         this.serverID = guild.getId();
+    }
+
+    public void updateServerStats(Engine engine){
+        Guild g = engine.getDiscEngine().getBotJDA().getGuildById(serverID);
+        try {
+            g.getCategoryById(memberCountCategoryId).getManager().setName("\uD83D\uDCCAMember Count: " + String.valueOf(g.getMembers().size())).queue();
+        } catch (Exception e){
+
+        }
     }
 
     public String getServerName() {
@@ -200,5 +212,13 @@ public class DiscApplicationServer implements Serializable {
 
     public void setWelcomeMessageChannel(String welcomeMessageChannel) {
         this.welcomeMessageChannel = welcomeMessageChannel;
+    }
+
+    public String getMemberCountCategoryId() {
+        return memberCountCategoryId;
+    }
+
+    public void setMemberCountCategoryId(String memberCountCategoryId) {
+        this.memberCountCategoryId = memberCountCategoryId;
     }
 }

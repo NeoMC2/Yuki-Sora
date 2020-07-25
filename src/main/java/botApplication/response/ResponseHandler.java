@@ -20,13 +20,15 @@ public class ResponseHandler {
     }
 
     public void makeResponse(Response response){
+        /*
         response.creationTime = lookForCurrentTime();
         for (Response res: responses) {
-            if(response.teleResponseUser.id().equals(res.teleResponseUser.id())){
+            if(response.discUserId.equals(res.discUserId)){
                 responses.remove(res);
                 engine.getUtilityBase().printOutput(consMsgDef + " !User has already a response -> Override!", true);
             }
         }
+         */
         responses.add(response);
     }
 
@@ -52,13 +54,16 @@ public class ResponseHandler {
     }
 
     public boolean lookForResponse(GuildMessageReceivedEvent update){
+        final ArrayList<Response> r = responses;
         try {
-            for (Response res: responses) {
+            for (Response res: r) {
+                /*
                 if(res.creationTime+2<lookForCurrentTime()){
                     responses.remove(res);
                     engine.getUtilityBase().printOutput(consMsgDef + " !Response is outdated -> Delete!", true);
                     continue;
                 }
+                 */
                 if(update.getAuthor().getId().equals(res.discUserId)){
                     engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
                     responses.remove(res);

@@ -2,14 +2,14 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.transaktion.job.UserJob;
+import botApplication.discApplication.librarys.item.monsters.Monster;
+import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
-import java.nio.IntBuffer;
 
 public class DiscCmdAdmin implements DiscCommand{
     @Override
@@ -54,6 +54,37 @@ public class DiscCmdAdmin implements DiscCommand{
                                 rUser.getUserJob().setJobRank(r);
                                 break;
 
+                            case "pokemons":
+                                Monster rM = null;
+                                if(args[4].startsWith("id:")){
+                                    String m = args[4].substring(3);
+                                    for (Monster mo:engine.getDiscEngine().getFilesHandler().getMonsters()) {
+                                        if(mo.getItemName().equals(m)){
+                                            rM = mo;
+                                        }
+                                    }
+                                } else {
+                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]));
+                                }
+
+                                if(rM == null){
+                                    engine.getDiscEngine().getTextUtils().sendError("invalid monster", event.getChannel(), false);
+                                    return;
+                                }
+                                switch (args[5]){
+                                    case "delete":
+                                        rUser.getMonsters().remove(rM);
+                                        break;
+
+                                    case "":
+                                        break;
+
+                                    default:
+                                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
+                                        break;
+                                }
+                                break;
+
                             default:
                                 engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
                                 break;
@@ -78,6 +109,16 @@ public class DiscCmdAdmin implements DiscCommand{
                             case "jobpos":
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(String.valueOf(rUser.getUserJob().jobRankToString(rUser.getUserJob().getJobRank())), event.getChannel(), "Info", Color.MAGENTA);
                                 break;
+
+                            case "pokemons":
+                                String msgg = "";
+                                for (int i = 0; i < rUser.getMonsters().size(); i++) {
+                                    Monster m = user.getMonsters().get(i);
+                                    msgg += "[" + (i+1) + "] " + m.getItemName() + "\n";
+                                }
+                                engine.getDiscEngine().getTextUtils().sendCustomMessage(msgg, event.getChannel(), "Info", Color.MAGENTA);
+                                break;
+
                             default:
                                 engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
                                 break;
