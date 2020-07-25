@@ -3,7 +3,7 @@ package botApplication.discApplication.librarys.item.monsters;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Attack implements Serializable {
+public class Attack implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 42L;
 
@@ -63,5 +63,27 @@ public class Attack implements Serializable {
             s += m.name() + " ";
         }
         return "Name: " + attackName + "\nLevel: " + lvl +  "\nPower: " + baseDamage + "\nAttack Type: " + s;
+    }
+
+    public Attack clone(){
+        Attack t = new Attack();
+        /*
+    private int baseDamage;
+    //private AttackType attackType;
+    private String attackName;
+    private ArrayList<Monster.MonsterType> monsterTypes = new ArrayList<>();
+    private int lvl;
+         */
+        t.setBaseDamage(baseDamage);
+        t.setAttackName(new String(attackName));
+        t.setLvl(lvl);
+        t.setMonsterTypes(cloneMonsterTypes());
+        return t;
+    }
+
+    private ArrayList<Monster.MonsterType> cloneMonsterTypes(){
+        ArrayList<Monster.MonsterType> t = new ArrayList<Monster.MonsterType>();
+        monsterTypes.forEach(e -> t.add(e));
+        return t;
     }
 }

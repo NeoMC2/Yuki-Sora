@@ -65,6 +65,7 @@ botApplication\discApplication\librarys\item\monsters\Monster$1.class
 botApplication\discApplication\librarys\DiscRole.class
 botApplication\discApplication\commands\DiscCmdSetup.class
 botApplication\discApplication\librarys\job\UserJob$JobRank.class
+botApplication\discApplication\commands\DiscCmdMonster.class
 botApplication\discApplication\core\DiscApplicationEngine$1.class
 botApplication\discApplication\utils\DiscTextUtils$6.class
 botApplication\discApplication\librarys\DiscApplicationServer.class
@@ -81,4 +82,3 @@ botApplication\discApplication\commands\DiscCmdHelp.class
 botApplication\discApplication\commands\DiscCmdJob.class
 botApplication\discApplication\librarys\DiscRole$RoleType.class
 botApplication\discApplication\utils\DiscTextUtils$3.class
-botApplication\discApplication\commands\DiscCmdPokemon.class

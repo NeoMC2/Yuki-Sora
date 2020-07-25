@@ -21,7 +21,12 @@ public class TransaktionHandler {
 
     public Monster getRandomMonster(Item.Rarity minRarity) {
         int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size());
-        Monster m = engine.getDiscEngine().getFilesHandler().getMonsters().get(r);
+        Monster m = null;
+        try {
+            m = (Monster) engine.getDiscEngine().getFilesHandler().getMonsters().get(r).clone();
+        } catch (Exception e){
+            return null;
+        }
         if (Item.rarityToInt(minRarity) >= Item.rarityToInt(m.getItemRarity())) {
             int i = Item.rarityToInt(m.getItemRarity());
             int r2 = ThreadLocalRandom.current().nextInt(0, 100);
@@ -88,32 +93,10 @@ public class TransaktionHandler {
                 a.setLvl(Integer.parseInt((String) attack.get("lvl")));
                 m.getAttacks().add(a);
             }
-            addAttacks(m, m.getAttacks());
+            m.finish();
             monsters.add(m);
         }
         return monsters;
-    }
-
-    private static void addAttacks(Monster m, ArrayList<Attack> a){
-        int c = 1;
-        for (Attack at:a) {
-            if(at.getLvl() <= m.getLevel())
-            if(c == 1){
-                m.setA1(at);
-                c++;
-            }else if(c == 2){
-                m.setA2(at);
-                c++;
-            } else if(c == 3){
-                m.setA3(at);
-                c++;
-            } else if(c == 4){
-                m.setA4(at);
-                c++;
-            } else {
-                return;
-            }
-        }
     }
 
     private static ArrayList<Monster.MonsterType> getMonsterTypesFromJson(JSONObject o) {

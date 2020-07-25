@@ -1,8 +1,9 @@
 package botApplication.discApplication.librarys.item;
 
 import java.io.Serializable;
+import java.util.Iterator;
 
-public class Item implements Serializable {
+public class Item implements Serializable, Cloneable{
 
     private static final long serialVersionUID = 42L;
 
@@ -80,5 +81,13 @@ public class Item implements Serializable {
 
     public void setImgUrl(String imgUrl) {
         this.imgUrl = imgUrl;
+    }
+
+    public Item clone(){
+        Item t = new Item();
+        t.setImgUrl(new String(imgUrl));
+        t.setItemName(new String(itemName));
+        t.setItemRarity(itemRarity);
+        return t;
     }
 }

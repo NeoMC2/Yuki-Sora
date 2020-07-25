@@ -2,6 +2,7 @@ package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.response.ResponseHandler;
+import net.dv8tion.jda.bot.sharding.DefaultShardManager;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;

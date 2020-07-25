@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Monster extends Item implements Serializable {
+public class Monster extends Item implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 42L;
 
@@ -583,5 +583,71 @@ public class Monster extends Item implements Serializable {
                 at.add(a);
         }
         return at;
+    }
+
+    public void finish() {
+        int c = 1;
+        for (Attack at:attacks) {
+            if(at.getLvl() <= level)
+                if(c == 1){
+                    a1 = at;
+                    c++;
+                }else if(c == 2){
+                    a2 = at;
+                    c++;
+                } else if(c == 3){
+                    a3 = at;
+                    c++;
+                } else if(c == 4){
+                    a4 = at;
+                    c++;
+                } else {
+                    return;
+                }
+        }
+    }
+
+    public Monster clone() {
+        Monster t = new Monster();
+
+        t.setImgUrl(new String(getImgUrl()));
+        t.setItemName(new String(getItemName()));
+        t.setItemRarity(getItemRarity());
+        /*
+        private ArrayList<Attack> attacks = new ArrayList<>();
+    private Attack a1;
+    private Attack a2;
+    private Attack a3;
+    private Attack a4;
+    private int dv = ThreadLocalRandom.current().nextInt(0, 15);
+    private int baseHp;
+    private int hp;
+    private int maxHp;
+    private int level = 1;
+    private int xp;
+    private ArrayList<MonsterType> monsterTypes = new ArrayList<>();
+         */
+        t.setHp(hp);
+        t.setBaseHp(baseHp);
+        t.setLevel(level);
+        t.setMaxHp(maxHp);
+        t.setDv(dv);
+        t.setXp(0);
+        t.setMonsterTypes(cloneMonsterTypes());
+        t.setAttacks(cloneAttacks());
+        t.finish();
+        return t;
+    }
+
+    private ArrayList<Attack> cloneAttacks(){
+        ArrayList<Attack> t = new ArrayList<>();
+        attacks.forEach(e -> t.add(e.clone()));
+        return t;
+    }
+
+    private ArrayList<MonsterType> cloneMonsterTypes(){
+        ArrayList<MonsterType> t = new ArrayList<>();
+        monsterTypes.forEach(e -> t.add(e));
+        return t;
     }
 }

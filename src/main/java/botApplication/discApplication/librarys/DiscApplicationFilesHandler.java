@@ -34,7 +34,7 @@ public class DiscApplicationFilesHandler {
         return server;
     }
 
-    public DiscApplicationUser getUserById(String id) throws Exception {
+    public DiscApplicationUser getUserById(String id) {
         DiscApplicationUser user = null;
         if(users.containsKey(id)){
             user = users.get(id);
@@ -42,7 +42,7 @@ public class DiscApplicationFilesHandler {
         return user;
     }
 
-    public DiscApplicationServer createNewServer(Guild guild) throws Exception{
+    public DiscApplicationServer createNewServer(Guild guild){
         if(servers.containsKey(guild.getId())){
             engine.getUtilityBase().printOutput("Server already exist! Id: " + guild.getId() + " name: " + guild.getName(), true);
             return servers.get(guild.getId());

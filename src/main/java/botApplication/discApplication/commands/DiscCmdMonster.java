@@ -15,7 +15,7 @@ import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class DiscCmdPokemon implements DiscCommand {
+public class DiscCmdMonster implements DiscCommand {
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         return true;
