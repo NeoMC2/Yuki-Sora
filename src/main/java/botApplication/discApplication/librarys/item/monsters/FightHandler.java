@@ -36,16 +36,16 @@ public class FightHandler {
 
     public void begin() {
         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.fighStart", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Fight", Color.MAGENTA);
-        choosePokemons();
+        chooseMonster();
     }
 
-    private void choosePokemons() {
-        engine.getDiscEngine().getTextUtils().sendCustomMessage("Its now time to choose your attacking Pokemon's by writing down the id of your pokemon!", textChannel, "Fight", Color.MAGENTA);
+    private void chooseMonster() {
+        engine.getDiscEngine().getTextUtils().sendCustomMessage("Its now time to choose your attacking Monster's by writing down the id of your Monster!", textChannel, "Fight", Color.MAGENTA);
 
         Response r1 = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                memberChoosePokemon(respondingEvent);
+                memberChooseMonster(respondingEvent);
             }
         };
         r1.discGuildId = guild.getId();
@@ -56,7 +56,7 @@ public class FightHandler {
         Response r2 = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                memberChoosePokemon(respondingEvent);
+                memberChooseMonster(respondingEvent);
             }
         };
         r2.discGuildId = guild.getId();
@@ -65,7 +65,7 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(r2);
     }
 
-    private void memberChoosePokemon(GuildMessageReceivedEvent event) {
+    private void memberChooseMonster(GuildMessageReceivedEvent event) {
         DiscApplicationUser usr;
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(event.getAuthor().getId());
@@ -81,7 +81,7 @@ public class FightHandler {
                     throw new Exception();
                 m1Choose = true;
             } catch (Exception e) {
-                engine.getDiscEngine().getTextUtils().sendError("This pokemon is invalid! Aborting!", textChannel, false);
+                engine.getDiscEngine().getTextUtils().sendError("This Monster is invalid! Aborting!", textChannel, false);
             }
         } else {
             try {
@@ -90,7 +90,7 @@ public class FightHandler {
                     throw new Exception();
                 m2Choose = true;
             } catch (Exception e) {
-                engine.getDiscEngine().getTextUtils().sendError("This pokemon is invalid! Aborting!", textChannel, false);
+                engine.getDiscEngine().getTextUtils().sendError("This Monster is invalid! Aborting!", textChannel, false);
             }
         }
         if (m1Choose && m2Choose)
@@ -129,7 +129,7 @@ public class FightHandler {
                     case "a1":
                         a = m.getA1();
                         if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(a, e), a);
+                            showAttackInfo(m, e, m.attack(m, a, e), a);
                             if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
@@ -144,7 +144,7 @@ public class FightHandler {
                     case "a2":
                         a = m.getA2();
                         if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(a, e), a);
+                            showAttackInfo(m, e, m.attack(m, a, e), a);
                             if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
@@ -159,7 +159,7 @@ public class FightHandler {
                     case "a3":
                         a = m.getA3();
                         if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(a, e), a);
+                            showAttackInfo(m, e, m.attack(m, a, e), a);
                             if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
@@ -174,7 +174,7 @@ public class FightHandler {
                     case "a4":
                         a = m.getA4();
                         if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(a, e), a);
+                            showAttackInfo(m, e, m.attack(m, a, e), a);
                             if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
@@ -187,7 +187,7 @@ public class FightHandler {
                         break;
 
                     case "help":
-                        String msg = "a1 - Use attack 1\n a2 - Use attack 2\na3 - Use attack 3\na4 - Use attack 4\ninfo - shows stats of your pokemon";
+                        String msg = "a1 - Use attack 1\n a2 - Use attack 2\na3 - Use attack 3\na4 - Use attack 4\ninfo - shows stats of your Monster\nend - stops the fight";
                         engine.getDiscEngine().getTextUtils().sendWarining(msg, textChannel);
                         round();
                         break;
@@ -218,7 +218,7 @@ public class FightHandler {
                             sa4 = "not selected";
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp()), sa1, sa2, sa3, sa4}), textChannel, "Pokemon Info", Color.YELLOW);
+                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp()), sa1, sa2, sa3, sa4}), textChannel, "Monster Info", Color.YELLOW);
                         round();
                         break;
 
@@ -251,7 +251,7 @@ public class FightHandler {
     }
 
     private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack) {
-        String msg = own.getItemName() + " attacked " + enemy.getItemName() + " with " + attack.getAttackName() + " and made " + dmg + " damage. " + enemy.getItemName() + " has " + enemy.getHp() + " KP left!";
+        String msg = own.getItemName() + " attacked " + enemy.getItemName() + " with " + attack.getAttackName() + " and made " + dmg + " damage. " + enemy.getItemName() + " has " + enemy.getHp() + " HP left!";
         EmbedBuilder e = new EmbedBuilder()
                 .setDescription(msg)
                 .setColor(Color.YELLOW)
@@ -265,7 +265,7 @@ public class FightHandler {
     }
 
     private void printWinner(Member winner, Member looser) {
-        String msg = winner.getUser().getName() + " has won the match because the enemy Pokemon was to weak, congratulations! Your pokemon got 20 xp!";
+        String msg = winner.getUser().getName() + " has won the match because the enemy Monster was to weak, congratulations! Your monster got 20 xp!";
         engine.getDiscEngine().getTextUtils().sendSucces(msg, textChannel);
         engine.getDiscEngine().getFightHandlers().remove(this);
     }
