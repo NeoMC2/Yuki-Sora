@@ -146,7 +146,7 @@ public class DiscCmdMonster implements DiscCommand {
                 case "delete":
                 case "del":
                 case "trash":
-                    Monster mnnn = user.getMonsters().get(Integer.parseInt(args[1]) + 1);
+                    Monster mnnn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
                     if (mnnn == null) {
                         engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
                         return;

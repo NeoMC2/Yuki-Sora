@@ -60,7 +60,6 @@ core\ConsoleCommandHandler$1.class
 botApplication\discApplication\librarys\item\monsters\Monster$Efficiency.class
 botApplication\discApplication\commands\DiscCmdAdmin.class
 botApplication\response\ResponseHandler.class
-botApplication\discApplication\commands\DiscCmdCharProfile.class
 botApplication\discApplication\librarys\item\monsters\Monster$1.class
 botApplication\discApplication\librarys\DiscRole.class
 botApplication\discApplication\commands\DiscCmdSetup.class

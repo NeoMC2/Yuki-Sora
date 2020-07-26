@@ -47,11 +47,13 @@ public class DiscCmdJob implements DiscCommand {
                     if (user.getUserJob() == null) {
                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
                     } else {
-                        if(user.getLastWorkTime() != null){
+                        if (user.getLastWorkTime() != null) {
                             Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
                             Date dFourHoursAgo = Date.from(fourHoursAgo);
-                            if(user.getLastWorkTime().after(dFourHoursAgo)){
-                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.job.error.workedAlready", user.getLang(), null), event.getChannel(), false);
+
+                            if (user.getLastWorkTime().after(dFourHoursAgo)) {
+                                String diff = engine.getUtilityBase().convertTimeToString(user.getLastWorkTime().getTime() - dFourHoursAgo.getTime());
+                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.job.error.workedAlready", user.getLang(), new String[]{diff}), event.getChannel(), false);
                                 return;
                             }
                         }
@@ -121,11 +123,11 @@ public class DiscCmdJob implements DiscCommand {
 
     }
 
-    private String evolved(String msg, DiscApplicationUser user, Engine engine){
-        if(user.getUserJob().isLvlUp()){
+    private String evolved(String msg, DiscApplicationUser user, Engine engine) {
+        if (user.getUserJob().isLvlUp()) {
             msg += "\n\n" + engine.lang("cmd.work.info.levelUp", user.getLang(), new String[]{String.valueOf(user.getUserJob().getJobLevel())});
         }
-        if(user.getUserJob().isPositionUp()){
+        if (user.getUserJob().isPositionUp()) {
             msg += "\n\n" + engine.lang("cmd.work.info.positionUp", user.getLang(), new String[]{String.valueOf(user.getUserJob().jobRankToString(user.getUserJob().getJobRank()))});
         }
         return msg;
