@@ -100,10 +100,21 @@ public class Monster extends Item implements Serializable, Cloneable {
         throw new Exception("Unknown Type");
     }
 
-    public int attack(Attack attack, Monster enemy) {
-        double dmg = (((level * (2 / 5)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes());
+    public int attack(Monster o, Attack attack, Monster enemy) {
+        double dmg = (((level * (2 / 5)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
         return (int) dmg;
+    }
+
+    private double calculateSTAB(Monster o, Monster e){
+        for (MonsterType t:o.getMonsterTypes()) {
+            for (MonsterType tt:e.getMonsterTypes()) {
+                if(t == tt){
+                    return 1.5;
+                }
+            }
+        }
+        return 1;
     }
 
     public void earnXP(int xp) {
