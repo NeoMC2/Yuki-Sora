@@ -2,7 +2,6 @@ package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.response.ResponseHandler;
-import net.dv8tion.jda.bot.sharding.DefaultShardManager;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;
@@ -13,16 +12,13 @@ import java.util.Set;
 public class Engine {
 
     private final String consMsgDef = "[Engine]";
-
-    private FileUtils fileUtils = new FileUtils(this);
-    private UtilityBase utilityBase = new UtilityBase(this);
-    private Properties properties;
-
-    private DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
-    private ResponseHandler responseHandler = new ResponseHandler(this);
-
     public JSONObject lang;
     public JSONObject pics;
+    private final FileUtils fileUtils = new FileUtils(this);
+    private final UtilityBase utilityBase = new UtilityBase(this);
+    private Properties properties;
+    private final DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
+    private final ResponseHandler responseHandler = new ResponseHandler(this);
 
     public void boot(String[] args) {
         loadLanguage();
@@ -46,7 +42,7 @@ public class Engine {
         }
     }
 
-    private void convertPropertiesToLangJson(){
+    private void convertPropertiesToLangJson() {
         JSONObject jsonObject = new JSONObject();
         JSONObject ger = new JSONObject();
         JSONObject eng = new JSONObject();
@@ -57,13 +53,13 @@ public class Engine {
         //lang should be a prop file
         Set<Object> langKey = lang.keySet();
 
-        for (Object l:langKey) {
+        for (Object l : langKey) {
             String s = (String) l;
-            if(s.startsWith("de")){
+            if (s.startsWith("de")) {
                 ger.put(s.substring(3), lang.get(s));
             }
 
-            if(s.startsWith("en")){
+            if (s.startsWith("en")) {
                 eng.put(s.substring(3), lang.get(s));
             }
         }
@@ -71,7 +67,7 @@ public class Engine {
         fileUtils.saveJsonFile(fileUtils.home + "/lang/lang.json", jsonObject);
     }
 
-    public void loadLanguage(){
+    public void loadLanguage() {
         getUtilityBase().printOutput(consMsgDef + " !Load language!", false);
         try {
             lang = fileUtils.loadJsonFile(fileUtils.home + "/lang/lang.json");
@@ -80,7 +76,7 @@ public class Engine {
         }
     }
 
-    public void loadPics(){
+    public void loadPics() {
         getUtilityBase().printOutput(consMsgDef + " !Load pics!", false);
         try {
             pics = fileUtils.loadJsonFile(fileUtils.home + "/pics/pics.json");
@@ -95,20 +91,20 @@ public class Engine {
             properties = (Properties) fileUtils.loadObject(fileUtils.home + "/properties.prop");
         } catch (Exception e) {
             e.printStackTrace();
-            utilityBase.printOutput(consMsgDef + " !!!Error while loading properties - maybe never created -> creating new file!!!",false);
+            utilityBase.printOutput(consMsgDef + " !!!Error while loading properties - maybe never created -> creating new file!!!", false);
             properties = new Properties();
         }
     }
 
     public void saveProperties() {
-        utilityBase.printOutput(consMsgDef + " !Saving properties!",false);
+        utilityBase.printOutput(consMsgDef + " !Saving properties!", false);
         try {
             fileUtils.saveObject(fileUtils.home + "/properties.prop", properties);
         } catch (Exception e) {
             if (properties.debug) {
                 e.printStackTrace();
             }
-            utilityBase.printOutput(consMsgDef + " !!!Error while saving properties - maybe no permission!!!",false);
+            utilityBase.printOutput(consMsgDef + " !!!Error while saving properties - maybe no permission!!!", false);
         }
     }
 
@@ -118,41 +114,41 @@ public class Engine {
         System.exit(0);
     }
 
-    public String lang(String phrase, String langg, String[] arg){
-        if(langg==null || langg.equals("")){
-            langg="en";
+    public String lang(String phrase, String langg, String[] arg) {
+        if (langg == null || langg.equals("")) {
+            langg = "en";
         }
         String t = (String) ((JSONObject) lang.get(langg)).get(phrase);
-        if(t!=null)
-        if(t.equals("")){
-            t = (String) ((JSONObject) lang.get("en")).get(phrase);
-        }
+        if (t != null)
+            if (t.equals("")) {
+                t = (String) ((JSONObject) lang.get("en")).get(phrase);
+            }
         try {
             t = langC(t, arg);
-        } catch (Exception e){
+        } catch (Exception e) {
         }
-        if(t!=null)
-        if(t.equals("")){
-            return "```@languageSupportError```";
-        }
-        if(t==null)
+        if (t != null)
+            if (t.equals("")) {
+                return "```@languageSupportError```";
+            }
+        if (t == null)
             return "```@languageSupportError```";
         return t.replace("\\n", "\n");
     }
 
-    private String langC(String p, String[] arg){
+    private String langC(String p, String[] arg) {
         String newString = p;
         char[] pArr = p.toCharArray();
         for (int i = 0; i < pArr.length; i++) {
             char c = pArr[i];
-            if(c == '%'){
-                int j = Integer.parseInt(String.valueOf(pArr[i+1]));
-                for (int k = i +1; k < pArr.length; k++) {
+            if (c == '%') {
+                int j = Integer.parseInt(String.valueOf(pArr[i + 1]));
+                for (int k = i + 1; k < pArr.length; k++) {
                     char cc = pArr[k];
-                    if(cc == '%'){
+                    if (cc == '%') {
                         try {
-                            newString = langC(p.substring(0, i) + arg[j -1] + p.substring(k + 1), arg);
-                        } catch (Exception e){
+                            newString = langC(p.substring(0, i) + arg[j - 1] + p.substring(k + 1), arg);
+                        } catch (Exception e) {
                             utilityBase.printOutput("[Language Support] !!!Error in parsing lang variables!!!", true);
                         }
                         break;

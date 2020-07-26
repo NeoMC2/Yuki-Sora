@@ -54,7 +54,7 @@ public class DiscCommandHandler {
     }
 
     public String createNewCommand(String ivoke, DiscCommand cmd) {
-        if(commandIvokes.contains(ivoke)){
+        if (commandIvokes.contains(ivoke)) {
             return "Command " + ivoke + " already exist!";
         } else {
             commands.put(ivoke, cmd);

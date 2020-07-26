@@ -5,9 +5,9 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.time.Duration;
 import java.time.Instant;

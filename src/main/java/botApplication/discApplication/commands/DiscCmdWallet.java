@@ -3,13 +3,13 @@ package botApplication.discApplication.commands;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 
-public class DiscCmdWallet implements DiscCommand{
+public class DiscCmdWallet implements DiscCommand {
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         return true;
@@ -17,8 +17,8 @@ public class DiscCmdWallet implements DiscCommand{
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        if (args.length >= 1){
-            switch (args[0]){
+        if (args.length >= 1) {
+            switch (args[0]) {
                 case "money":
                 case "coins":
                 case "amount":
@@ -27,7 +27,7 @@ public class DiscCmdWallet implements DiscCommand{
                     break;
 
                 case "give":
-                    if (args.length >= 3){
+                    if (args.length >= 3) {
                         Member m = event.getGuild().getMemberById(args[1]);
                         DiscApplicationUser usr;
                         try {
@@ -38,11 +38,11 @@ public class DiscCmdWallet implements DiscCommand{
                         int c;
                         try {
                             c = Integer.parseInt(args[2]);
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("general.error.invalidArgument", user.getLang(), null), event.getChannel(), "Error", Color.RED);
                             return;
                         }
-                        if(c > user.getCoins()){
+                        if (c > user.getCoins()) {
                             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), "Error", Color.RED);
                             return;
                         }

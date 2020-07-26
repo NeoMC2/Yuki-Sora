@@ -9,13 +9,12 @@ import java.io.*;
 
 public class FileUtils {
 
+    public String home = System.getProperty("user.dir") + "/yukisorahome";
     Engine engine;
 
     public FileUtils(Engine engine) {
         this.engine = engine;
     }
-
-    public String home = System.getProperty("user.dir")+"/yukisorahome";
 
     public String getHome() {
         return home;
@@ -24,12 +23,12 @@ public class FileUtils {
     public Object loadObject(String path) throws Exception {
         String filePath = new File(path).getAbsolutePath();
         File file = new File(filePath);
-        engine.getUtilityBase().printOutput("[File loader] Loading Object Flile: " + filePath,false);
+        engine.getUtilityBase().printOutput("[File loader] Loading Object Flile: " + filePath, false);
         FileInputStream stream = null;
         ObjectInputStream objStream = null;
         Object obj = null;
         if (!file.exists()) {
-            engine.getUtilityBase().printOutput("The File was never created!",false);
+            engine.getUtilityBase().printOutput("The File was never created!", false);
             throw new Exception("File was never created!");
         }
         stream = new FileInputStream(file);
@@ -43,7 +42,7 @@ public class FileUtils {
     public void saveObject(String path, Object obj) throws Exception {
         String filePath = new File(path).getAbsolutePath();
         File file = new File(filePath);
-        engine.getUtilityBase().printOutput("[File loader] Save Object File: " + filePath,false);
+        engine.getUtilityBase().printOutput("[File loader] Save Object File: " + filePath, false);
         FileOutputStream stream = null;
         ObjectOutputStream objStream = null;
         createFileRootAndFile(file);
@@ -71,29 +70,33 @@ public class FileUtils {
         return object;
     }
 
-    public JSONObject convertStringToJson(String json){
+    public JSONObject convertStringToJson(String json) {
         JSONObject object = null;
         JSONParser parser = new JSONParser();
         try {
             object = (JSONObject) parser.parse(json);
         } catch (ParseException e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
-            engine.getUtilityBase().printOutput("Invalid Json",false);
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
+            engine.getUtilityBase().printOutput("Invalid Json", false);
         }
         return object;
     }
 
-    public String convertJsonToString(JSONObject object){
+    public String convertJsonToString(JSONObject object) {
         return object.toJSONString();
     }
 
-    public void saveJsonFile(String path, JSONObject object){
+    public void saveJsonFile(String path, JSONObject object) {
         try {
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(object.toJSONString());
             fileWriter.close();
         } catch (IOException e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -109,7 +112,7 @@ public class FileUtils {
             try {
                 dir.mkdirs();
             } catch (Exception e) {
-                engine.getUtilityBase().printOutput("[file utils create File Dirs] cant create file dirs",true);
+                engine.getUtilityBase().printOutput("[file utils create File Dirs] cant create file dirs", true);
             }
         }
         createFiles(file);

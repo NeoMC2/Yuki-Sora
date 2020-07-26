@@ -1,9 +1,9 @@
 package botApplication.discApplication.transaktion;
 
 import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.item.monsters.Attack;
 import botApplication.discApplication.librarys.item.monsters.Monster;
+import botApplication.discApplication.librarys.job.Job;
 import core.Engine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,47 +13,17 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class TransaktionHandler {
 
-    private Engine engine;
+    private final Engine engine;
 
     public TransaktionHandler(Engine engine) {
         this.engine = engine;
-    }
-
-    public Monster getRandomMonster(Item.Rarity minRarity) {
-        int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() -1);
-        Monster m = null;
-        try {
-            m = (Monster) engine.getDiscEngine().getFilesHandler().getMonsters().get(r).clone();
-        } catch (Exception e){
-            return null;
-        }
-        if (Item.rarityToInt(minRarity) >= Item.rarityToInt(m.getItemRarity())) {
-            int i = Item.rarityToInt(m.getItemRarity());
-            int r2 = ThreadLocalRandom.current().nextInt(0, 100);
-            if (i == 0) {
-                return m;
-            } else if (i == 1) {
-                if (r2 > 20) {
-                    return m;
-                }
-            } else if (i == 2) {
-                if (r2 > 30) {
-                    return m;
-                }
-            } else if (i == 3) {
-                if (r2 > 40) {
-                    return m;
-                }
-            }
-        }
-        return getRandomMonster(minRarity);
     }
 
     public static ArrayList<Job> parseJsonToJobs(JSONObject object) {
         ArrayList<Job> jobs = new ArrayList<>();
         Object[] set = object.keySet().toArray();
         for (int i = 0; i < set.length; i++) {
-            JSONObject o = (JSONObject) object.get((String) set[i]);
+            JSONObject o = (JSONObject) object.get(set[i]);
             Job j = new Job();
             j.setJobName((String) o.get("name"));
             j.setShortName((String) set[i]);
@@ -72,7 +42,7 @@ public class TransaktionHandler {
         ArrayList<Monster> monsters = new ArrayList<>();
         Object[] set = object.keySet().toArray();
         for (int i = 0; i < set.length; i++) {
-            JSONObject o = (JSONObject) object.get((String) set[i]);
+            JSONObject o = (JSONObject) object.get(set[i]);
             Monster m = new Monster();
             m.setItemName((String) set[i]);
             m.setImgUrl((String) o.get("img"));
@@ -111,5 +81,35 @@ public class TransaktionHandler {
             }
         }
         return m;
+    }
+
+    public Monster getRandomMonster(Item.Rarity minRarity) {
+        int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() - 1);
+        Monster m = null;
+        try {
+            m = engine.getDiscEngine().getFilesHandler().getMonsters().get(r).clone();
+        } catch (Exception e) {
+            return null;
+        }
+        if (Item.rarityToInt(minRarity) >= Item.rarityToInt(m.getItemRarity())) {
+            int i = Item.rarityToInt(m.getItemRarity());
+            int r2 = ThreadLocalRandom.current().nextInt(0, 100);
+            if (i == 0) {
+                return m;
+            } else if (i == 1) {
+                if (r2 > 20) {
+                    return m;
+                }
+            } else if (i == 2) {
+                if (r2 > 30) {
+                    return m;
+                }
+            } else if (i == 3) {
+                if (r2 > 40) {
+                    return m;
+                }
+            }
+        }
+        return getRandomMonster(minRarity);
     }
 }

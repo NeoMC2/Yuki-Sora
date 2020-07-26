@@ -3,13 +3,13 @@ package botApplication.discApplication.listeners;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -18,7 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DiscMessageListener extends ListenerAdapter {
 
-    private Engine engine;
+    private final Engine engine;
 
     public DiscMessageListener(Engine engine) {
         this.engine = engine;
@@ -169,16 +169,16 @@ public class DiscMessageListener extends ListenerAdapter {
         String pic = "";
         Color color = Color.cyan;
         JSONObject grp = (JSONObject) engine.getPics().get(ca[0]);
-        if(ca[0].equals("list")){
+        if (ca[0].equals("list")) {
             String msg = "";
-            for (Object o:engine.getPics().keySet().toArray()) {
+            for (Object o : engine.getPics().keySet().toArray()) {
                 String s = (String) o;
                 msg += s + "\n";
             }
             engine.getDiscEngine().getTextUtils().sendCustomMessage(msg, event.getChannel(), "GIF List", Color.blue);
             return;
         }
-        if (ca.length < 2&&grp!=null) {
+        if (ca.length < 2 && grp != null) {
             EmbedBuilder b = new EmbedBuilder()
                     .setDescription(engine.lang("func.pic.error.noDest", user.getLang(), new String[]{ca[0]}))
                     .setColor(Color.yellow)
@@ -186,7 +186,7 @@ public class DiscMessageListener extends ListenerAdapter {
             event.getChannel().sendMessage(b.build()).queue();
             return;
         }
-        if(grp==null)
+        if (grp == null)
             return;
 
         if (!event.getChannel().isNSFW() && grp.get("nsfw").equals("true")) {

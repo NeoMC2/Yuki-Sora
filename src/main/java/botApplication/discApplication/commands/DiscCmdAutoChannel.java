@@ -3,10 +3,10 @@ package botApplication.discApplication.commands;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 
@@ -18,12 +18,12 @@ public class DiscCmdAutoChannel implements DiscCommand {
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        if (args.length >= 1){
-            switch (args[0]){
+        if (args.length >= 1) {
+            switch (args[0]) {
                 case "add":
-                    if(args.length >= 2){
+                    if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
-                        if(newAutoChannel != null){
+                        if (newAutoChannel != null) {
                             server.getAutoChannels().add(newAutoChannel.getId());
                             engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.created", user.getLang(), null), event.getChannel());
                         } else {
@@ -35,12 +35,12 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     break;
 
                 case "remove":
-                    if(args.length >= 2){
+                    if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
-                        if(newAutoChannel != null){
+                        if (newAutoChannel != null) {
                             newAutoChannel.getManager().setTopic("").complete();
-                            for (String vc:server.getAutoChannels()) {
-                                if(vc.equals(newAutoChannel.getId())){
+                            for (String vc : server.getAutoChannels()) {
+                                if (vc.equals(newAutoChannel.getId())) {
                                     server.getAutoChannels().remove(vc);
                                     break;
                                 }
@@ -57,7 +57,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
                 case "list":
                     String channels = "**Auto Channels**\n\n";
                     int c = 1;
-                    for (String vc:server.getAutoChannels()) {
+                    for (String vc : server.getAutoChannels()) {
                         channels = channels + c + ": `[" + event.getGuild().getVoiceChannelById(vc).getName() + "]`\n";
                         c++;
                     }

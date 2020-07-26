@@ -4,10 +4,11 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.User;
 
 public class DiscUtilityBase {
 
@@ -20,8 +21,8 @@ public class DiscUtilityBase {
     public boolean userHasGuildAdminPermission(Member member, Guild guild, TextChannel textChannel) {
         boolean hasPermission = false;
         for (int i = 0; member.getRoles().size() > i; i++) {
-            for (int a = 0; member.getRoles().get(i).getPermissions().size() > a; i++) {
-                if (member.getRoles().get(i).getPermissions().get(a).ADMINISTRATOR != null) {
+            for (int a = 0; member.getRoles().get(i).getPermissions().toArray().length > a; i++) {
+                if (member.getRoles().get(i).getPermissions().toArray()[a] != Permission.ADMINISTRATOR) {
                     hasPermission = true;
                     break;
                 }
@@ -35,13 +36,13 @@ public class DiscUtilityBase {
         }
     }
 
-    public DiscApplicationUser lookForUserById(User discuser){
+    public DiscApplicationUser lookForUserById(User discuser) {
         DiscApplicationUser user = null;
 
         try {
             user = engine.getDiscEngine().getFilesHandler().getUserById(discuser.getId());
         } catch (Exception e) {
-            engine.getUtilityBase().printOutput("![Ai Engine] " + discuser.getId() + " User not found!",true);
+            engine.getUtilityBase().printOutput("![Ai Engine] " + discuser.getId() + " User not found!", true);
         }
 
         if (user == null) {
@@ -54,7 +55,7 @@ public class DiscUtilityBase {
         return user;
     }
 
-    public DiscApplicationServer lookForServer(Guild guild){
+    public DiscApplicationServer lookForServer(Guild guild) {
         DiscApplicationServer server = null;
 
         try {

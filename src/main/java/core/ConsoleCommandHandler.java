@@ -24,7 +24,7 @@ public class ConsoleCommandHandler {
         switch (args0.toLowerCase()) {
             case "save":
                 engine.saveProperties();
-                if(engine.getDiscEngine().isRunning()){
+                if (engine.getDiscEngine().isRunning()) {
                     engine.getDiscEngine().getFilesHandler().saveAllBotFiles();
                 }
                 break;
@@ -33,7 +33,7 @@ public class ConsoleCommandHandler {
                 engine.loadProperties();
                 engine.loadLanguage();
                 engine.loadPics();
-                if(engine.getDiscEngine().isRunning()){
+                if (engine.getDiscEngine().isRunning()) {
                     engine.getDiscEngine().getFilesHandler().loadAllBotFiles();
                 }
                 break;
@@ -131,6 +131,24 @@ public class ConsoleCommandHandler {
         }
     }
 
+    private String extractMessage(String extractor, int startAt) {
+        String message = "";
+        String[] commandSplit = extractor.split(" ");
+        if (commandSplit.length > startAt) {
+            message = commandSplit[startAt];
+            for (int i = startAt + 1; i < commandSplit.length; i++) {
+                if (commandSplit[i].endsWith("\\n"))
+                    message = message + " " + commandSplit[i].replace("\\n", "") + "\n";
+                else
+                    message = message + " " + commandSplit[i];
+            }
+        } else {
+            engine.getUtilityBase().printOutput("Invalid amount of characters!", false);
+            return null;
+        }
+        return message;
+    }
+
     private class SystemInListener implements Runnable {
 
         @Override
@@ -141,7 +159,7 @@ public class ConsoleCommandHandler {
                 line = scanner.nextLine();
                 try {
                     handleConsoleCommand(line);
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 try {
@@ -151,23 +169,5 @@ public class ConsoleCommandHandler {
                 }
             }
         }
-    }
-
-    private String extractMessage(String extractor, int startAt){
-        String message = "";
-        String[] commandSplit = extractor.split(" ");
-        if (commandSplit.length > startAt) {
-            message = commandSplit[startAt];
-            for (int i = startAt+1; i < commandSplit.length; i++) {
-                if(commandSplit[i].endsWith("\\n"))
-                    message = message + " " + commandSplit[i].replace("\\n", "") + "\n";
-                else
-                    message = message + " " + commandSplit[i];
-            }
-        } else {
-            engine.getUtilityBase().printOutput("Invalid amount of characters!", false);
-            return null;
-        }
-        return message;
     }
 }

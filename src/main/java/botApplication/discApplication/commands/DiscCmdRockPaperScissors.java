@@ -3,10 +3,10 @@ package botApplication.discApplication.commands;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -85,13 +85,13 @@ public class DiscCmdRockPaperScissors implements DiscCommand {
 
         String answer = "";
         Color c = Color.cyan;
-        if(asw == 0){
+        if (asw == 0) {
             answer = "Draw :woman_shrugging:";
             c = Color.yellow;
-        } else if (asw == 1){
+        } else if (asw == 1) {
             answer = "You won :confetti_ball:";
             c = Color.green;
-        } else if (asw == 2){
+        } else if (asw == 2) {
             answer = "You loose :boom:";
             c = Color.red;
         }
@@ -123,19 +123,19 @@ public class DiscCmdRockPaperScissors implements DiscCommand {
 
     }
 
-    private enum Rps {
-        Rock, Paper, Scissors
-    }
-
-    private String getEmojiFromRps(Rps rps){
-        if(rps == Rps.Paper){
+    private String getEmojiFromRps(Rps rps) {
+        if (rps == Rps.Paper) {
             return ":roll_of_paper:";
-        } else if (rps == Rps.Rock){
+        } else if (rps == Rps.Rock) {
             return ":mountain:";
-        } else if (rps == Rps.Scissors){
+        } else if (rps == Rps.Scissors) {
             return ":scissors:";
         } else {
-            return  "mö";
+            return "mö";
         }
+    }
+
+    private enum Rps {
+        Rock, Paper, Scissors
     }
 }

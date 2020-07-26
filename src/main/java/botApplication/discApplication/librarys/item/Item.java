@@ -1,9 +1,8 @@
 package botApplication.discApplication.librarys.item;
 
 import java.io.Serializable;
-import java.util.Iterator;
 
-public class Item implements Serializable, Cloneable{
+public class Item implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 42L;
 
@@ -11,12 +10,8 @@ public class Item implements Serializable, Cloneable{
     private Rarity itemRarity;
     private String imgUrl;
 
-    public enum Rarity {
-        Normal, Epic, Legendary, Mystic
-    }
-
-    public static Rarity stringToRarity(String s){
-        switch (s.toLowerCase()){
+    public static Rarity stringToRarity(String s) {
+        switch (s.toLowerCase()) {
             case "normal":
                 return Rarity.Normal;
             case "epic":
@@ -29,8 +24,8 @@ public class Item implements Serializable, Cloneable{
         return null;
     }
 
-    public static String rarityToString(Rarity r){
-        switch (r){
+    public static String rarityToString(Rarity r) {
+        switch (r) {
 
             case Normal:
                 return "normal";
@@ -44,8 +39,8 @@ public class Item implements Serializable, Cloneable{
         return null;
     }
 
-    public static int rarityToInt(Rarity r){
-        switch (r){
+    public static int rarityToInt(Rarity r) {
+        switch (r) {
 
             case Normal:
                 return 0;
@@ -83,11 +78,15 @@ public class Item implements Serializable, Cloneable{
         this.imgUrl = imgUrl;
     }
 
-    public Item clone(){
+    public Item clone() {
         Item t = new Item();
-        t.setImgUrl(new String(imgUrl));
-        t.setItemName(new String(itemName));
+        t.setImgUrl(imgUrl);
+        t.setItemName(itemName);
         t.setItemRarity(itemRarity);
         return t;
+    }
+
+    public enum Rarity {
+        Normal, Epic, Legendary, Mystic
     }
 }

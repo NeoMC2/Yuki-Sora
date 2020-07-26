@@ -5,13 +5,13 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 
-public class DiscCmdAdmin implements DiscCommand{
+public class DiscCmdAdmin implements DiscCommand {
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         return user.isAdmin();
@@ -19,7 +19,7 @@ public class DiscCmdAdmin implements DiscCommand{
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        switch (args[0]){
+        switch (args[0]) {
             case "user":
             case "usr":
                 DiscApplicationUser rUser;
@@ -29,9 +29,9 @@ public class DiscCmdAdmin implements DiscCommand{
                     engine.getDiscEngine().getTextUtils().sendError("User not found!", event.getChannel(), false);
                     return;
                 }
-                switch (args[2]){
+                switch (args[2]) {
                     case "mod":
-                        switch (args[3]){
+                        switch (args[3]) {
                             case "coins":
                                 rUser.setCoins(Long.valueOf(args[4]));
                                 break;
@@ -47,7 +47,7 @@ public class DiscCmdAdmin implements DiscCommand{
 
                             case "jobpos":
                                 UserJob.JobRank r = rUser.getUserJob().stringToJobRank(args[4]);
-                                if(r == null){
+                                if (r == null) {
                                     engine.getDiscEngine().getTextUtils().sendError("Rank invalid", event.getChannel(), false);
                                     return;
                                 }
@@ -56,10 +56,10 @@ public class DiscCmdAdmin implements DiscCommand{
 
                             case "monster":
                                 Monster rM = null;
-                                if(args[4].startsWith("id:")){
+                                if (args[4].startsWith("id:")) {
                                     String m = args[4].substring(3);
-                                    for (Monster mo:engine.getDiscEngine().getFilesHandler().getMonsters()) {
-                                        if(mo.getItemName().equals(m)){
+                                    for (Monster mo : engine.getDiscEngine().getFilesHandler().getMonsters()) {
+                                        if (mo.getItemName().equals(m)) {
                                             rM = mo.clone();
                                         }
                                     }
@@ -67,11 +67,11 @@ public class DiscCmdAdmin implements DiscCommand{
                                     rM = rUser.getMonsters().get(Integer.parseInt(args[4]));
                                 }
 
-                                if(rM == null){
+                                if (rM == null) {
                                     engine.getDiscEngine().getTextUtils().sendError("invalid monster", event.getChannel(), false);
                                     return;
                                 }
-                                switch (args[5]){
+                                switch (args[5]) {
                                     case "delete":
                                         rUser.getMonsters().remove(rM);
                                         break;
@@ -81,7 +81,7 @@ public class DiscCmdAdmin implements DiscCommand{
                                         break;
 
                                     case "mod":
-                                        switch (args[6]){
+                                        switch (args[6]) {
                                             case "lvl":
                                                 rM.setLevel(Integer.parseInt(args[7]));
                                                 break;
@@ -105,7 +105,7 @@ public class DiscCmdAdmin implements DiscCommand{
                         break;
 
                     case "show":
-                        switch (args[3]){
+                        switch (args[3]) {
                             case "coins":
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(String.valueOf(rUser.getCoins()), event.getChannel(), "Info", Color.MAGENTA);
                                 break;
@@ -127,7 +127,7 @@ public class DiscCmdAdmin implements DiscCommand{
                                 String msgg = "";
                                 for (int i = 0; i < rUser.getMonsters().size(); i++) {
                                     Monster m = user.getMonsters().get(i);
-                                    msgg += "[" + (i+1) + "] " + m.getItemName() + "\n";
+                                    msgg += "[" + (i + 1) + "] " + m.getItemName() + "\n";
                                 }
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(msgg, event.getChannel(), "Info", Color.MAGENTA);
                                 break;
