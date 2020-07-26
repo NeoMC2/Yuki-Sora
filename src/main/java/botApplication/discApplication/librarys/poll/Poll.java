@@ -4,8 +4,8 @@ import botApplication.discApplication.commands.DiscCmdVote;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -14,7 +14,7 @@ import java.util.ArrayList;
 public class Poll implements Serializable {
 
     private static final long serialVersionUID = 42L;
-
+    DiscCmdVote.PollType pollType = DiscCmdVote.PollType.Vote;
     private String guildId = "";
     private String creator;
     private String heading;
@@ -22,7 +22,6 @@ public class Poll implements Serializable {
     private ArrayList<PollAnswer> answers = new ArrayList<>();
     private String channel;
     private Color color = Color.cyan;
-    DiscCmdVote.PollType pollType = DiscCmdVote.PollType.Vote;
 
     public Poll(String guildId) {
         this.guildId = guildId;
@@ -125,17 +124,17 @@ public class Poll implements Serializable {
                     .setDescription(des);
             try {
                 if (quant == 1) {
-                    g.getController().addRolesToMember(voter, r).queue();
+                    g.addRoleToMember(voter, r).queue();
                 } else if (quant == -1) {
-                    g.getController().removeRolesFromMember(voter, r).queue();
+                    g.removeRoleFromMember(voter, r).queue();
                 }
             } catch (Exception e) {
                 engine.getUtilityBase().printOutput("[Vote Update] !!!Cant add or remove role from member!!!", true);
             }
 
-        } else if (pollType == DiscCmdVote.PollType.Lang){
+        } else if (pollType == DiscCmdVote.PollType.Lang) {
             DiscApplicationUser usr = null;
-            if(voter != null){
+            if (voter != null) {
                 try {
                     usr = engine.getDiscEngine().getFilesHandler().getUserById(voter.getUser().getId());
                 } catch (Exception e) {

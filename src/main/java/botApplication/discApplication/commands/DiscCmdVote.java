@@ -5,12 +5,11 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.poll.Poll;
 import botApplication.discApplication.librarys.poll.PollAnswer;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.Permission;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import org.w3c.dom.Text;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -18,11 +17,9 @@ import java.util.ArrayList;
 
 public class DiscCmdVote implements DiscCommand {
 
-    private Engine engine;
-
     public ArrayList<Poll> polls;
-
     String[] counting = {"0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "\uD83D\uDD1F"};
+    private final Engine engine;
 
     public DiscCmdVote(Engine engine) {
         this.engine = engine;
@@ -46,14 +43,14 @@ public class DiscCmdVote implements DiscCommand {
                     System.out.println(args[1]);
                     break;
                 case "create":
-                    if(args[1].equals("lang")){
+                    if (args[1].equals("lang")) {
                         ArrayList<String> langs = new ArrayList<String>();
                         for (int i = 3; i < args.length; i++) {
                             langs.add(args[i]);
                         }
                         TextChannel tchan = event.getGuild().getTextChannelById(args[2]);
-                        if(tchan == null){
-                         return;
+                        if (tchan == null) {
+                            return;
                         } else {
                             Poll poll = new Poll(event.getGuild().getId());
                             poll.setChannel(tchan.getId());
@@ -62,7 +59,7 @@ public class DiscCmdVote implements DiscCommand {
                             poll.setPollType(PollType.Lang);
                             int num = 1;
 
-                            for (String s:langs) {
+                            for (String s : langs) {
                                 PollAnswer pa = new PollAnswer();
                                 pa.setAnswer(s);
                                 pa.setAnswerEmoji(counting[num]);
@@ -116,13 +113,13 @@ public class DiscCmdVote implements DiscCommand {
                                 String aSpec = "";
                                 String aCont = "";
                                 String[] cmArgss = specCont.split("<");
-                                for (String tt:cmArgss) {
-                                    if(tt.length()<4)
+                                for (String tt : cmArgss) {
+                                    if (tt.length() < 4)
                                         continue;
                                     pollAnswer = new PollAnswer();
                                     String[] ttT = tt.split("%");
-                                    for (String ttt:ttT) {
-                                        if(ttt.length()<4)
+                                    for (String ttt : ttT) {
+                                        if (ttt.length() < 4)
                                             continue;
                                         pollAnswer.setPlace(ansCounter);
                                         ansCounter++;
@@ -162,7 +159,7 @@ public class DiscCmdVote implements DiscCommand {
                             case "channel":
                                 try {
                                     poll.setChannel(event.getGuild().getTextChannelById(specCont).getId());
-                                } catch (Exception e){
+                                } catch (Exception e) {
                                     engine.getDiscEngine().getTextUtils().sendError("Formatting error, channel is invalid!", event.getChannel(), true);
                                 }
                                 break;
@@ -218,7 +215,7 @@ public class DiscCmdVote implements DiscCommand {
         this.polls = polls;
     }
 
-    public enum PollType implements Serializable{
+    public enum PollType implements Serializable {
         Vote, UserProperty, Lang
     }
 }

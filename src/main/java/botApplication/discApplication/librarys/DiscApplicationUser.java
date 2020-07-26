@@ -1,9 +1,9 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
-import botApplication.discApplication.librarys.job.UserJob;
 import botApplication.discApplication.librarys.item.monsters.Monster;
-import net.dv8tion.jda.core.entities.User;
+import botApplication.discApplication.librarys.job.UserJob;
+import net.dv8tion.jda.api.entities.User;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,12 +40,8 @@ public class DiscApplicationUser implements Serializable {
         this.discCertificationLevel = discCertificationLevel;
     }
 
-    public boolean isMonsterInvFull(){
-        if(monsters.size() >= maxMonsters){
-            return true;
-        } else {
-            return false;
-        }
+    public boolean isMonsterInvFull() {
+        return monsters.size() >= maxMonsters;
     }
 
     public String getUserName() {
@@ -152,12 +148,12 @@ public class DiscApplicationUser implements Serializable {
         this.level = level;
     }
 
-    public void addCoins(int coins){
-        this.coins+=coins;
+    public void addCoins(int coins) {
+        this.coins += coins;
     }
 
-    public void substractCoins(int coins){
-        this.coins-=coins;
+    public void substractCoins(int coins) {
+        this.coins -= coins;
     }
 
     public boolean isSaidHello() {

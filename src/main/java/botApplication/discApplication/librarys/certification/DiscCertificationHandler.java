@@ -3,17 +3,18 @@ package botApplication.discApplication.librarys.certification;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.Role;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
 public class DiscCertificationHandler {
 
     private final String consMsgDef = "[Certification Handler]";
-    private Engine engine;
+    private final Engine engine;
 
     public DiscCertificationHandler(Engine engine) {
         this.engine = engine;
@@ -27,17 +28,19 @@ public class DiscCertificationHandler {
 
         usr.getServers().add(guild.getId());
         roles.add(guild.getRoleById(server.getDefaultMemberRoleId()));
-        for (String s:server.getDefaultRoles()) {
-           roles.add(guild.getRoleById(s));
+        for (String s : server.getDefaultRoles()) {
+            roles.add(guild.getRoleById(s));
         }
-        guild.getController().addRolesToMember(member, roles).queue();
+        for (Role r:roles) {
+            guild.addRoleToMember(member, r).queue();
+        }
 
         try {
-            if(!usr.isSaidHello()){
+            if (!usr.isSaidHello()) {
                 engine.getDiscEngine().getTextUtils().sendCustomMessage("We have a new Member here 🎊. Say hello to " + member.getUser().getName() + "!", guild.getTextChannelById(server.getWelcomeMessageChannel()), "Welcome", Color.YELLOW);
                 usr.setSaidHello(true);
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -53,18 +56,20 @@ public class DiscCertificationHandler {
         }
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
-        if(usr != null){
+        if (usr != null) {
             usr.getServers().remove(server);
         }
 
         roles.add(guild.getRoleById(server.getDefaultMemberRoleId()));
         roles.add(guild.getRoleById(server.getDefaultTempGamerRoleId()));
 
-        for (String s:server.getDefaultRoles()) {
+        for (String s : server.getDefaultRoles()) {
             roles.add(guild.getRoleById(s));
         }
 
-        guild.getController().removeRolesFromMember(member, roles).queue();
+        for (Role r:roles) {
+            guild.removeRoleFromMember(member, r).queue();
+        }
     }
 
     public void addTempGameCertification(Member member, Guild guild) {
@@ -74,7 +79,7 @@ public class DiscCertificationHandler {
 
         usr.getServers().add(guild.getId());
         try {
-            guild.getController().addRolesToMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).queue();
+            guild.addRoleToMember(member, guild.getRoleById(server.getDefaultTempGamerRoleId())).queue();
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Role is invalid!!!", true);
         }

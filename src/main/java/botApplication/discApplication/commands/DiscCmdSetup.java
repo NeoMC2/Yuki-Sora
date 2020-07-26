@@ -5,11 +5,10 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.response.Response;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.core.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -17,9 +16,8 @@ import java.util.Arrays;
 
 public class DiscCmdSetup implements DiscCommand {
 
-    private Engine engine;
-
     private final DiscRole.RoleType[] publicType = {DiscRole.RoleType.Admin, DiscRole.RoleType.Member, DiscRole.RoleType.Mod, DiscRole.RoleType.Group1, DiscRole.RoleType.Group2, DiscRole.RoleType.Group3, DiscRole.RoleType.Group4, DiscRole.RoleType.Group5, DiscRole.RoleType.Group6, DiscRole.RoleType.TempGamer};
+    private final Engine engine;
 
     public DiscCmdSetup(Engine engine) {
         this.engine = engine;
@@ -68,7 +66,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     }
                                     engine.getDiscEngine().getTextUtils().sendSucces("**List**\n\n" + msg, event.getChannel());
                                     return;
-                                } else if(args[2].toLowerCase().equals("public")||args[2].toLowerCase().equals("all")){
+                                } else if (args[2].toLowerCase().equals("public") || args[2].toLowerCase().equals("all")) {
                                     ArrayList<DiscRole.RoleType> pblic = new ArrayList<>();
                                     pblic.addAll(Arrays.asList(publicType));
                                     engine.getDiscEngine().addSetupRole(event.getGuild().getId(), pblic);
@@ -103,7 +101,7 @@ public class DiscCmdSetup implements DiscCommand {
                                 break;
 
                             case "setup":
-                                if(server.isSetupMode()){
+                                if (server.isSetupMode()) {
                                     server.setSetupMode(false);
                                     engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.setup.mod.setupOff", user.getLang(), null), event.getChannel());
                                 } else {
@@ -135,7 +133,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     String msg = "";
                                     try {
                                         for (String rtpy : server.getDefaultRoles()) {
-                                            msg = msg + rtpy.toString() + ", ";
+                                            msg = msg + rtpy + ", ";
                                         }
                                     } catch (Exception e) {
                                         engine.getUtilityBase().printOutput("Error in role list ", true);
@@ -145,25 +143,25 @@ public class DiscCmdSetup implements DiscCommand {
                                     engine.getDiscEngine().getTextUtils().sendSucces("**List**\n\n" + msg, event.getChannel());
                                     return;
                                 }
-                                if(args[2].toLowerCase().equals("add")){
+                                if (args[2].toLowerCase().equals("add")) {
                                     Role g = event.getGuild().getRoleById(args[3]);
-                                    if(g==null){
+                                    if (g == null) {
                                         engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
                                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404role", user.getLang(), null), event.getChannel(), true);
                                     } else {
                                         server.getDefaultRoles().add(g.getId());
-                                        for (Member m:event.getGuild().getMembers()) {
+                                        for (Member m : event.getGuild().getMembers()) {
                                             try {
-                                                event.getGuild().getController().addRolesToMember(m, g).queue();
-                                            } catch (Exception e){
+                                                event.getGuild().addRoleToMember(m, g).queue();
+                                            } catch (Exception e) {
                                                 engine.getUtilityBase().printOutput("[Setup cmd] role cant add", true);
                                             }
                                         }
                                         engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.setup.succes.roleDefined", user.getLang(), null), event.getChannel());
                                     }
-                                } else if(args[2].toLowerCase().equals("remove")){
+                                } else if (args[2].toLowerCase().equals("remove")) {
                                     Role g = event.getGuild().getRoleById(args[3]);
-                                    if(g==null){
+                                    if (g == null) {
                                         engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
                                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404role", user.getLang(), null), event.getChannel(), true);
                                     } else {
@@ -398,10 +396,10 @@ public class DiscCmdSetup implements DiscCommand {
                         engine.getResponseHandler().makeResponse(memberResponse);
                         break;
                     case "aut":
-                        GuildController gc = respondingEvent.getGuild().getController();
+                        Guild gc = respondingEvent.getGuild();
                         Role member = gc.createRole().setColor(Color.green).setName("Members").setHoisted(true).complete();
                         Role gamer = gc.createRole().setColor(Color.ORANGE).setName("🎮Gamers").setHoisted(true).complete();
-                        Channel channel = gc.createTextChannel("\uD83C\uDF8Awelcome").setPosition(0).complete();
+                        TextChannel channel = gc.createTextChannel("\uD83C\uDF8Awelcome").setPosition(0).complete();
                         TextChannel textChannel = respondingEvent.getGuild().getTextChannelById(channel.getId());
                         respondingEvent.getGuild().getManager().setSystemChannel(textChannel);
 

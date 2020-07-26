@@ -3,11 +3,11 @@ package botApplication.discApplication.librarys.item.monsters;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.response.Response;
 import core.Engine;
-import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
 
@@ -21,7 +21,7 @@ public class FightHandler {
     private Member m2;
 
     private TextChannel textChannel;
-    private Guild guild;
+    private final Guild guild;
 
     private boolean m1Choose = false;
     private boolean m2Choose = false;
@@ -39,7 +39,7 @@ public class FightHandler {
         choosePokemons();
     }
 
-    private void choosePokemons(){
+    private void choosePokemons() {
         engine.getDiscEngine().getTextUtils().sendCustomMessage("Its now time to choose your attacking Pokemon's by writing down the id of your pokemon!", textChannel, "Fight", Color.MAGENTA);
 
         Response r1 = new Response(Response.ResponseTyp.Discord) {
@@ -65,7 +65,7 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(r2);
     }
 
-    private void memberChoosePokemon(GuildMessageReceivedEvent event){
+    private void memberChoosePokemon(GuildMessageReceivedEvent event) {
         DiscApplicationUser usr;
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(event.getAuthor().getId());
@@ -74,10 +74,10 @@ public class FightHandler {
             engine.getDiscEngine().getFightHandlers().remove(this);
             return;
         }
-        if(event.getAuthor().getId().equals(m1.getUser().getId())){
+        if (event.getAuthor().getId().equals(m1.getUser().getId())) {
             try {
-                monsterM1 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) -1);
-                if(monsterM1==null)
+                monsterM1 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) - 1);
+                if (monsterM1 == null)
                     throw new Exception();
                 m1Choose = true;
             } catch (Exception e) {
@@ -85,30 +85,30 @@ public class FightHandler {
             }
         } else {
             try {
-                monsterM2 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw())-1);
-                if(monsterM2==null)
+                monsterM2 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) - 1);
+                if (monsterM2 == null)
                     throw new Exception();
                 m2Choose = true;
             } catch (Exception e) {
                 engine.getDiscEngine().getTextUtils().sendError("This pokemon is invalid! Aborting!", textChannel, false);
             }
         }
-        if(m1Choose && m2Choose)
+        if (m1Choose && m2Choose)
             round();
     }
 
-    private void round(){
+    private void round() {
         Member turner = null;
         Member enemy = null;
-            if(turn == 2){
-                turner = m2;
-                enemy = m1;
-                engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
-            } else if (turn == 1){
-                turner = m1;
-                enemy = m2;
-                engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
-            }
+        if (turn == 2) {
+            turner = m2;
+            enemy = m1;
+            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+        } else if (turn == 1) {
+            turner = m1;
+            enemy = m2;
+            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+        }
 
         Member finalEnemy = enemy;
         Member finalTurner = turner;
@@ -117,20 +117,20 @@ public class FightHandler {
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
                 Monster m = null;
                 Monster e = null;
-                Attack a = null;;
-                if(turn == 1){
+                Attack a = null;
+                if (turn == 1) {
                     m = monsterM1;
                     e = monsterM2;
                 } else {
                     m = monsterM2;
                     e = monsterM1;
                 }
-                switch (respondingEvent.getMessage().getContentDisplay()){
+                switch (respondingEvent.getMessage().getContentDisplay()) {
                     case "a1":
                         a = m.getA1();
-                        if(isAttackValid(a, textChannel)){
+                        if (isAttackValid(a, textChannel)) {
                             showAttackInfo(m, e, m.attack(a, e), a);
-                            if(testWinner(e)) {
+                            if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
                                 printWinner(finalTurner, finalEnemy);
@@ -143,9 +143,9 @@ public class FightHandler {
 
                     case "a2":
                         a = m.getA2();
-                        if(isAttackValid(a, textChannel)){
+                        if (isAttackValid(a, textChannel)) {
                             showAttackInfo(m, e, m.attack(a, e), a);
-                            if(testWinner(e)) {
+                            if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
                                 printWinner(finalTurner, finalEnemy);
@@ -158,9 +158,9 @@ public class FightHandler {
 
                     case "a3":
                         a = m.getA3();
-                        if(isAttackValid(a, textChannel)){
+                        if (isAttackValid(a, textChannel)) {
                             showAttackInfo(m, e, m.attack(a, e), a);
-                            if(testWinner(e)) {
+                            if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
                                 printWinner(finalTurner, finalEnemy);
@@ -173,9 +173,9 @@ public class FightHandler {
 
                     case "a4":
                         a = m.getA4();
-                        if(isAttackValid(a, textChannel)){
+                        if (isAttackValid(a, textChannel)) {
                             showAttackInfo(m, e, m.attack(a, e), a);
-                            if(testWinner(e)) {
+                            if (testWinner(e)) {
                                 m.earnXP(10);
                                 e.earnXP(3);
                                 printWinner(finalTurner, finalEnemy);
@@ -196,25 +196,25 @@ public class FightHandler {
                         String sa1, sa2, sa3, sa4;
                         try {
                             sa1 = m.getA1().toString();
-                        } catch (Exception ex){
+                        } catch (Exception ex) {
                             sa1 = "not selected";
                         }
 
                         try {
                             sa2 = m.getA2().toString();
-                        } catch (Exception ex){
+                        } catch (Exception ex) {
                             sa2 = "not selected";
                         }
 
                         try {
                             sa3 = m.getA3().toString();
-                        } catch (Exception ex){
+                        } catch (Exception ex) {
                             sa3 = "not selected";
                         }
 
                         try {
                             sa4 = m.getA4().toString();
-                        } catch (Exception ex){
+                        } catch (Exception ex) {
                             sa4 = "not selected";
                         }
 
@@ -241,8 +241,8 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(gamerResponse);
     }
 
-    private boolean isAttackValid(Attack a, TextChannel c){
-        if(a == null){
+    private boolean isAttackValid(Attack a, TextChannel c) {
+        if (a == null) {
             engine.getDiscEngine().getTextUtils().sendError("Ivalid attack!", c, false);
             return false;
         } else {
@@ -250,7 +250,7 @@ public class FightHandler {
         }
     }
 
-    private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack){
+    private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack) {
         String msg = own.getItemName() + " attacked " + enemy.getItemName() + " with " + attack.getAttackName() + " and made " + dmg + " damage. " + enemy.getItemName() + " has " + enemy.getHp() + " KP left!";
         EmbedBuilder e = new EmbedBuilder()
                 .setDescription(msg)
@@ -260,21 +260,18 @@ public class FightHandler {
         textChannel.sendMessage(e.build()).queue();
     }
 
-    private boolean testWinner(Monster enemy){
-        if(enemy.getHp() == 0){
-            return true;
-        }
-        else return false;
+    private boolean testWinner(Monster enemy) {
+        return enemy.getHp() == 0;
     }
 
-    private void printWinner(Member winner, Member looser){
+    private void printWinner(Member winner, Member looser) {
         String msg = winner.getUser().getName() + " has won the match because the enemy Pokemon was to weak, congratulations! Your pokemon got 20 xp!";
         engine.getDiscEngine().getTextUtils().sendSucces(msg, textChannel);
         engine.getDiscEngine().getFightHandlers().remove(this);
     }
 
-    private void makeNewRound(){
-        if(turn == 1){
+    private void makeNewRound() {
+        if (turn == 1) {
             turn = 2;
         } else {
             turn = 1;

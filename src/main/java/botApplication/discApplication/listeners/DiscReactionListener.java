@@ -3,17 +3,17 @@ package botApplication.discApplication.listeners;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionAddEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionRemoveAllEvent;
-import net.dv8tion.jda.core.events.message.guild.react.GuildMessageReactionRemoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveAllEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.List;
 
 public class DiscReactionListener extends ListenerAdapter {
 
-    private Engine engine;
+    private final Engine engine;
 
     public DiscReactionListener(Engine engine) {
         this.engine = engine;
@@ -41,7 +41,7 @@ public class DiscReactionListener extends ListenerAdapter {
         if (!s.getCertificationMessageId().equals(event.getMessageId())) {
             return;
         }
-        if (!exec(event.getReaction().getUsers().complete(), event.getMember().getUser().getId()))
+        if (!exec(event.getReaction().retrieveUsers().complete(), event.getMember().getUser().getId()))
             return;
 
         switch (event.getReactionEmote().getName()) {
@@ -118,7 +118,7 @@ public class DiscReactionListener extends ListenerAdapter {
                 if (p.getGuildId().equals(guildId))
                     if (p.getMessageId().equals(msgId))
                         return p;
-            } catch (Exception e){
+            } catch (Exception e) {
             }
         }
         return null;

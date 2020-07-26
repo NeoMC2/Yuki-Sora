@@ -2,23 +2,22 @@ package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import core.Engine;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.PermissionOverride;
-import net.dv8tion.jda.core.entities.VoiceChannel;
-import net.dv8tion.jda.core.events.channel.voice.VoiceChannelDeleteEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceJoinEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceLeaveEvent;
-import net.dv8tion.jda.core.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
-import net.dv8tion.jda.core.managers.GuildController;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
-    private Engine engine;
-
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
+    private final Engine engine;
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;
@@ -27,15 +26,15 @@ public class DiscVoiceListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
-        if(server == null){
+        if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
         }
 
-        for (String vcI:server.getAutoChannels()) {
-            if(vcI.equals(event.getChannelJoined().getId())){
+        for (String vcI : server.getAutoChannels()) {
+            if (vcI.equals(event.getChannelJoined().getId())) {
                 VoiceChannel vc = event.getGuild().getVoiceChannelById(vcI);
-                setupVc(vc, event.getGuild().getController(), event.getMember());
+                setupVc(vc, event.getGuild(), event.getMember());
                 return;
             }
         }
@@ -50,15 +49,15 @@ public class DiscVoiceListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
         DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
-        if(server == null){
+        if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
         }
 
-        for (String vcI: server.getAutoChannels()) {
-            if(vcI.equals(event.getChannelJoined().getId())){
+        for (String vcI : server.getAutoChannels()) {
+            if (vcI.equals(event.getChannelJoined().getId())) {
                 VoiceChannel vc = event.getGuild().getVoiceChannelById(vcI);
-                setupVc(vc, event.getGuild().getController(), event.getMember());
+                setupVc(vc, event.getGuild(), event.getMember());
             }
         }
 
@@ -70,26 +69,26 @@ public class DiscVoiceListener extends ListenerAdapter {
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
         DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
-        if(server == null){
+        if (server == null) {
             engine.getUtilityBase().printOutput("[Guld Voice Join] !!!Fatal Server error!!!", true);
             return;
         }
 
-        for (String vc: server.getAutoChannels()) {
-            if(vc.equals(event.getChannel().getId())){
+        for (String vc : server.getAutoChannels()) {
+            if (vc.equals(event.getChannel().getId())) {
                 server.getAutoChannels().remove(vc);
             }
         }
 
-        for (VoiceChannel vc: active) {
-            if(vc.getId().equals(event.getChannel().getId())){
+        for (VoiceChannel vc : active) {
+            if (vc.getId().equals(event.getChannel().getId())) {
                 server.getAutoChannels().remove(vc);
             }
         }
     }
 
-    private void setupVc(VoiceChannel vc, GuildController gc, Member m){
-        VoiceChannel nvc = (VoiceChannel)gc.createVoiceChannel(vc.getName() + " [AC]")
+    private void setupVc(VoiceChannel vc, Guild gc, Member m) {
+        VoiceChannel nvc = (VoiceChannel) gc.createVoiceChannel(vc.getName() + " [AC]")
                 .setBitrate(vc.getBitrate())
                 .setUserlimit(vc.getUserLimit())
                 .complete();
@@ -99,14 +98,14 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         gc.modifyVoiceChannelPositions().selectPosition(nvc).moveTo(vc.getPosition() + 1).queue();
         gc.moveVoiceMember(m, nvc).queue();
-        for (PermissionOverride or:vc.getPermissionOverrides()) {
+        for (PermissionOverride or : vc.getPermissionOverrides()) {
             nvc.createPermissionOverride(or.getRole()).setAllow(or.getAllowed()).setDeny(or.getDenied()).queue();
         }
 
         active.add(nvc);
     }
 
-    private void testActiveVC(VoiceChannel vc){
+    private void testActiveVC(VoiceChannel vc) {
         if (active.contains(vc) && vc.getMembers().size() == 0) {
             active.remove(vc);
             vc.delete().queue();

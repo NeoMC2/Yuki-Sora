@@ -1,7 +1,7 @@
 package botApplication.discApplication.librarys;
 
 import core.Engine;
-import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.api.entities.Guild;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,11 +41,11 @@ public class DiscApplicationServer implements Serializable {
         this.serverID = guild.getId();
     }
 
-    public void updateServerStats(Engine engine){
+    public void updateServerStats(Engine engine) {
         Guild g = engine.getDiscEngine().getBotJDA().getGuildById(serverID);
         try {
             g.getCategoryById(memberCountCategoryId).getManager().setName("\uD83D\uDCCAMember Count: " + String.valueOf(g.getMembers().size())).queue();
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -154,9 +154,9 @@ public class DiscApplicationServer implements Serializable {
         this.roles = roles;
     }
 
-    public void addRole(DiscRole role){
-        for (DiscRole r:roles) {
-            if(r.getId().equals(role.getId())){
+    public void addRole(DiscRole role) {
+        for (DiscRole r : roles) {
+            if (r.getId().equals(role.getId())) {
                 roles.remove(r);
             }
         }
@@ -180,7 +180,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public ArrayList<String> getDefaultRoles() {
-        if(defaultRoles == null) {
+        if (defaultRoles == null) {
             defaultRoles = new ArrayList<>();
         }
         return defaultRoles;
