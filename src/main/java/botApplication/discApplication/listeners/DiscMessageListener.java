@@ -178,7 +178,7 @@ public class DiscMessageListener extends ListenerAdapter {
             engine.getDiscEngine().getTextUtils().sendCustomMessage(msg, event.getChannel(), "GIF List", Color.blue);
             return;
         }
-        if (ca.length < 2) {
+        if (ca.length < 2&&grp!=null) {
             EmbedBuilder b = new EmbedBuilder()
                     .setDescription(engine.lang("func.pic.error.noDest", user.getLang(), new String[]{ca[0]}))
                     .setColor(Color.yellow)
@@ -186,6 +186,9 @@ public class DiscMessageListener extends ListenerAdapter {
             event.getChannel().sendMessage(b.build()).queue();
             return;
         }
+        if(grp==null)
+            return;
+
         if (!event.getChannel().isNSFW() && grp.get("nsfw").equals("true")) {
             engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.nsfwNotAllowedChan", user.getLang(), null), event.getChannel(), false);
             return;
