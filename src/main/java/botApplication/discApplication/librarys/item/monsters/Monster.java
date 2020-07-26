@@ -631,7 +631,6 @@ public class Monster extends Item implements Serializable, Cloneable {
         t.setBaseHp(baseHp);
         t.setLevel(level);
         t.setMaxHp(maxHp);
-        t.setDv(dv);
         t.setXp(0);
         t.setMonsterTypes(cloneMonsterTypes());
         t.setAttacks(cloneAttacks());
