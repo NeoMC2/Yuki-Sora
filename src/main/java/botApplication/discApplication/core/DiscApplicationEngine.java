@@ -135,7 +135,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("job", new DiscCmdJob());
         commandHandler.createNewCommand("admin", new DiscCmdAdmin());
         commandHandler.createNewCommand("wallet", new DiscCmdWallet());
-        commandHandler.createNewCommand("pokemon", new DiscCmdMonster());
+        commandHandler.createNewCommand("monster", new DiscCmdMonster());
     }
 
     private void addBotListeners(){

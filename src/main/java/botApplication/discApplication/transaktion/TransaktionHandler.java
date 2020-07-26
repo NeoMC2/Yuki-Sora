@@ -20,7 +20,7 @@ public class TransaktionHandler {
     }
 
     public Monster getRandomMonster(Item.Rarity minRarity) {
-        int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size());
+        int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() -1);
         Monster m = null;
         try {
             m = (Monster) engine.getDiscEngine().getFilesHandler().getMonsters().get(r).clone();

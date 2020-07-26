@@ -45,6 +45,32 @@ public class UtilityBase {
         throw new Exception("Color doesn't exist");
     }
 
+    public String convertTimeToString(long time){
+        int s = (int) (time / 1000);
+        int m = (int) (time / (1000*60));
+        int h = (int) (time / (1000*60*60));
+
+        m-= h*60;
+        s-= m*60;
+        s-= h*60*60;
+
+        String ss = String.valueOf(s);
+        String mm = String.valueOf(m);
+        String hh = String.valueOf(h);
+
+        if(s<10){
+            ss = "0" + ss;
+        }
+        if(m<10){
+            mm = "0" + mm;
+        }
+        if(h<10){
+            hh = "0" + hh;
+        }
+
+        return hh + "." + mm + "." + ss;
+    }
+
     public void printOutput(String message, boolean debug) {
         String time = "/" + getDateString() + "/ ";
         if (engine.getProperties() == null) {

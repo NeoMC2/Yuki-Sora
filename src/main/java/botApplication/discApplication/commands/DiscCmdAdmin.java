@@ -54,13 +54,13 @@ public class DiscCmdAdmin implements DiscCommand{
                                 rUser.getUserJob().setJobRank(r);
                                 break;
 
-                            case "pokemons":
+                            case "monster":
                                 Monster rM = null;
                                 if(args[4].startsWith("id:")){
                                     String m = args[4].substring(3);
                                     for (Monster mo:engine.getDiscEngine().getFilesHandler().getMonsters()) {
                                         if(mo.getItemName().equals(m)){
-                                            rM = mo;
+                                            rM = mo.clone();
                                         }
                                     }
                                 } else {
@@ -76,7 +76,20 @@ public class DiscCmdAdmin implements DiscCommand{
                                         rUser.getMonsters().remove(rM);
                                         break;
 
-                                    case "":
+                                    case "add":
+                                        rUser.getMonsters().add(rM);
+                                        break;
+
+                                    case "mod":
+                                        switch (args[6]){
+                                            case "lvl":
+                                                rM.setLevel(Integer.parseInt(args[7]));
+                                                break;
+
+                                            default:
+                                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
+                                                break;
+                                        }
                                         break;
 
                                     default:
