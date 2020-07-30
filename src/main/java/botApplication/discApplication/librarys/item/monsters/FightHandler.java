@@ -212,6 +212,7 @@ public class FightHandler {
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(user.getId());
         if (isAttackValid(a, textChannel)) {
             showAttackInfo(m, e, m.attack(m, a, e), a);
+            a.use();
             if (testWinner(e)) {
                 m.earnXP(10, engine, usr);
                 e.earnXP(3, engine, usr);

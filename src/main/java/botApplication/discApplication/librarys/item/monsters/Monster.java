@@ -732,7 +732,7 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     public enum MonsterType {
-        psychic, ghost, dark, dragon, steel, fairy, normal, fire, water, electric, grass, flying, bug, poison, rock, ground, fighting, ice
+        psychic, ghost, dark, dragon, steel, fairy, normal, fire, water, electric, grass, flying, bug, poison, rock, ground, fighting, ice, Psycho, Geist, Unlicht, Drache, Stahl, Fee, Normal, Feuer, Wasser, Elektro, Pflanze, Flug, Kaefer, Gift, Gestein, Boden, Kampf, Eis
     }
 
     private enum Efficiency {

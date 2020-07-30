@@ -106,4 +106,8 @@ public class Attack implements Serializable, Cloneable {
         monsterTypes.forEach(e -> t.add(e));
         return t;
     }
+
+    public void use(){
+        used++;
+    }
 }
