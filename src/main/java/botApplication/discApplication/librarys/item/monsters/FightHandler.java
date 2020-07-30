@@ -28,6 +28,12 @@ public class FightHandler {
 
     private int turn = 2;
 
+    private Monster m = null;
+    private Monster e = null;
+    private Attack a = null;
+    private Member turner = null;
+    private Member enemy = null;
+
     public FightHandler(Engine engine, TextChannel textChannel, Guild g) {
         this.engine = engine;
         this.textChannel = textChannel;
@@ -77,20 +83,24 @@ public class FightHandler {
         if (event.getAuthor().getId().equals(m1.getUser().getId())) {
             try {
                 monsterM1 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) - 1);
+                engine.getDiscEngine().getTextUtils().sendSucces("**Monster**\n\n" + monsterM1.toString(), event.getChannel());
                 if (monsterM1 == null)
                     throw new Exception();
                 m1Choose = true;
             } catch (Exception e) {
                 engine.getDiscEngine().getTextUtils().sendError("This Monster is invalid! Aborting!", textChannel, false);
+                engine.getDiscEngine().getFightHandlers().remove(this);
             }
         } else {
             try {
                 monsterM2 = usr.getMonsters().get(Integer.parseInt(event.getMessage().getContentRaw()) - 1);
+                engine.getDiscEngine().getTextUtils().sendSucces("**Monster**\n\n" + monsterM2.toString(), event.getChannel());
                 if (monsterM2 == null)
                     throw new Exception();
                 m2Choose = true;
             } catch (Exception e) {
                 engine.getDiscEngine().getTextUtils().sendError("This Monster is invalid! Aborting!", textChannel, false);
+                engine.getDiscEngine().getFightHandlers().remove(this);
             }
         }
         if (m1Choose && m2Choose)
@@ -110,14 +120,11 @@ public class FightHandler {
             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
         }
 
-        Member finalEnemy = enemy;
         Member finalTurner = turner;
+        Member finalEnemy = enemy;
         Response gamerResponse = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                Monster m = null;
-                Monster e = null;
-                Attack a = null;
                 if (turn == 1) {
                     m = monsterM1;
                     e = monsterM2;
@@ -128,62 +135,22 @@ public class FightHandler {
                 switch (respondingEvent.getMessage().getContentDisplay()) {
                     case "a1":
                         a = m.getA1();
-                        if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(m, a, e), a);
-                            if (testWinner(e)) {
-                                m.earnXP(10);
-                                e.earnXP(3);
-                                printWinner(finalTurner, finalEnemy);
-                                return;
-                            }
-                            makeNewRound();
-                        }
-                        round();
+                        attack(finalTurner, finalEnemy);
                         break;
 
                     case "a2":
                         a = m.getA2();
-                        if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(m, a, e), a);
-                            if (testWinner(e)) {
-                                m.earnXP(10);
-                                e.earnXP(3);
-                                printWinner(finalTurner, finalEnemy);
-                                return;
-                            }
-                            makeNewRound();
-                        }
-                        round();
+                        attack(finalTurner, finalEnemy);
                         break;
 
                     case "a3":
                         a = m.getA3();
-                        if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(m, a, e), a);
-                            if (testWinner(e)) {
-                                m.earnXP(10);
-                                e.earnXP(3);
-                                printWinner(finalTurner, finalEnemy);
-                                return;
-                            }
-                            makeNewRound();
-                        }
-                        round();
+                        attack(finalTurner, finalEnemy);
                         break;
 
                     case "a4":
                         a = m.getA4();
-                        if (isAttackValid(a, textChannel)) {
-                            showAttackInfo(m, e, m.attack(m, a, e), a);
-                            if (testWinner(e)) {
-                                m.earnXP(10);
-                                e.earnXP(3);
-                                printWinner(finalTurner, finalEnemy);
-                                return;
-                            }
-                            makeNewRound();
-                        }
-                        round();
+                       attack(finalTurner, finalEnemy);
                         break;
 
                     case "help":
@@ -195,25 +162,25 @@ public class FightHandler {
                     case "info":
                         String sa1, sa2, sa3, sa4;
                         try {
-                            sa1 = m.getA1().toString();
+                            sa1 = m.getA1().toString() + "\n";
                         } catch (Exception ex) {
                             sa1 = "not selected";
                         }
 
                         try {
-                            sa2 = m.getA2().toString();
+                            sa2 = m.getA2().toString() + "\n";
                         } catch (Exception ex) {
                             sa2 = "not selected";
                         }
 
                         try {
-                            sa3 = m.getA3().toString();
+                            sa3 = m.getA3().toString() + "\n";
                         } catch (Exception ex) {
                             sa3 = "not selected";
                         }
 
                         try {
-                            sa4 = m.getA4().toString();
+                            sa4 = m.getA4().toString()+ "\n";
                         } catch (Exception ex) {
                             sa4 = "not selected";
                         }
@@ -241,13 +208,32 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(gamerResponse);
     }
 
+    private void attack(Member user, Member enemy){
+        DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(user.getId());
+        if (isAttackValid(a, textChannel)) {
+            showAttackInfo(m, e, m.attack(m, a, e), a);
+            if (testWinner(e)) {
+                m.earnXP(10, engine, usr);
+                e.earnXP(3, engine, usr);
+                printWinner(user, enemy);
+                return;
+            }
+            makeNewRound();
+        }
+        round();
+    }
+
     private boolean isAttackValid(Attack a, TextChannel c) {
         if (a == null) {
             engine.getDiscEngine().getTextUtils().sendError("Ivalid attack!", c, false);
             return false;
-        } else {
-            return true;
         }
+
+        if(a.getUsed() <= 0){
+            engine.getDiscEngine().getTextUtils().sendError("This attack can't be used anymore!", c, false);
+            return false;
+        }
+        return true;
     }
 
     private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack) {

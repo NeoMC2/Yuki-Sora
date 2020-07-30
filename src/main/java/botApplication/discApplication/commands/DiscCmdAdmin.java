@@ -20,6 +20,16 @@ public class DiscCmdAdmin implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         switch (args[0]) {
+            case "reset":
+                for (Object u:engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
+                    DiscApplicationUser usr = (DiscApplicationUser) u;
+                    usr.getMonsters().clear();
+                    usr.setCoins(20);
+                    usr.setLastWorkTime(null);
+                }
+                engine.getDiscEngine().getTextUtils().sendError("Done!", event.getChannel(), false);
+                break;
+
             case "user":
             case "usr":
                 DiscApplicationUser rUser;
@@ -64,7 +74,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                         }
                                     }
                                 } else {
-                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]));
+                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]) -1);
                                 }
 
                                 if (rM == null) {
@@ -84,6 +94,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                         switch (args[6]) {
                                             case "lvl":
                                                 rM.setLevel(Integer.parseInt(args[7]));
+                                                rM.isEvolve(engine, rUser);
                                                 break;
 
                                             default:
@@ -123,7 +134,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(String.valueOf(rUser.getUserJob().jobRankToString(rUser.getUserJob().getJobRank())), event.getChannel(), "Info", Color.MAGENTA);
                                 break;
 
-                            case "pokemons":
+                            case "monsters":
                                 String msgg = "";
                                 for (int i = 0; i < rUser.getMonsters().size(); i++) {
                                     Monster m = user.getMonsters().get(i);

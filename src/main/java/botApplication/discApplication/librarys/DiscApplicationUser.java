@@ -23,7 +23,7 @@ public class DiscApplicationUser implements Serializable {
     private String lang = "en";
 
     private Date lastWorkTime;
-    private long coins;
+    private long coins = 20;
     private UserJob userJob;
     private int xp;
     private int level;

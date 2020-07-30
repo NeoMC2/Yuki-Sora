@@ -1,6 +1,9 @@
 package botApplication.discApplication.librarys.item.monsters;
 
+import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
+import com.sun.org.apache.xpath.internal.CachedXPathAPI;
+import core.Engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,94 +25,96 @@ public class Monster extends Item implements Serializable, Cloneable {
     private int level = 1;
     private int xp;
     private ArrayList<MonsterType> monsterTypes = new ArrayList<>();
+    private String evolves = "";
+    private int evolveLevel = 0;
 
     public static MonsterType stringToMonsterType(String s) throws Exception {
         switch (s.toLowerCase()) {
             case "psycho":
             case "psychic":
-                return MonsterType.Psycho;
+                return MonsterType.psychic;
 
             case "normal":
-                return MonsterType.Normal;
+                return MonsterType.normal;
 
             case "kampf":
             case "fighting":
-                return MonsterType.Kampf;
+                return MonsterType.fighting;
 
             case "flug":
             case "flying":
-                return MonsterType.Flug;
+                return MonsterType.flying;
 
             case "gift":
             case "poison":
-                return MonsterType.Gift;
+                return MonsterType.poison;
 
             case "boden":
             case "ground":
-                return MonsterType.Boden;
+                return MonsterType.ground;
 
             case "gestein":
             case "rock":
-                return MonsterType.Gestein;
+                return MonsterType.rock;
 
             case "käfer":
             case "kaefer":
             case "bug":
-                return MonsterType.Kaefer;
+                return MonsterType.bug;
 
             case "geist":
             case "ghost":
-                return MonsterType.Geist;
+                return MonsterType.ghost;
 
             case "stahl":
             case "steel":
-                return MonsterType.Stahl;
+                return MonsterType.steel;
 
             case "fire":
             case "feuer":
-                return MonsterType.Feuer;
+                return MonsterType.fire;
 
             case "wasser":
             case "water":
-                return MonsterType.Wasser;
+                return MonsterType.water;
 
             case "pflanze":
             case "grass":
-                return MonsterType.Pflanze;
+                return MonsterType.grass;
 
             case "elektro":
             case "electric":
-                return MonsterType.Elektro;
+                return MonsterType.electric;
 
             case "eis":
             case "ice":
-                return MonsterType.Eis;
+                return MonsterType.ice;
 
             case "drache":
             case "dragon":
-                return MonsterType.Drache;
+                return MonsterType.dragon;
 
             case "unlicht":
             case "dark":
-                return MonsterType.Unlicht;
+                return MonsterType.dark;
 
             case "fee":
             case "fairy":
-                return MonsterType.Fee;
+                return MonsterType.fairy;
         }
         throw new Exception("Unknown Type");
     }
 
     public int attack(Monster o, Attack attack, Monster enemy) {
-        double dmg = (((level * (2 / 5)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        double dmg = (((level * (1 / 3)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
         return (int) dmg;
     }
 
-    private double calculateSTAB(Monster o, Monster e){
-        for (MonsterType t:o.getMonsterTypes()) {
-            for (MonsterType tt:e.getMonsterTypes()) {
-                if(t == tt){
+    private double calculateSTAB(Monster o, Monster e) {
+        for (MonsterType t : o.getMonsterTypes()) {
+            for (MonsterType tt : e.getMonsterTypes()) {
+                if (t == tt) {
                     return 1.5;
                 }
             }
@@ -117,16 +122,62 @@ public class Monster extends Item implements Serializable, Cloneable {
         return 1;
     }
 
-    public void earnXP(int xp) {
+    public void earnXP(int xp, Engine e, DiscApplicationUser user) {
         this.xp += xp;
-        int levelUpXp = level * 10;
+        isLvlUp(e, user);
+    }
+
+    private void isLvlUp(Engine e, DiscApplicationUser user) {
+        int levelUpXp = level * 7 + ((dv / 5) * 10);
         if (xp >= levelUpXp) {
             this.xp -= levelUpXp;
-            level++;
-            int newKp = (((2 * baseHp + dv) * level) / 100) + level + 10;
-            maxHp += newKp;
-            hp += newKp;
+            lvlUp(e, user);
+            isLvlUp(e, user);
         }
+        return;
+    }
+
+    private void lvlUp(Engine e, DiscApplicationUser user) {
+        level++;
+        if (!isEvolve(e, user))
+            calculateHp();
+    }
+
+    public boolean isEvolve(Engine e, DiscApplicationUser user) {
+        if (evolveLevel != -1)
+            if (evolves != null)
+                if (level != 0)
+                    if (level >= evolveLevel) {
+                        evolve(e, user);
+                        return true;
+                    }
+        return false;
+    }
+
+    private void evolve(Engine e, DiscApplicationUser user) {
+        for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
+            if (evolves.toLowerCase().equals(m.getItemName().toLowerCase())) {
+                Monster mon = m.clone();
+                try {
+                    mon.setA1(a1);
+                    mon.setA2(a2);
+                    mon.setA3(a3);
+                    mon.setA4(a4);
+                } catch (Exception ex){
+                }
+                mon.getAttacks().addAll(attacks);
+                mon.finish();
+                user.getMonsters().add(mon);
+                break;
+            }
+        }
+        user.getMonsters().remove(this);
+    }
+
+    private void calculateHp() {
+        int mah = maxHp;
+        maxHp = baseHp + (level * ((((dv * level) / 100) + 10) / (((dv) / 100) + 10)));
+        hp += maxHp - mah;
     }
 
     public double calculateAttackEfficiency(ArrayList<MonsterType> typesAttack, ArrayList<MonsterType> typesDefend) {
@@ -161,280 +212,280 @@ public class Monster extends Item implements Serializable, Cloneable {
     public Efficiency getAttackEfficiency(MonsterType attacker, MonsterType defender) {
         switch (attacker) {
 
-            case Psycho:
+            case psychic:
                 switch (defender) {
-                    case Kampf:
-                    case Gift:
+                    case fighting:
+                    case poison:
                         return Efficiency.Strength;
 
-                    case Stahl:
-                    case Psycho:
+                    case steel:
+                    case psychic:
                         return Efficiency.Weakness;
 
-                    case Unlicht:
+                    case dark:
                         return Efficiency.CantAttack;
                 }
                 break;
 
-            case Geist:
+            case ghost:
                 switch (defender) {
-                    case Normal:
+                    case normal:
                         return Efficiency.CantAttack;
 
-                    case Geist:
-                    case Psycho:
+                    case ghost:
+                    case psychic:
                         return Efficiency.Strength;
 
-                    case Unlicht:
+                    case dark:
                         return Efficiency.Weakness;
                 }
                 break;
 
-            case Unlicht:
+            case dark:
                 switch (defender) {
-                    case Kampf:
-                    case Unlicht:
-                    case Fee:
+                    case fighting:
+                    case dark:
+                    case fairy:
                         return Efficiency.Weakness;
 
-                    case Geist:
-                    case Psycho:
+                    case ghost:
+                    case psychic:
                         return Efficiency.Strength;
                 }
                 break;
 
-            case Drache:
+            case dragon:
                 switch (defender) {
-                    case Stahl:
+                    case steel:
                         return Efficiency.Weakness;
 
-                    case Drache:
+                    case dragon:
                         return Efficiency.Strength;
 
-                    case Fee:
-                        return Efficiency.CantAttack;
-                }
-                break;
-
-            case Stahl:
-                switch (defender) {
-                    case Stahl:
-                    case Feuer:
-                    case Wasser:
-                    case Elektro:
-                        return Efficiency.Weakness;
-
-                    case Eis:
-                    case Gestein:
-                    case Fee:
-                        return Efficiency.Strength;
-                }
-                break;
-
-            case Fee:
-                switch (defender) {
-                    case Kampf:
-                    case Drache:
-                    case Unlicht:
-                        return Efficiency.Strength;
-
-                    case Gift:
-                    case Stahl:
-                    case Feuer:
-                        return Efficiency.Weakness;
-                }
-                break;
-
-            case Normal:
-                switch (defender) {
-                    case Gestein:
-                    case Stahl:
-                        return Efficiency.Weakness;
-
-                    case Geist:
+                    case fairy:
                         return Efficiency.CantAttack;
                 }
                 break;
 
-            case Feuer:
+            case steel:
                 switch (defender) {
-                    case Gestein:
-                    case Feuer:
-                    case Wasser:
-                    case Drache:
+                    case steel:
+                    case fire:
+                    case water:
+                    case electric:
                         return Efficiency.Weakness;
 
-                    case Kaefer:
-                    case Stahl:
-                    case Pflanze:
-                    case Eis:
+                    case ice:
+                    case rock:
+                    case fairy:
                         return Efficiency.Strength;
                 }
                 break;
 
-            case Wasser:
+            case fairy:
                 switch (defender) {
-                    case Boden:
-                    case Gestein:
-                    case Feuer:
+                    case fighting:
+                    case dragon:
+                    case dark:
                         return Efficiency.Strength;
 
-                    case Wasser:
-                    case Pflanze:
-                    case Drache:
+                    case poison:
+                    case steel:
+                    case fire:
                         return Efficiency.Weakness;
                 }
                 break;
 
-            case Elektro:
+            case normal:
                 switch (defender) {
-                    case Flug:
-                    case Wasser:
-                        return Efficiency.Strength;
-
-                    case Boden:
-                        return Efficiency.CantAttack;
-
-                    case Pflanze:
-                    case Elektro:
-                    case Drache:
-                        return Efficiency.Weakness;
-                }
-                break;
-
-            case Pflanze:
-                switch (defender) {
-                    case Flug:
-                    case Gift:
-                    case Kaefer:
-                    case Stahl:
-                    case Feuer:
-                    case Pflanze:
-                    case Drache:
+                    case rock:
+                    case steel:
                         return Efficiency.Weakness;
 
-                    case Boden:
-                    case Gestein:
-                    case Wasser:
-                        return Efficiency.Strength;
-                }
-                break;
-
-            case Flug:
-                switch (defender) {
-                    case Kampf:
-                    case Kaefer:
-                    case Pflanze:
-                        return Efficiency.Strength;
-
-                    case Gestein:
-                    case Stahl:
-                    case Elektro:
-                        return Efficiency.Weakness;
-                }
-                break;
-
-            case Kaefer:
-                switch (defender) {
-                    case Kampf:
-                    case Flug:
-                    case Gift:
-                    case Geist:
-                    case Stahl:
-                    case Feuer:
-                    case Fee:
-                        return Efficiency.Weakness;
-
-                    case Pflanze:
-                    case Psycho:
-                    case Unlicht:
-                        return Efficiency.Strength;
-                }
-                break;
-
-            case Gift:
-                switch (defender) {
-                    case Gift:
-                    case Boden:
-                    case Gestein:
-                    case Geist:
-                        return Efficiency.Weakness;
-
-                    case Stahl:
-                        return Efficiency.CantAttack;
-
-                    case Pflanze:
-                    case Fee:
-                        return Efficiency.Strength;
-                }
-                break;
-
-            case Gestein:
-                switch (defender) {
-                    case Kampf:
-                    case Boden:
-                    case Stahl:
-                        return Efficiency.Weakness;
-
-                    case Flug:
-                    case Kaefer:
-                    case Feuer:
-                    case Eis:
-                        return Efficiency.Strength;
-                }
-                break;
-
-            case Boden:
-                switch (defender) {
-                    case Flug:
-                        return Efficiency.CantAttack;
-
-                    case Gift:
-                    case Gestein:
-                    case Stahl:
-                    case Feuer:
-                    case Elektro:
-                        return Efficiency.Strength;
-
-                    case Kaefer:
-                    case Pflanze:
-                        return Efficiency.Weakness;
-                }
-                break;
-
-            case Kampf:
-                switch (defender) {
-                    case Normal:
-                    case Gestein:
-                    case Stahl:
-                    case Eis:
-                    case Unlicht:
-                        return Efficiency.Strength;
-
-                    case Flug:
-                    case Gift:
-                    case Kaefer:
-                    case Psycho:
-                    case Fee:
-                        return Efficiency.Weakness;
-
-                    case Geist:
+                    case ghost:
                         return Efficiency.CantAttack;
                 }
                 break;
 
-            case Eis:
+            case fire:
                 switch (defender) {
-                    case Flug:
-                    case Boden:
-                    case Pflanze:
-                    case Drache:
+                    case rock:
+                    case fire:
+                    case water:
+                    case dragon:
+                        return Efficiency.Weakness;
+
+                    case bug:
+                    case steel:
+                    case grass:
+                    case ice:
+                        return Efficiency.Strength;
+                }
+                break;
+
+            case water:
+                switch (defender) {
+                    case ground:
+                    case rock:
+                    case fire:
                         return Efficiency.Strength;
 
-                    case Stahl:
-                    case Feuer:
-                    case Wasser:
-                    case Eis:
+                    case water:
+                    case grass:
+                    case dragon:
+                        return Efficiency.Weakness;
+                }
+                break;
+
+            case electric:
+                switch (defender) {
+                    case flying:
+                    case water:
+                        return Efficiency.Strength;
+
+                    case ground:
+                        return Efficiency.CantAttack;
+
+                    case grass:
+                    case electric:
+                    case dragon:
+                        return Efficiency.Weakness;
+                }
+                break;
+
+            case grass:
+                switch (defender) {
+                    case flying:
+                    case poison:
+                    case bug:
+                    case steel:
+                    case fire:
+                    case grass:
+                    case dragon:
+                        return Efficiency.Weakness;
+
+                    case ground:
+                    case rock:
+                    case water:
+                        return Efficiency.Strength;
+                }
+                break;
+
+            case flying:
+                switch (defender) {
+                    case fighting:
+                    case bug:
+                    case grass:
+                        return Efficiency.Strength;
+
+                    case rock:
+                    case steel:
+                    case electric:
+                        return Efficiency.Weakness;
+                }
+                break;
+
+            case bug:
+                switch (defender) {
+                    case fighting:
+                    case flying:
+                    case poison:
+                    case ghost:
+                    case steel:
+                    case fire:
+                    case fairy:
+                        return Efficiency.Weakness;
+
+                    case grass:
+                    case psychic:
+                    case dark:
+                        return Efficiency.Strength;
+                }
+                break;
+
+            case poison:
+                switch (defender) {
+                    case poison:
+                    case ground:
+                    case rock:
+                    case ghost:
+                        return Efficiency.Weakness;
+
+                    case steel:
+                        return Efficiency.CantAttack;
+
+                    case grass:
+                    case fairy:
+                        return Efficiency.Strength;
+                }
+                break;
+
+            case rock:
+                switch (defender) {
+                    case fighting:
+                    case ground:
+                    case steel:
+                        return Efficiency.Weakness;
+
+                    case flying:
+                    case bug:
+                    case fire:
+                    case ice:
+                        return Efficiency.Strength;
+                }
+                break;
+
+            case ground:
+                switch (defender) {
+                    case flying:
+                        return Efficiency.CantAttack;
+
+                    case poison:
+                    case rock:
+                    case steel:
+                    case fire:
+                    case electric:
+                        return Efficiency.Strength;
+
+                    case bug:
+                    case grass:
+                        return Efficiency.Weakness;
+                }
+                break;
+
+            case fighting:
+                switch (defender) {
+                    case normal:
+                    case rock:
+                    case steel:
+                    case ice:
+                    case dark:
+                        return Efficiency.Strength;
+
+                    case flying:
+                    case poison:
+                    case bug:
+                    case psychic:
+                    case fairy:
+                        return Efficiency.Weakness;
+
+                    case ghost:
+                        return Efficiency.CantAttack;
+                }
+                break;
+
+            case ice:
+                switch (defender) {
+                    case flying:
+                    case ground:
+                    case grass:
+                    case dragon:
+                        return Efficiency.Strength;
+
+                    case steel:
+                    case fire:
+                    case water:
+                    case ice:
                         return Efficiency.Weakness;
                 }
                 break;
@@ -541,6 +592,22 @@ public class Monster extends Item implements Serializable, Cloneable {
         this.a4 = a4;
     }
 
+    public String getEvolves() {
+        return evolves;
+    }
+
+    public void setEvolves(String evolves) {
+        this.evolves = evolves;
+    }
+
+    public int getEvolveLevel() {
+        return evolveLevel;
+    }
+
+    public void setEvolveLevel(int evolveLevel) {
+        this.evolveLevel = evolveLevel;
+    }
+
     public String toString() {
         String msg = "";
         msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nTypes: ";
@@ -606,9 +673,14 @@ public class Monster extends Item implements Serializable, Cloneable {
                     a4 = at;
                     c++;
                 } else {
-                    return;
+                    break;
                 }
         }
+        if (evolves != null)
+            if (evolves.equals("")){
+                evolves = null;
+                evolveLevel = -1;
+            }
     }
 
     public Monster clone() {
@@ -634,10 +706,15 @@ public class Monster extends Item implements Serializable, Cloneable {
         t.setHp(hp);
         t.setBaseHp(baseHp);
         t.setLevel(level);
-        t.setMaxHp(maxHp);
         t.setXp(0);
         t.setMonsterTypes(cloneMonsterTypes());
         t.setAttacks(cloneAttacks());
+        try {
+            t.setEvolves(new String(evolves));
+            t.setEvolveLevel(evolveLevel);
+        } catch (Exception e){
+
+        }
         t.finish();
         return t;
     }
@@ -655,7 +732,7 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     public enum MonsterType {
-        Psycho, Geist, Unlicht, Drache, Stahl, Fee, Normal, Feuer, Wasser, Elektro, Pflanze, Flug, Kaefer, Gift, Gestein, Boden, Kampf, Eis
+        psychic, ghost, dark, dragon, steel, fairy, normal, fire, water, electric, grass, flying, bug, poison, rock, ground, fighting, ice
     }
 
     private enum Efficiency {
