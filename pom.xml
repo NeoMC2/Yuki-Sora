@@ -6,7 +6,7 @@
 
     <groupId>mindcollaps.yukisora</groupId>
     <artifactId>Yuki-Sora</artifactId>
-    <version>SNAPSHOT_S02a</version>
+    <version>SNAPSHOT_S02b</version>
 
     <packaging>jar</packaging>
     <properties>

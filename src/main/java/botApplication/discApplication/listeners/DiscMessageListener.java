@@ -162,7 +162,7 @@ public class DiscMessageListener extends ListenerAdapter {
 
     private void pictureSelect(GuildMessageReceivedEvent event) {
         DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
-        String c = event.getMessage().getContentRaw();
+        String c = event.getMessage().getContentDisplay();
         c = c.substring(1);
         String[] ca = c.split(" ");
         String to = "";

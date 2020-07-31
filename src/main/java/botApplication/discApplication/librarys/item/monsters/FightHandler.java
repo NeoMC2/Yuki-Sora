@@ -31,8 +31,8 @@ public class FightHandler {
     private Monster m = null;
     private Monster e = null;
     private Attack a = null;
-    private Member turner = null;
-    private Member enemy = null;
+    private final Member turner = null;
+    private final Member enemy = null;
 
     public FightHandler(Engine engine, TextChannel textChannel, Guild g) {
         this.engine = engine;

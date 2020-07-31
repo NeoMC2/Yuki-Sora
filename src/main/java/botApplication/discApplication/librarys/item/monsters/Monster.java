@@ -2,7 +2,6 @@ package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
-import com.sun.org.apache.xpath.internal.CachedXPathAPI;
 import core.Engine;
 
 import java.io.Serializable;
@@ -710,7 +709,7 @@ public class Monster extends Item implements Serializable, Cloneable {
         t.setMonsterTypes(cloneMonsterTypes());
         t.setAttacks(cloneAttacks());
         try {
-            t.setEvolves(new String(evolves));
+            t.setEvolves(evolves);
             t.setEvolveLevel(evolveLevel);
         } catch (Exception e){
 
