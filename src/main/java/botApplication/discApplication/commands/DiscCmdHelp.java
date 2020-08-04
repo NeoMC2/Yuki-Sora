@@ -11,12 +11,16 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 public class DiscCmdHelp implements DiscCommand {
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        return false;
+        return true;
     }
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-
+        String msg = "";
+        for (String s:engine.getDiscEngine().getCommandHandler().commandIvokes) {
+            msg += s + "\n";
+        }
+        engine.getDiscEngine().getTextUtils().sendHelp(msg, event.getChannel());
     }
 
     @Override
@@ -31,7 +35,7 @@ public class DiscCmdHelp implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return null;
+        return "you need help for help.......RLLLLLLYYYYYYYYYYYYYYYY";
     }
 
     @Override

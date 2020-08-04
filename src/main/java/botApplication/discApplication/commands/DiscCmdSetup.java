@@ -160,14 +160,8 @@ public class DiscCmdSetup implements DiscCommand {
                                         engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.setup.succes.roleDefined", user.getLang(), null), event.getChannel());
                                     }
                                 } else if (args[2].toLowerCase().equals("remove")) {
-                                    Role g = event.getGuild().getRoleById(args[3]);
-                                    if (g == null) {
-                                        engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
-                                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404role", user.getLang(), null), event.getChannel(), true);
-                                    } else {
-                                        server.getDefaultRoles().remove(g.getId());
-                                        engine.getDiscEngine().getTextUtils().sendSucces("removed!", event.getChannel());
-                                    }
+                                    server.getDefaultRoles().remove(args[3]);
+                                    engine.getDiscEngine().getTextUtils().sendSucces("removed!", event.getChannel());
                                 }
                                 break;
 

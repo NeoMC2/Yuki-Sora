@@ -88,7 +88,7 @@ public class DiscVoiceListener extends ListenerAdapter {
     }
 
     private void setupVc(VoiceChannel vc, Guild gc, Member m) {
-        VoiceChannel nvc = (VoiceChannel) gc.createVoiceChannel(vc.getName() + " [AC]")
+        VoiceChannel nvc = gc.createVoiceChannel(vc.getName() + " [AC]")
                 .setBitrate(vc.getBitrate())
                 .setUserlimit(vc.getUserLimit())
                 .complete();

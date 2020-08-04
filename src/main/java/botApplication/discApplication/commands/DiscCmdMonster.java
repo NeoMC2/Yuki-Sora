@@ -12,7 +12,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
-import java.awt.*;
 import java.util.ArrayList;
 
 public class DiscCmdMonster implements DiscCommand {
@@ -24,6 +23,12 @@ public class DiscCmdMonster implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length >= 1) {
+            Monster mn = null;
+            if (args.length >= 2)
+                try {
+                    mn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
+                } catch (Exception e){
+                }
             switch (args[0]) {
                 case "fight":
                     if (args.length > 1)
@@ -60,8 +65,7 @@ public class DiscCmdMonster implements DiscCommand {
                             return;
                         }
                     }
-                    Monster m = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
-                    m.setHp(m.getMaxHp());
+                    mn.setHp(mn.getMaxHp());
                     engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.healed", user.getLang(), null), event.getChannel());
                     break;
 
@@ -73,10 +77,14 @@ public class DiscCmdMonster implements DiscCommand {
                     if (user.getCoins() >= 20) {
                         user.substractCoins(20);
                         Monster monster = engine.getDiscEngine().getTransaktionHandler().getRandomMonster(Item.Rarity.Normal);
+                        if(monster == null){
+                            engine.getDiscEngine().getTextUtils().sendError("An error showed up, you'll get your coins back. Try again soon!", event.getChannel(), false);
+                            return;
+                        }
                         EmbedBuilder mb = new EmbedBuilder()
                                 .setDescription(engine.lang("cmd.pokemon.success.buy", user.getLang(), new String[]{monster.getItemName(), Item.rarityToString(monster.getItemRarity())}))
                                 .setAuthor("Got " + monster.getItemName(), monster.getImgUrl())
-                                .setColor(Color.CYAN)
+                                .setColor(Item.rarityToColor(monster.getItemRarity()))
                                 .setThumbnail(monster.getImgUrl());
                         event.getChannel().sendMessage(mb.build()).queue();
                         user.getMonsters().add(monster);
@@ -87,8 +95,9 @@ public class DiscCmdMonster implements DiscCommand {
 
                 case "list":
                 case "info":
-                case "pokemons":
-                    String msg = "Pokemons\n\n";
+                case "show":
+                case "monsters":
+                    String msg = "Monsters\n\n";
                     if (args.length > 1) {
                         int i = Integer.parseInt(args[1]);
                         msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
@@ -102,7 +111,6 @@ public class DiscCmdMonster implements DiscCommand {
 
                 case "ai":
                 case "attackinfo":
-                    Monster mn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
                     if (mn == null) {
                         engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
                         return;
@@ -120,25 +128,24 @@ public class DiscCmdMonster implements DiscCommand {
                 case "selectattack":
                 case "as":
                 case "sa":
-                    Monster mnn = user.getMonsters().get(Integer.parseInt(args[1]) + 1);
-                    if (mnn == null) {
+                    if (mn == null) {
                         engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
                         return;
                     }
-                    ArrayList<Attack> attackss = mnn.getAllowedAttacks();
+                    ArrayList<Attack> attackss = mn.getAllowedAttacks();
                     Attack accs = attackss.get(Integer.parseInt(args[2]) + 1);
                     switch (args[3].toLowerCase()) {
                         case "a1":
-                            mnn.setA1(accs);
+                            mn.setA1(accs);
                             break;
                         case "a2":
-                            mnn.setA2(accs);
+                            mn.setA2(accs);
                             break;
                         case "a3":
-                            mnn.setA3(accs);
+                            mn.setA3(accs);
                             break;
                         case "a4":
-                            mnn.setA4(accs);
+                            mn.setA4(accs);
                             break;
                     }
                     break;
@@ -146,13 +153,32 @@ public class DiscCmdMonster implements DiscCommand {
                 case "delete":
                 case "del":
                 case "trash":
-                    Monster mnnn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
-                    if (mnnn == null) {
+                    if (mn == null) {
                         engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
                         return;
                     }
-                    user.getMonsters().remove(mnnn);
+                    user.getMonsters().remove(mn);
                     engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.deleted", user.getLang(), null), event.getChannel());
+                    break;
+
+                case "sell":
+                    if (mn == null) {
+                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
+                        return;
+                    }
+                    user.getMonsters().remove(mn);
+                    user.addCoins(Monster.rarityToMarketValue(mn.getItemRarity()));
+                    engine.getDiscEngine().getTextUtils().sendSucces("You've got " + Monster.rarityToMarketValue(mn.getItemRarity()) + " for your monster", event.getChannel());
+                    break;
+
+                case "feed":
+                    if (user.getCoins() >= 5) {
+                        user.substractCoins(5);
+                        mn.getAttacks().forEach(e -> e.setUsed(e.getUsage()));
+                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.feed", user.getLang(), null), event.getChannel());
+                    } else {
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), false);
+                    }
                     break;
 
                 default:

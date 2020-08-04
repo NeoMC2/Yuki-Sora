@@ -70,29 +70,33 @@ public class DiscApplicationFilesHandler {
         } catch (Exception e) {
             e.printStackTrace();
             engine.getUtilityBase().printOutput("!!Pokemons cant load!!", true);
+            e.printStackTrace();
         }
         try {
             jobs = TransaktionHandler.parseJsonToJobs(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/jobs.json"));
         } catch (Exception e) {
             e.printStackTrace();
             engine.getUtilityBase().printOutput("!!Jobs cant load!!", true);
+            e.printStackTrace();
         }
         try {
             engine.getDiscEngine().getVoteCmd().setPolls((ArrayList<Poll>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/vote/votes.dat"));
         } catch (Exception e) {
             engine.getUtilityBase().printOutput("!!Votes cant load!!", true);
+            e.printStackTrace();
         }
         try {
             servers = (HashMap<String, DiscApplicationServer>) engine.getFileUtils().loadObject(engine.getFileUtils().getHome() + "/bot/utilize/servers.server");
         } catch (Exception e) {
             engine.getUtilityBase().printOutput("!!Servers cant load!!", true);
+            e.printStackTrace();
         }
 
         try {
             users = (HashMap<String, DiscApplicationUser>) engine.getFileUtils().loadObject(engine.getFileUtils().getHome() + "/bot/utilize/users.users");
         } catch (Exception e) {
             engine.getUtilityBase().printOutput("!!Users cant load!!", true);
-            System.out.println("!!Users cant load!!");
+            e.printStackTrace();
         }
 
         if (servers == null) {

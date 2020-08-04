@@ -12,6 +12,8 @@ public class Attack implements Serializable, Cloneable {
     private String attackName;
     private ArrayList<Monster.MonsterType> monsterTypes = new ArrayList<>();
     private int lvl;
+    private int usage;
+    private int used;
 
     //public enum AttackType {
     //   Heal, Punch
@@ -57,12 +59,28 @@ public class Attack implements Serializable, Cloneable {
         this.lvl = lvl;
     }
 
+    public int getUsed() {
+        return used;
+    }
+
+    public void setUsed(int used) {
+        this.used = used;
+    }
+
+    public int getUsage() {
+        return usage;
+    }
+
+    public void setUsage(int usage) {
+        this.usage = usage;
+    }
+
     public String toString() {
         String s = "";
         for (Monster.MonsterType m : monsterTypes) {
             s += m.name() + " ";
         }
-        return "Name: " + attackName + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s;
+        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s;
     }
 
     public Attack clone() {
@@ -78,6 +96,8 @@ public class Attack implements Serializable, Cloneable {
         t.setAttackName(attackName);
         t.setLvl(lvl);
         t.setMonsterTypes(cloneMonsterTypes());
+        t.setUsage(usage);
+        t.setUsed(usage);
         return t;
     }
 
@@ -85,5 +105,9 @@ public class Attack implements Serializable, Cloneable {
         ArrayList<Monster.MonsterType> t = new ArrayList<Monster.MonsterType>();
         monsterTypes.forEach(e -> t.add(e));
         return t;
+    }
+
+    public void use(){
+        used++;
     }
 }

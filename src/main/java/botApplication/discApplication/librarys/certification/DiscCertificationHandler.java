@@ -7,7 +7,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
@@ -32,7 +31,11 @@ public class DiscCertificationHandler {
             roles.add(guild.getRoleById(s));
         }
         for (Role r:roles) {
-            guild.addRoleToMember(member, r).queue();
+            try {
+                guild.addRoleToMember(member, r).queue();
+            } catch (Exception e){
+
+            }
         }
 
         try {

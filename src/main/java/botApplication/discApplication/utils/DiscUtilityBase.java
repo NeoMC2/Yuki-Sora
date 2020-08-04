@@ -21,8 +21,8 @@ public class DiscUtilityBase {
     public boolean userHasGuildAdminPermission(Member member, Guild guild, TextChannel textChannel) {
         boolean hasPermission = false;
         for (int i = 0; member.getRoles().size() > i; i++) {
-            for (int a = 0; member.getRoles().get(i).getPermissions().toArray().length > a; i++) {
-                if (member.getRoles().get(i).getPermissions().toArray()[a] != Permission.ADMINISTRATOR) {
+            for (int a = 0; member.getRoles().get(i).getPermissions().toArray().length > a; a++) {
+                if (member.getRoles().get(i).getPermissions().toArray()[a] == Permission.ADMINISTRATOR) {
                     hasPermission = true;
                     break;
                 }

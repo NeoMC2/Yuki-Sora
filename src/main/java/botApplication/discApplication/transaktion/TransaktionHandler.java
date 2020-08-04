@@ -42,29 +42,52 @@ public class TransaktionHandler {
         ArrayList<Monster> monsters = new ArrayList<>();
         Object[] set = object.keySet().toArray();
         for (int i = 0; i < set.length; i++) {
+            boolean fail = false;
             JSONObject o = (JSONObject) object.get(set[i]);
             Monster m = new Monster();
-            m.setItemName((String) set[i]);
-            m.setImgUrl((String) o.get("img"));
-            m.setMaxHp(Integer.parseInt((String) o.get("hp")));
-            m.setBaseHp(m.getMaxHp());
-            m.setHp(m.getMaxHp());
-            m.setLevel(Integer.parseInt((String) o.get("lvl")));
-            m.setMonsterTypes(getMonsterTypesFromJson(o));
-            m.setItemRarity(Item.stringToRarity((String) o.get("rar")));
+            try {
+                m.setItemName((String) set[i]);
+                m.setImgUrl((String) o.get("img"));
+                m.setMaxHp(Integer.parseInt((String) o.get("hp")));
+                m.setBaseHp(m.getMaxHp());
+                m.setHp(m.getMaxHp());
+                m.setLevel(Integer.parseInt((String) o.get("lvl")));
+                m.setMonsterTypes(getMonsterTypesFromJson(o));
+                m.setItemRarity(Item.stringToRarity((String) o.get("rar")));
+            } catch (Exception e) {
+                fail = true;
+            }
+
+            try {
+                m.setEvolveLevel(Integer.parseInt((String) o.get("evlvl")));
+            } catch (Exception e) {
+                m.setEvolveLevel(-1);
+            }
+
+            try {
+                m.setEvolves((String) o.get("ev"));
+            } catch (Exception e) {
+            }
 
             JSONArray attacks = (JSONArray) o.get("attacks");
             for (Object att : attacks) {
                 JSONObject attack = (JSONObject) att;
                 Attack a = new Attack();
-                a.setAttackName((String) attack.get("name"));
-                a.setBaseDamage(Integer.parseInt((String) attack.get("dmg")));
-                a.setMonsterTypes(getMonsterTypesFromJson(attack));
-                a.setLvl(Integer.parseInt((String) attack.get("lvl")));
-                m.getAttacks().add(a);
+                try {
+                    a.setUsage(Integer.parseInt((String) attack.get("usage")));
+                    a.setAttackName((String) attack.get("name"));
+                    a.setBaseDamage(Integer.parseInt((String) attack.get("dmg")));
+                    a.setMonsterTypes(getMonsterTypesFromJson(attack));
+                    a.setLvl(Integer.parseInt((String) attack.get("lvl")));
+                } catch (Exception e) {
+                    fail = true;
+                }
+                if (!fail)
+                    m.getAttacks().add(a);
             }
             m.finish();
-            monsters.add(m);
+            if (!fail)
+                monsters.add(m);
         }
         return monsters;
     }
@@ -91,21 +114,21 @@ public class TransaktionHandler {
         } catch (Exception e) {
             return null;
         }
-        if (Item.rarityToInt(minRarity) >= Item.rarityToInt(m.getItemRarity())) {
+        if (Item.rarityToInt(minRarity) <= Item.rarityToInt(m.getItemRarity())) {
             int i = Item.rarityToInt(m.getItemRarity());
             int r2 = ThreadLocalRandom.current().nextInt(0, 100);
             if (i == 0) {
                 return m;
             } else if (i == 1) {
-                if (r2 > 20) {
-                    return m;
-                }
-            } else if (i == 2) {
                 if (r2 > 30) {
                     return m;
                 }
+            } else if (i == 2) {
+                if (r2 > 50) {
+                    return m;
+                }
             } else if (i == 3) {
-                if (r2 > 40) {
+                if (r2 > 80) {
                     return m;
                 }
             }

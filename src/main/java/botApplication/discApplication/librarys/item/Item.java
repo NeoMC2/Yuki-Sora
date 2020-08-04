@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys.item;
 
+import java.awt.*;
 import java.io.Serializable;
 
 public class Item implements Serializable, Cloneable {
@@ -22,6 +23,21 @@ public class Item implements Serializable, Cloneable {
                 return Rarity.Mystic;
         }
         return null;
+    }
+
+    public static Color rarityToColor(Rarity r){
+        switch (r){
+
+            case Normal:
+                return Color.GRAY;
+            case Epic:
+                return Color.MAGENTA;
+            case Legendary:
+                return Color.ORANGE;
+            case Mystic:
+                return Color.decode("#11EA7B");
+        }
+        return Color.CYAN;
     }
 
     public static String rarityToString(Rarity r) {
@@ -50,6 +66,21 @@ public class Item implements Serializable, Cloneable {
                 return 2;
             case Mystic:
                 return 3;
+        }
+        return 0;
+    }
+
+    public static int rarityToMarketValue(Rarity r){
+        switch (r){
+
+            case Normal:
+                return 5;
+            case Epic:
+                return 10;
+            case Legendary:
+                return 20;
+            case Mystic:
+                return 50;
         }
         return 0;
     }

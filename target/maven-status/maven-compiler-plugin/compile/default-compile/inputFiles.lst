@@ -3,6 +3,7 @@ C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdHelp.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\response\ResponseHandler.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\listeners\DiscBotJoinListener.java
+C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\utils\NetworkManager.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdVote.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\librarys\job\UserJob.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdJob.java
@@ -37,6 +38,7 @@ C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdSetup.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdRockPaperScissors.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\librarys\DiscApplicationFilesHandler.java
+C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdMusic.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\commands\DiscCmdMove.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\utils\DiscUtilityBase.java
 C:\Users\Noah\Documents\____Coding\GitHub\Yuki-Sora\src\main\java\botApplication\discApplication\librarys\item\Item.java

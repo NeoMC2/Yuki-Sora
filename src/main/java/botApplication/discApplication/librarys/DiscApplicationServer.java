@@ -44,7 +44,7 @@ public class DiscApplicationServer implements Serializable {
     public void updateServerStats(Engine engine) {
         Guild g = engine.getDiscEngine().getBotJDA().getGuildById(serverID);
         try {
-            g.getCategoryById(memberCountCategoryId).getManager().setName("\uD83D\uDCCAMember Count: " + String.valueOf(g.getMembers().size())).queue();
+            g.getCategoryById(memberCountCategoryId).getManager().setName("\uD83D\uDCCAMember Count: " + g.getMembers().size()).queue();
         } catch (Exception e) {
 
         }

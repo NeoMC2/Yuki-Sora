@@ -111,6 +111,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("admin", new DiscCmdAdmin());
         commandHandler.createNewCommand("wallet", new DiscCmdWallet());
         commandHandler.createNewCommand("monster", new DiscCmdMonster());
+        commandHandler.createNewCommand("m", new DiscCmdMusic());
     }
 
     private void addBotListeners() {

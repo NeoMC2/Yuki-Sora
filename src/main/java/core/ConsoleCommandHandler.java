@@ -2,6 +2,7 @@ package core;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleCommandHandler {
@@ -121,8 +122,22 @@ public class ConsoleCommandHandler {
                 user.setAdmin(false);
                 break;
 
+            case "addbotslave":
+                if(engine.getProperties().botSlaves == null)
+                    engine.getProperties().botSlaves = new ArrayList<>();
+                engine.getProperties().botSlaves.add(command.split(" ")[1]);
+                System.out.println("added");
+                break;
+
+            case "removebotslave":
+                if(engine.getProperties().botSlaves == null)
+                    engine.getProperties().botSlaves = new ArrayList<>();
+                engine.getProperties().botSlaves.remove(command.split(" ")[1]);
+                System.out.println("removed");
+                break;
+
             case "help":
-                System.out.println("makeadmin <user id> - adds admin status\nundoadmin <user id> - removes admin status\nsavespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nshowtime - shows time at console output");
+                System.out.println("addbotslave <url> - adds music bot slave\nremovebotslave <url> - removes music bot slave\nmakeadmin <user id> - adds admin status\nundoadmin <user id> - removes admin status\nsavespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nshowtime - shows time at console output");
                 break;
 
             default:
