@@ -1,6 +1,7 @@
 package utils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class Properties implements Serializable {
 
@@ -21,4 +22,5 @@ public class Properties implements Serializable {
     public boolean debug = false;
     public boolean showTime = true;
     public int saveSpeed = 10;
+    public ArrayList<String> botSlaves;
 }

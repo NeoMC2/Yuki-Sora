@@ -1,6 +1,7 @@
 package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
+import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
@@ -19,6 +20,7 @@ public class Engine {
     private Properties properties;
     private final DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
     private final ResponseHandler responseHandler = new ResponseHandler(this);
+    private NetworkManager networkManager = new NetworkManager(this);
 
     public void boot(String[] args) {
         loadLanguage();
@@ -182,6 +184,10 @@ public class Engine {
 
     public JSONObject getPics() {
         return pics;
+    }
+
+    public NetworkManager getNetworkManager() {
+        return networkManager;
     }
 }
 

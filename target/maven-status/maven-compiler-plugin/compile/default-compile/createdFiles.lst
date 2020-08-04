@@ -25,6 +25,7 @@ botApplication\discApplication\librarys\item\monsters\Monster$MonsterType.class
 botApplication\discApplication\librarys\job\Job.class
 botApplication\discApplication\utils\DiscTextUtils$1.class
 botApplication\discApplication\librarys\certification\DiscCertificationLevel.class
+botApplication\discApplication\commands\DiscCmdMusic.class
 botApplication\response\Response$ResponseTyp.class
 botApplication\discApplication\core\DiscCommandParser.class
 core\Engine.class
@@ -65,6 +66,7 @@ botApplication\discApplication\librarys\DiscRole.class
 botApplication\discApplication\commands\DiscCmdSetup.class
 botApplication\discApplication\librarys\job\UserJob$JobRank.class
 botApplication\discApplication\commands\DiscCmdMonster.class
+botApplication\discApplication\utils\NetworkManager.class
 botApplication\discApplication\utils\DiscTextUtils$6.class
 botApplication\discApplication\librarys\DiscApplicationServer.class
 botApplication\discApplication\core\DiscCommandHandler.class

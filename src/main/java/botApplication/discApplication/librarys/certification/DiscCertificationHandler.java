@@ -31,7 +31,11 @@ public class DiscCertificationHandler {
             roles.add(guild.getRoleById(s));
         }
         for (Role r:roles) {
-            guild.addRoleToMember(member, r).queue();
+            try {
+                guild.addRoleToMember(member, r).queue();
+            } catch (Exception e){
+
+            }
         }
 
         try {
