@@ -72,6 +72,8 @@ public class NetworkManager {
     }
 
     private HttpURLConnection makeConnection(String path) throws Exception {
-        return (HttpURLConnection) new URL(path).openConnection();
+        HttpURLConnection c = (HttpURLConnection) new URL(path).openConnection();
+        c.setConnectTimeout(3000);
+        return c;
     }
 }

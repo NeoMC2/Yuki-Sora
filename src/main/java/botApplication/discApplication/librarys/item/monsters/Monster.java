@@ -4,6 +4,7 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
 import core.Engine;
 
+import javax.smartcardio.ATR;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -13,6 +14,7 @@ public class Monster extends Item implements Serializable, Cloneable {
     private static final long serialVersionUID = 42L;
 
     private ArrayList<Attack> attacks = new ArrayList<>();
+    private ArrayList<Attack.StatusEffect> statusEffects = new ArrayList<>();
     private Attack a1;
     private Attack a2;
     private Attack a3;
@@ -102,6 +104,24 @@ public class Monster extends Item implements Serializable, Cloneable {
                 return MonsterType.fairy;
         }
         throw new Exception("Unknown Type");
+    }
+
+    public int calculateStateDmg(){
+        int allDmg = 0;
+        for (Attack.StatusEffect ss:statusEffects) {
+            if(ss == Attack.StatusEffect.Burn||ss == Attack.StatusEffect.Poison){
+                int dmg = maxHp /16;
+                hp -= dmg;
+                allDmg += dmg;
+            }
+            if(ss != Attack.StatusEffect.Freeze&&ss != Attack.StatusEffect.Sleep&&ss != Attack.StatusEffect.Paralysis)
+            if(ss == Attack.StatusEffect.Confusion){
+                double dmg = (((level * (1 / 3)) + 2) + 40);
+                hp -= dmg;
+                allDmg += dmg;
+            }
+        }
+        return allDmg;
     }
 
     public int attack(Monster o, Attack attack, Monster enemy) {
@@ -605,6 +625,14 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     public void setEvolveLevel(int evolveLevel) {
         this.evolveLevel = evolveLevel;
+    }
+
+    public ArrayList<Attack.StatusEffect> getStatusEffects() {
+        return statusEffects;
+    }
+
+    public void setStatusEffects(ArrayList<Attack.StatusEffect> statusEffects) {
+        this.statusEffects = statusEffects;
     }
 
     public String toString() {

@@ -39,6 +39,7 @@ botApplication\discApplication\librarys\item\monsters\FightHandler$1.class
 utils\UtilityBase.class
 botApplication\discApplication\librarys\poll\Poll.class
 botApplication\discApplication\librarys\certification\DiscCertificationHandler.class
+botApplication\discApplication\librarys\item\monsters\Attack$StatusEffect.class
 botApplication\discApplication\librarys\poll\PollAnswer.class
 botApplication\discApplication\listeners\DiscMessageListener.class
 botApplication\discApplication\commands\DiscCmdWallet.class
