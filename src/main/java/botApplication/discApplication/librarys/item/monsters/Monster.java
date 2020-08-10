@@ -6,6 +6,7 @@ import core.Engine;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Monster extends Item implements Serializable, Cloneable {
@@ -13,6 +14,7 @@ public class Monster extends Item implements Serializable, Cloneable {
     private static final long serialVersionUID = 42L;
 
     private ArrayList<Attack> attacks = new ArrayList<>();
+    private ArrayList<StatusEffect> statusEffects = new ArrayList<>();
     private Attack a1;
     private Attack a2;
     private Attack a3;
@@ -24,8 +26,10 @@ public class Monster extends Item implements Serializable, Cloneable {
     private int level = 1;
     private int xp;
     private ArrayList<MonsterType> monsterTypes = new ArrayList<>();
-    private String evolves = "";
+    private ArrayList<String> evolves = new ArrayList<>();
+    private MonsterType evolveDirection;
     private int evolveLevel = 0;
+    private boolean shown = true;
 
     public static MonsterType stringToMonsterType(String s) throws Exception {
         switch (s.toLowerCase()) {
@@ -104,9 +108,57 @@ public class Monster extends Item implements Serializable, Cloneable {
         throw new Exception("Unknown Type");
     }
 
+    public int calculateStateDmg(boolean turn) {
+        int allDmg = 0;
+        Iterator<StatusEffect> itr = statusEffects.iterator();
+        while (itr.hasNext()){
+            StatusEffect ss = itr.next();
+            if(!turn)
+            if (ss.getType() == StatusEffect.StatusEffectType.Freeze) {
+                if (ThreadLocalRandom.current().nextInt(0, 100) < 20) {
+                    itr.remove();
+                    continue;
+                }
+            }
+            if (!turn)
+                if (ss.getType() == StatusEffect.StatusEffectType.Sleep || ss.getType() == StatusEffect.StatusEffectType.Confusion)
+                    if (ss.getRoundsLeft() <= 0) {
+                        itr.remove();
+                        continue;
+                    }
+            if (!turn)
+                if (ss.getType() == StatusEffect.StatusEffectType.Burn || ss.getType() == StatusEffect.StatusEffectType.Poison) {
+                    int dmg = maxHp / 16;
+                    hp -= dmg;
+                    allDmg += dmg;
+                }
+            if (turn)
+                if (ss.getType() != StatusEffect.StatusEffectType.Freeze && ss.getType() != StatusEffect.StatusEffectType.Sleep && ss.getType() != StatusEffect.StatusEffectType.Paralysis)
+                    if (ss.getType() == StatusEffect.StatusEffectType.Confusion) {
+                        double dmg = (((level * (1 / 3)) + 2) + 40);
+                        hp -= dmg;
+                        allDmg += dmg;
+                    }
+            ss.setRoundsLeft(ss.getRoundsLeft() - 1);
+        }
+        return allDmg;
+    }
+
     public int attack(Monster o, Attack attack, Monster enemy) {
-        double dmg = (((level * (1 / 3)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        attack.use();
+        double dmg = (((level * (1 / 8)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
+        if (attack.getStatusEffect() != null) {
+            StatusEffect e = new StatusEffect();
+            e.setType(attack.getStatusEffect().getType());
+            if(attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep||attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
+                e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1,7));
+            for (StatusEffect statusEffect : enemy.getStatusEffects()) {
+                if (attack.getStatusEffect().getType() == statusEffect.getType())
+                    enemy.getStatusEffects().remove(statusEffect);
+            }
+            enemy.getStatusEffects().add(e);
+        }
         return (int) dmg;
     }
 
@@ -154,15 +206,16 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void evolve(Engine e, DiscApplicationUser user) {
+        String evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() -1));
         for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
-            if (evolves.toLowerCase().equals(m.getItemName().toLowerCase())) {
+            if (evolvesIn.toLowerCase().equals(m.getItemName().toLowerCase())) {
                 Monster mon = m.clone();
                 try {
                     mon.setA1(a1);
                     mon.setA2(a2);
                     mon.setA3(a3);
                     mon.setA4(a4);
-                } catch (Exception ex){
+                } catch (Exception ex) {
                 }
                 mon.getAttacks().addAll(attacks);
                 mon.finish();
@@ -174,9 +227,8 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void calculateHp() {
-        int mah = maxHp;
         maxHp = baseHp + (level * ((((dv * level) / 100) + 10) / (((dv) / 100) + 10)));
-        hp += maxHp - mah;
+        hp = maxHp;
     }
 
     public double calculateAttackEfficiency(ArrayList<MonsterType> typesAttack, ArrayList<MonsterType> typesDefend) {
@@ -591,11 +643,11 @@ public class Monster extends Item implements Serializable, Cloneable {
         this.a4 = a4;
     }
 
-    public String getEvolves() {
+    public ArrayList<String> getEvolves() {
         return evolves;
     }
 
-    public void setEvolves(String evolves) {
+    public void setEvolves(ArrayList<String> evolves) {
         this.evolves = evolves;
     }
 
@@ -607,9 +659,34 @@ public class Monster extends Item implements Serializable, Cloneable {
         this.evolveLevel = evolveLevel;
     }
 
+    public ArrayList<StatusEffect> getStatusEffects() {
+        return statusEffects;
+    }
+
+    public void setStatusEffects(ArrayList<StatusEffect> statusEffects) {
+        this.statusEffects = statusEffects;
+    }
+
+    public boolean isShown() {
+        return shown;
+    }
+
+    public void setShown(boolean shown) {
+        this.shown = shown;
+    }
+
+    public MonsterType getEvolveDirection() {
+        return evolveDirection;
+    }
+
+    public void setEvolveDirection(MonsterType evolveDirection) {
+        this.evolveDirection = evolveDirection;
+    }
+
     public String toString() {
         String msg = "";
-        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nTypes: ";
+        String g = addStatusEffects();
+        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nStaus Effects: " + g + "\nTypes: ";
         msg = addTypes(monsterTypes, msg);
         msg += "\n\n**Attacks:**\n";
         msg += "A1: \n";
@@ -637,6 +714,14 @@ public class Monster extends Item implements Serializable, Cloneable {
             msg += a4.toString();
         }
         return msg;
+    }
+
+    private String addStatusEffects() {
+        String s = "";
+        for (StatusEffect eff : statusEffects) {
+            s += eff.getType().name() + ", ";
+        }
+        return s;
     }
 
     private String addTypes(ArrayList<Monster.MonsterType> mt, String s) {
@@ -676,10 +761,11 @@ public class Monster extends Item implements Serializable, Cloneable {
                 }
         }
         if (evolves != null)
-            if (evolves.equals("")){
+            if (evolves.equals("")) {
                 evolves = null;
                 evolveLevel = -1;
             }
+        calculateHp();
     }
 
     public Monster clone() {
@@ -709,13 +795,19 @@ public class Monster extends Item implements Serializable, Cloneable {
         t.setMonsterTypes(cloneMonsterTypes());
         t.setAttacks(cloneAttacks());
         try {
-            t.setEvolves(evolves);
+            t.setEvolves(cloneEv());
             t.setEvolveLevel(evolveLevel);
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
         t.finish();
         return t;
+    }
+
+    private ArrayList<String> cloneEv(){
+        ArrayList<String> ec = new ArrayList<>();
+        evolves.forEach(e -> ec.add(e));
+        return ec;
     }
 
     private ArrayList<Attack> cloneAttacks() {

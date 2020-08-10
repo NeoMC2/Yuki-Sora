@@ -24,10 +24,10 @@ public class DiscCmdAdmin implements DiscCommand {
                 for (Object u:engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
                     DiscApplicationUser usr = (DiscApplicationUser) u;
                     usr.getMonsters().clear();
-                    usr.setCoins(20);
+                    usr.setCoins(usr.getCoins() + 20);
                     usr.setLastWorkTime(null);
                 }
-                engine.getDiscEngine().getTextUtils().sendError("Done!", event.getChannel(), false);
+                engine.getDiscEngine().getTextUtils().sendSucces("Done!", event.getChannel());
                 break;
 
             case "user":

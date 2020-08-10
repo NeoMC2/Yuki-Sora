@@ -8,16 +8,12 @@ public class Attack implements Serializable, Cloneable {
     private static final long serialVersionUID = 42L;
 
     private int baseDamage;
-    //private AttackType attackType;
     private String attackName;
     private ArrayList<Monster.MonsterType> monsterTypes = new ArrayList<>();
     private int lvl;
     private int usage;
     private int used;
-
-    //public enum AttackType {
-    //   Heal, Punch
-    //}
+    private StatusEffect statusEffect;
 
     public int getBaseDamage() {
         return baseDamage;
@@ -26,14 +22,6 @@ public class Attack implements Serializable, Cloneable {
     public void setBaseDamage(int baseDamage) {
         this.baseDamage = baseDamage;
     }
-
-    //public AttackType getAttackType() {
-    //return attackType;
-    //}
-
-    //public void setAttackType(AttackType attackType) {
-    //this.attackType = attackType;
-    //}
 
     public String getAttackName() {
         return attackName;
@@ -75,12 +63,25 @@ public class Attack implements Serializable, Cloneable {
         this.usage = usage;
     }
 
+    public StatusEffect getStatusEffect() {
+        return statusEffect;
+    }
+
+    public void setStatusEffect(StatusEffect statusEffect) {
+        this.statusEffect = statusEffect;
+    }
+
     public String toString() {
         String s = "";
         for (Monster.MonsterType m : monsterTypes) {
             s += m.name() + " ";
         }
-        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s;
+        String status = "";
+        if (statusEffect != null)
+            if (statusEffect.getType() != null)
+                status = statusEffect.getType().name();
+
+        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s + "\nStatus effect: " + status;
     }
 
     public Attack clone() {
@@ -98,6 +99,7 @@ public class Attack implements Serializable, Cloneable {
         t.setMonsterTypes(cloneMonsterTypes());
         t.setUsage(usage);
         t.setUsed(usage);
+        t.setStatusEffect(statusEffect);
         return t;
     }
 
@@ -107,7 +109,7 @@ public class Attack implements Serializable, Cloneable {
         return t;
     }
 
-    public void use(){
+    public void use() {
         used++;
     }
 }

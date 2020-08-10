@@ -39,9 +39,6 @@ public class DiscCmdVote implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length > 1)
             switch (args[0]) {
-                case "test":
-                    System.out.println(args[1]);
-                    break;
                 case "create":
                     if (args[1].equals("lang")) {
                         ArrayList<String> langs = new ArrayList<String>();

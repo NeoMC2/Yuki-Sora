@@ -100,7 +100,11 @@ public class DiscCmdMonster implements DiscCommand {
                     String msg = "Monsters\n\n";
                     if (args.length > 1) {
                         int i = Integer.parseInt(args[1]);
-                        msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
+                        try {
+                            msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
+                        } catch (Exception e){
+                            engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
+                        }
                     } else {
                         for (int i = 0; i < user.getMonsters().size(); i++) {
                             msg += "[" + (i + 1) + "] " + user.getMonsters().get(i).getItemName() + "\n";
@@ -119,7 +123,7 @@ public class DiscCmdMonster implements DiscCommand {
                     ArrayList<Attack> attacks = mn.getAllowedAttacks();
                     for (int i = 0; i < attacks.size(); i++) {
                         Attack c = attacks.get(i);
-                        msgg += "[" + (i + 1) + "] " + c.toString();
+                        msgg += "[" + (i + 1) + "] " + c.toString() + "\n\n";
                     }
                     engine.getDiscEngine().getTextUtils().sendWarining(msgg, event.getChannel());
                     break;
@@ -133,7 +137,7 @@ public class DiscCmdMonster implements DiscCommand {
                         return;
                     }
                     ArrayList<Attack> attackss = mn.getAllowedAttacks();
-                    Attack accs = attackss.get(Integer.parseInt(args[2]) + 1);
+                    Attack accs = attackss.get(Integer.parseInt(args[2]) - 1);
                     switch (args[3].toLowerCase()) {
                         case "a1":
                             mn.setA1(accs);
@@ -148,6 +152,7 @@ public class DiscCmdMonster implements DiscCommand {
                             mn.setA4(accs);
                             break;
                     }
+                    engine.getDiscEngine().getTextUtils().sendSucces("Selected!", event.getChannel());
                     break;
 
                 case "delete":
@@ -172,9 +177,21 @@ public class DiscCmdMonster implements DiscCommand {
                     break;
 
                 case "feed":
-                    if (user.getCoins() >= 5) {
-                        user.substractCoins(5);
+                    if (user.getCoins() >= 10) {
+                        String s = "";
+                        try {
+                             s = args[2];
+                        } catch (Exception e){
+                        }
+                        user.substractCoins(10);
                         mn.getAttacks().forEach(e -> e.setUsed(e.getUsage()));
+                        if(!s.equals("")) {
+                            try {
+                                mn.setEvolveDirection(Monster.stringToMonsterType(s));
+                            } catch (Exception e) {
+                                engine.getDiscEngine().getTextUtils().sendError("Invalid type!", event.getChannel(), false);
+                            }
+                        }
                         engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.feed", user.getLang(), null), event.getChannel());
                     } else {
                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), false);

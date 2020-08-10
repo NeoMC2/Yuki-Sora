@@ -3,12 +3,14 @@ package botApplication.discApplication.transaktion;
 import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.monsters.Attack;
 import botApplication.discApplication.librarys.item.monsters.Monster;
+import botApplication.discApplication.librarys.item.monsters.StatusEffect;
 import botApplication.discApplication.librarys.job.Job;
 import core.Engine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class TransaktionHandler {
@@ -65,7 +67,20 @@ public class TransaktionHandler {
             }
 
             try {
-                m.setEvolves((String) o.get("ev"));
+                String[] ev = ((String) o.get("ev")).split(",");
+                if (ev[0].equals("")) {
+                    if (!((String) o.get("ev")).equals(""))
+                        m.getEvolves().add((String) o.get("ev"));
+                } else
+                        m.getEvolves().addAll(Arrays.asList(ev));
+            } catch (Exception e) {
+            }
+
+            try {
+                String s = (String) o.get("shown");
+                if (s != null)
+                    if (s.equals("false"))
+                        m.setShown(false);
             } catch (Exception e) {
             }
 
@@ -81,6 +96,10 @@ public class TransaktionHandler {
                     a.setLvl(Integer.parseInt((String) attack.get("lvl")));
                 } catch (Exception e) {
                     fail = true;
+                }
+                try {
+                    a.setStatusEffect(StatusEffect.stringToStatEffect((String) attack.get("state")));
+                } catch (Exception e) {
                 }
                 if (!fail)
                     m.getAttacks().add(a);

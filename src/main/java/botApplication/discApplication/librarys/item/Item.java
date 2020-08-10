@@ -76,11 +76,11 @@ public class Item implements Serializable, Cloneable {
             case Normal:
                 return 5;
             case Epic:
-                return 10;
-            case Legendary:
                 return 20;
+            case Legendary:
+                return 60;
             case Mystic:
-                return 50;
+                return 300;
         }
         return 0;
     }
