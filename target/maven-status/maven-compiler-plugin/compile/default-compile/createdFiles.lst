@@ -1,11 +1,13 @@
 botApplication\discApplication\core\DiscApplicationEngine.class
 botApplication\discApplication\utils\DiscTextUtils$7.class
+botApplication\discApplication\librarys\item\monsters\StatusEffect$StatusEffectType.class
 botApplication\discApplication\librarys\DiscApplicationFilesHandler.class
 utils\FileUtils.class
 botApplication\discApplication\utils\DiscTextUtils.class
 botApplication\discApplication\commands\DiscCmdAutoChannel.class
 botApplication\discApplication\core\DiscCommandParser$ServerCommandContainer.class
 botApplication\response\Response.class
+botApplication\discApplication\librarys\item\collectables\Gem$GemType.class
 core\ConsoleCommandHandler$SystemInListener.class
 botApplication\discApplication\commands\DiscCmdVote$PollType.class
 botApplication\discApplication\listeners\DiscVoiceListener.class
@@ -25,6 +27,7 @@ botApplication\discApplication\librarys\item\monsters\Monster$MonsterType.class
 botApplication\discApplication\librarys\job\Job.class
 botApplication\discApplication\utils\DiscTextUtils$1.class
 botApplication\discApplication\librarys\certification\DiscCertificationLevel.class
+botApplication\discApplication\librarys\item\monsters\StatusEffect.class
 botApplication\discApplication\commands\DiscCmdMusic.class
 botApplication\response\Response$ResponseTyp.class
 botApplication\discApplication\core\DiscCommandParser.class
@@ -38,8 +41,8 @@ botApplication\discApplication\utils\DiscTextUtils$8.class
 botApplication\discApplication\librarys\item\monsters\FightHandler$1.class
 utils\UtilityBase.class
 botApplication\discApplication\librarys\poll\Poll.class
+botApplication\discApplication\librarys\item\consumable\Food.class
 botApplication\discApplication\librarys\certification\DiscCertificationHandler.class
-botApplication\discApplication\librarys\item\monsters\Attack$StatusEffect.class
 botApplication\discApplication\librarys\poll\PollAnswer.class
 botApplication\discApplication\listeners\DiscMessageListener.class
 botApplication\discApplication\commands\DiscCmdWallet.class
@@ -52,6 +55,7 @@ botApplication\discApplication\utils\DiscTextUtils$2.class
 botApplication\discApplication\utils\DiscTextUtils$5.class
 botApplication\discApplication\commands\DiscCmdMove.class
 botApplication\discApplication\commands\DiscCmdRockPaperScissors$Rps.class
+botApplication\discApplication\librarys\item\collectables\Ore.class
 botApplication\discApplication\librarys\job\UserJob.class
 botApplication\discApplication\commands\DiscCmdSetup$2.class
 botApplication\discApplication\utils\DiscUtilityBase.class
@@ -68,6 +72,7 @@ botApplication\discApplication\commands\DiscCmdSetup.class
 botApplication\discApplication\librarys\job\UserJob$JobRank.class
 botApplication\discApplication\commands\DiscCmdMonster.class
 botApplication\discApplication\utils\NetworkManager.class
+botApplication\discApplication\librarys\item\collectables\Ore$OreType.class
 botApplication\discApplication\utils\DiscTextUtils$6.class
 botApplication\discApplication\librarys\DiscApplicationServer.class
 botApplication\discApplication\core\DiscCommandHandler.class
@@ -75,6 +80,7 @@ botApplication\discApplication\commands\DiscCmdSetup$3$1$1$1.class
 botApplication\discApplication\utils\DiscTextUtils$12.class
 botApplication\discApplication\librarys\item\monsters\Attack.class
 botApplication\discApplication\librarys\item\monsters\FightHandler$3.class
+botApplication\discApplication\librarys\item\collectables\Gem.class
 botApplication\discApplication\core\DiscCommandParser$ClientCommandContainer.class
 botApplication\discApplication\librarys\DiscApplicationUser.class
 botApplication\discApplication\listeners\DiscChannelAddListener.class

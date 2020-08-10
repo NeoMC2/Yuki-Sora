@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class FightHandler {
 
@@ -107,17 +108,56 @@ public class FightHandler {
             round();
     }
 
+    private void printStateEffectRound(String msg){
+        int dmg = m.calculateStateDmg(true);
+        if(msg == null)
+            msg = "Your monster is confused and made " + dmg + " damage to itself!";
+        EmbedBuilder em = new EmbedBuilder()
+                .setDescription(msg)
+                .setColor(Color.YELLOW)
+                .setImage(m.getImgUrl())
+                .setTitle(m.getItemName() + " against " + e.getItemName());
+        textChannel.sendMessage(em.build()).queue();
+        makeNewRound();
+        round();
+    }
+
     private void round() {
         Member turner = null;
         Member enemy = null;
         if (turn == 2) {
             turner = m2;
             enemy = m1;
-            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2.getUser().getName(), m1.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
         } else if (turn == 1) {
             turner = m1;
             enemy = m2;
             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+        }
+
+        if (turn == 1) {
+            m = monsterM1;
+            e = monsterM2;
+        } else {
+            m = monsterM2;
+            e = monsterM1;
+        }
+
+        try {
+            for (StatusEffect ef:m.getStatusEffects()) {
+                if(ef.getType() == StatusEffect.StatusEffectType.Sleep){
+                    printStateEffectRound("Your monster is asleep!");
+                    return;
+                } else if(ef.getType() == StatusEffect.StatusEffectType.Paralysis){
+                    printStateEffectRound("Your monster is paralyzed!");
+                    return;
+                }
+                if(ef.getType() == StatusEffect.StatusEffectType.Confusion){
+                    printStateEffectRound(null);
+                    return;
+                }
+            }
+        } catch (Exception e){
         }
 
         Member finalTurner = turner;
@@ -211,8 +251,9 @@ public class FightHandler {
     private void attack(Member user, Member enemy){
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(user.getId());
         if (isAttackValid(a, textChannel)) {
-            showAttackInfo(m, e, m.attack(m, a, e), a);
-            a.use();
+            int attackDmg = m.attack(m, a, e);
+            int stateDmg = e.calculateStateDmg(false);
+            showAttackInfo(m, e, attackDmg, a, stateDmg);
             if (testWinner(e)) {
                 m.earnXP(10, engine, usr);
                 e.earnXP(3, engine, usr);
@@ -237,14 +278,25 @@ public class FightHandler {
         return true;
     }
 
-    private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack) {
+    private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack, int dmg2) {
         String msg = own.getItemName() + " attacked " + enemy.getItemName() + " with " + attack.getAttackName() + " and made " + dmg + " damage. " + enemy.getItemName() + " has " + enemy.getHp() + " HP left!";
+        if(dmg2 != 0) {
+            msg += "\n" + enemy.getItemName() + " has status effects: " + addStatusEffects(enemy.getStatusEffects()) + " and got " + dmg2 + " damage from it!";
+        }
         EmbedBuilder e = new EmbedBuilder()
                 .setDescription(msg)
                 .setColor(Color.YELLOW)
                 .setImage(own.getImgUrl())
                 .setTitle(own.getItemName() + " against " + enemy.getItemName());
         textChannel.sendMessage(e.build()).queue();
+    }
+
+    private String addStatusEffects(ArrayList<StatusEffect> e){
+        String s = "";
+        for (StatusEffect eff:e) {
+            s += eff.getType().name() + ", ";
+        }
+        return s;
     }
 
     private boolean testWinner(Monster enemy) {

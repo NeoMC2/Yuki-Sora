@@ -1,7 +1,5 @@
 package botApplication.discApplication.librarys.item.monsters;
 
-import com.sun.org.apache.xalan.internal.res.XSLTErrorResources_en;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -16,31 +14,6 @@ public class Attack implements Serializable, Cloneable {
     private int usage;
     private int used;
     private StatusEffect statusEffect;
-
-    public enum StatusEffect{
-        Burn, Freeze, Paralysis, Poison, Sleep, Confusion
-    }
-
-    public StatusEffect stringToStatEffect(String s){
-        switch (s.toLowerCase()){
-            case "fire":
-            case "burn":
-                return StatusEffect.Burn;
-            case "ice":
-            case "freeze":
-                return StatusEffect.Freeze;
-            case "paralyzed":
-            case "paralysis":
-                return StatusEffect.Paralysis;
-            case "poison":
-                return StatusEffect.Poison;
-            case "sleep":
-                return StatusEffect.Sleep;
-            case "confusion":
-                return StatusEffect.Confusion;
-        }
-        return null;
-    }
 
     public int getBaseDamage() {
         return baseDamage;
@@ -103,7 +76,12 @@ public class Attack implements Serializable, Cloneable {
         for (Monster.MonsterType m : monsterTypes) {
             s += m.name() + " ";
         }
-        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s;
+        String status = "";
+        if (statusEffect != null)
+            if (statusEffect.getType() != null)
+                status = statusEffect.getType().name();
+
+        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s + "\nStatus effect: " + status;
     }
 
     public Attack clone() {
@@ -131,7 +109,7 @@ public class Attack implements Serializable, Cloneable {
         return t;
     }
 
-    public void use(){
+    public void use() {
         used++;
     }
 }
