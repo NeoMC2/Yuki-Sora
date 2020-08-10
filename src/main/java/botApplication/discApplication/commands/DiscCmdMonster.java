@@ -177,13 +177,13 @@ public class DiscCmdMonster implements DiscCommand {
                     break;
 
                 case "feed":
-                    if (user.getCoins() >= 10) {
+                    if (user.getCoins() >= 5) {
                         String s = "";
                         try {
                              s = args[2];
                         } catch (Exception e){
                         }
-                        user.substractCoins(10);
+                        user.substractCoins(5);
                         mn.getAttacks().forEach(e -> e.setUsed(e.getUsage()));
                         if(!s.equals("")) {
                             try {

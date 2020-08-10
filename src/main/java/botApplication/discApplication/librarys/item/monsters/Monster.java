@@ -111,15 +111,15 @@ public class Monster extends Item implements Serializable, Cloneable {
     public int calculateStateDmg(boolean turn) {
         int allDmg = 0;
         Iterator<StatusEffect> itr = statusEffects.iterator();
-        while (itr.hasNext()){
+        while (itr.hasNext()) {
             StatusEffect ss = itr.next();
-            if(!turn)
-            if (ss.getType() == StatusEffect.StatusEffectType.Freeze) {
-                if (ThreadLocalRandom.current().nextInt(0, 100) < 20) {
-                    itr.remove();
-                    continue;
+            if (!turn)
+                if (ss.getType() == StatusEffect.StatusEffectType.Freeze) {
+                    if (ThreadLocalRandom.current().nextInt(0, 100) < 20) {
+                        itr.remove();
+                        continue;
+                    }
                 }
-            }
             if (!turn)
                 if (ss.getType() == StatusEffect.StatusEffectType.Sleep || ss.getType() == StatusEffect.StatusEffectType.Confusion)
                     if (ss.getRoundsLeft() <= 0) {
@@ -151,8 +151,8 @@ public class Monster extends Item implements Serializable, Cloneable {
         if (attack.getStatusEffect() != null) {
             StatusEffect e = new StatusEffect();
             e.setType(attack.getStatusEffect().getType());
-            if(attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep||attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
-                e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1,7));
+            if (attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep || attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
+                e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1, 7));
             for (StatusEffect statusEffect : enemy.getStatusEffects()) {
                 if (attack.getStatusEffect().getType() == statusEffect.getType())
                     enemy.getStatusEffects().remove(statusEffect);
@@ -206,24 +206,42 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void evolve(Engine e, DiscApplicationUser user) {
-        String evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() -1));
-        for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
-            if (evolvesIn.toLowerCase().equals(m.getItemName().toLowerCase())) {
-                Monster mon = m.clone();
-                try {
-                    mon.setA1(a1);
-                    mon.setA2(a2);
-                    mon.setA3(a3);
-                    mon.setA4(a4);
-                } catch (Exception ex) {
+        if(evolveDirection!=null) {
+            for (String s:evolves) {
+                for (Monster m:e.getDiscEngine().getFilesHandler().getMonsters()) {
+                    if(m.getItemName().toLowerCase().equals(s.toLowerCase())){
+                        for (MonsterType t:m.getMonsterTypes()) {
+                            if(t == evolveDirection){
+                                buildThaMonster(m, user);
+                                return;
+                            }
+                        }
+                    }
                 }
-                mon.getAttacks().addAll(attacks);
-                mon.finish();
-                user.getMonsters().add(mon);
-                break;
+            }
+        } else {
+            String evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() - 1));
+            for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
+                if (evolvesIn.toLowerCase().equals(m.getItemName().toLowerCase())) {
+                    buildThaMonster(m, user);
+                }
             }
         }
         user.getMonsters().remove(this);
+    }
+
+    private void buildThaMonster(Monster m, DiscApplicationUser user) {
+        Monster mon = m.clone();
+        try {
+            mon.setA1(a1);
+            mon.setA2(a2);
+            mon.setA3(a3);
+            mon.setA4(a4);
+        } catch (Exception ex) {
+        }
+        mon.getAttacks().addAll(attacks);
+        mon.finish();
+        user.getMonsters().add(mon);
     }
 
     private void calculateHp() {
@@ -804,7 +822,7 @@ public class Monster extends Item implements Serializable, Cloneable {
         return t;
     }
 
-    private ArrayList<String> cloneEv(){
+    private ArrayList<String> cloneEv() {
         ArrayList<String> ec = new ArrayList<>();
         evolves.forEach(e -> ec.add(e));
         return ec;
