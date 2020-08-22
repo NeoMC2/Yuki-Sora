@@ -153,7 +153,9 @@ public class Monster extends Item implements Serializable, Cloneable {
             e.setType(attack.getStatusEffect().getType());
             if (attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep || attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
                 e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1, 7));
-            for (StatusEffect statusEffect : enemy.getStatusEffects()) {
+            Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
+            while (it.hasNext()) {
+                StatusEffect statusEffect = it.next();
                 if (attack.getStatusEffect().getType() == statusEffect.getType())
                     enemy.getStatusEffects().remove(statusEffect);
             }
@@ -206,6 +208,9 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void evolve(Engine e, DiscApplicationUser user) {
+        if(user == null){
+            return;
+        }
         if(evolveDirection!=null) {
             for (String s:evolves) {
                 for (Monster m:e.getDiscEngine().getFilesHandler().getMonsters()) {

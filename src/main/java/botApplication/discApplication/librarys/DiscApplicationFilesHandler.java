@@ -1,10 +1,11 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
+import botApplication.discApplication.librarys.dungeon.Dungeon;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.poll.Poll;
-import botApplication.discApplication.transaktion.TransaktionHandler;
+import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -21,6 +22,7 @@ public class DiscApplicationFilesHandler {
 
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
+    private HashMap<String, Dungeon> dungeons = new HashMap<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;
@@ -75,7 +77,6 @@ public class DiscApplicationFilesHandler {
         try {
             jobs = TransaktionHandler.parseJsonToJobs(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/jobs.json"));
         } catch (Exception e) {
-            e.printStackTrace();
             engine.getUtilityBase().printOutput("!!Jobs cant load!!", true);
             e.printStackTrace();
         }
@@ -156,5 +157,9 @@ public class DiscApplicationFilesHandler {
 
     public ArrayList<Monster> getMonsters() {
         return monsters;
+    }
+
+    public HashMap<String, Dungeon> getDungeons() {
+        return dungeons;
     }
 }

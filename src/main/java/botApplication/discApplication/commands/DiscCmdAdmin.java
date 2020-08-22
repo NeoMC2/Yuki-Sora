@@ -30,6 +30,12 @@ public class DiscCmdAdmin implements DiscCommand {
                 engine.getDiscEngine().getTextUtils().sendSucces("Done!", event.getChannel());
                 break;
 
+            case "regguild":
+                engine.getDiscEngine().getFilesHandler().getServers().remove(event.getGuild().getId());
+                engine.getDiscEngine().getFilesHandler().createNewServer(event.getGuild());
+                engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId()).setSetupDone(true);
+                break;
+
             case "user":
             case "usr":
                 DiscApplicationUser rUser;
@@ -95,6 +101,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                             case "lvl":
                                                 rM.setLevel(Integer.parseInt(args[7]));
                                                 rM.isEvolve(engine, rUser);
+                                                rM.finish();
                                                 break;
 
                                             default:

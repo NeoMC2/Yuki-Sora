@@ -117,6 +117,9 @@ public class Engine {
     }
 
     public String lang(String phrase, String langg, String[] arg) {
+        if(lang == null){
+            return "```@languageSupportError```";
+        }
         if (langg == null || langg.equals("")) {
             langg = "en";
         }

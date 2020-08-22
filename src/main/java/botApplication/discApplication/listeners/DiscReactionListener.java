@@ -1,6 +1,7 @@
 package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
+import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
 import net.dv8tion.jda.api.entities.User;
@@ -38,6 +39,14 @@ public class DiscReactionListener extends ListenerAdapter {
             p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), engine);
             return;
         }
+        DungeonQueueHandler qh = getDungeonQueueHandler(s, event.getMessageId());
+        if(qh != null){
+            event.getChannel().clearReactionsById(event.getMessageId()).complete();
+            event.getChannel().addReactionById(qh.getMsgId(), qh.getEmoji()).queue();
+            qh.click(event.getChannel(), engine, event.getGuild(), event.getMember());
+            return;
+        }
+
         if (!s.getCertificationMessageId().equals(event.getMessageId())) {
             return;
         }
@@ -120,6 +129,15 @@ public class DiscReactionListener extends ListenerAdapter {
                         return p;
             } catch (Exception e) {
             }
+        }
+        return null;
+    }
+
+    private DungeonQueueHandler getDungeonQueueHandler(DiscApplicationServer server, String msgId){
+        if(server.getDungeonQueueHandler() == null)
+            return null;
+        if(server.getDungeonQueueHandler().getMsgId().equals(msgId)){
+            return server.getDungeonQueueHandler();
         }
         return null;
     }

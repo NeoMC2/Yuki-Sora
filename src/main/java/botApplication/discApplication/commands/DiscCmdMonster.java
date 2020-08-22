@@ -60,6 +60,10 @@ public class DiscCmdMonster implements DiscCommand {
                     break;
 
                 case "heal":
+                    if (mn == null) {
+                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
+                        return;
+                    }
                     for (FightHandler ha : engine.getDiscEngine().getFightHandlers()) {
                         if (ha.getTextChannel().getId().equals(event.getChannel().getId())) {
                             return;
@@ -70,10 +74,6 @@ public class DiscCmdMonster implements DiscCommand {
                     break;
 
                 case "buy":
-                    if (user.isMonsterInvFull()) {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.pokemon.error.toManyPokemons", user.getLang(), null), event.getChannel(), false);
-                        return;
-                    }
                     if (user.getCoins() >= 20) {
                         user.substractCoins(20);
                         Monster monster = engine.getDiscEngine().getTransaktionHandler().getRandomMonster(Item.Rarity.Normal);
@@ -87,7 +87,11 @@ public class DiscCmdMonster implements DiscCommand {
                                 .setColor(Item.rarityToColor(monster.getItemRarity()))
                                 .setThumbnail(monster.getImgUrl());
                         event.getChannel().sendMessage(mb.build()).queue();
-                        user.getMonsters().add(monster);
+                        try {
+                            user.addMonster(monster);
+                        } catch (Exception e) {
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.pokemon.error.toManyPokemons", user.getLang(), null), event.getChannel(), false);
+                        }
                     } else {
                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), false);
                     }

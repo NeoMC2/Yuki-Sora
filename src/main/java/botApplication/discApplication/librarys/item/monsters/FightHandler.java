@@ -1,6 +1,7 @@
 package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.librarys.dungeon.actions.MonsterFight;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FightHandler {
 
@@ -18,8 +20,8 @@ public class FightHandler {
 
     private Monster monsterM1;
     private Monster monsterM2;
-    private Member m1;
-    private Member m2;
+    private Member m1 = null;
+    private Member m2 = null;
 
     private TextChannel textChannel;
     private final Guild guild;
@@ -35,6 +37,9 @@ public class FightHandler {
     private final Member turner = null;
     private final Member enemy = null;
 
+    private boolean aiFight = false;
+    private MonsterFight mf;
+
     public FightHandler(Engine engine, TextChannel textChannel, Guild g) {
         this.engine = engine;
         this.textChannel = textChannel;
@@ -44,6 +49,15 @@ public class FightHandler {
     public void begin() {
         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.fighStart", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Fight", Color.MAGENTA);
         chooseMonster();
+    }
+
+    public void beginAi(Monster m, Monster enemy, Member m1, MonsterFight monsterFight) {
+        this.mf = monsterFight;
+        monsterM1 = m;
+        this.m1 = m1;
+        monsterM2 = enemy;
+        aiFight = true;
+        round();
     }
 
     private void chooseMonster() {
@@ -108,9 +122,9 @@ public class FightHandler {
             round();
     }
 
-    private void printStateEffectRound(String msg){
+    private void printStateEffectRound(String msg) {
         int dmg = m.calculateStateDmg(true);
-        if(msg == null)
+        if (msg == null)
             msg = "Your monster is confused and made " + dmg + " damage to itself!";
         EmbedBuilder em = new EmbedBuilder()
                 .setDescription(msg)
@@ -118,8 +132,6 @@ public class FightHandler {
                 .setImage(m.getImgUrl())
                 .setTitle(m.getItemName() + " against " + e.getItemName());
         textChannel.sendMessage(em.build()).queue();
-        makeNewRound();
-        round();
     }
 
     private void round() {
@@ -128,11 +140,23 @@ public class FightHandler {
         if (turn == 2) {
             turner = m2;
             enemy = m1;
-            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2.getUser().getName(), m1.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+            String m2Name;
+            if (aiFight) {
+                m2Name = monsterM2.getItemName();
+            } else {
+                m2Name = m2.getUser().getName();
+            }
+            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m2Name, m1.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
         } else if (turn == 1) {
             turner = m1;
             enemy = m2;
-            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2.getUser().getName()}), textChannel, "Turn", Color.MAGENTA);
+            String m2Name;
+            if (aiFight) {
+                m2Name = monsterM2.getItemName();
+            } else {
+                m2Name = m2.getUser().getName();
+            }
+            engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.turn", "en", new String[]{m1.getUser().getName(), m2Name}), textChannel, "Turn", Color.MAGENTA);
         }
 
         if (turn == 1) {
@@ -144,24 +168,28 @@ public class FightHandler {
         }
 
         try {
-            for (StatusEffect ef:m.getStatusEffects()) {
-                if(ef.getType() == StatusEffect.StatusEffectType.Sleep){
-                    printStateEffectRound("Your monster is asleep!");
-                    return;
-                } else if(ef.getType() == StatusEffect.StatusEffectType.Paralysis){
-                    printStateEffectRound("Your monster is paralyzed!");
-                    return;
+            for (StatusEffect ef : m.getStatusEffects()) {
+                if (ef.getType() == StatusEffect.StatusEffectType.Sleep) {
+                    printStateEffectRound("Your monster is asleep! Use skip if you don't want to use a Item");
+                } else if (ef.getType() == StatusEffect.StatusEffectType.Paralysis) {
+                    printStateEffectRound("Your monster is paralyzed! Use skip if you don't want to use a Item");
                 }
-                if(ef.getType() == StatusEffect.StatusEffectType.Confusion){
+                if (ef.getType() == StatusEffect.StatusEffectType.Confusion) {
                     printStateEffectRound(null);
-                    return;
                 }
             }
-        } catch (Exception e){
+        } catch (Exception ignored) {
+        }
+
+        if (aiFight && turner == null) {
+            a = m.getAllowedAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAllowedAttacks().size() - 1));
+            attack(turner, enemy);
+            return;
         }
 
         Member finalTurner = turner;
         Member finalEnemy = enemy;
+        FightHandler finalFightHandler = this;
         Response gamerResponse = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
@@ -190,11 +218,16 @@ public class FightHandler {
 
                     case "a4":
                         a = m.getA4();
-                       attack(finalTurner, finalEnemy);
+                        attack(finalTurner, finalEnemy);
+                        break;
+
+                    case "skip":
+                        makeNewRound();
+                        round();
                         break;
 
                     case "help":
-                        String msg = "a1 - Use attack 1\n a2 - Use attack 2\na3 - Use attack 3\na4 - Use attack 4\ninfo - shows stats of your Monster\nend - stops the fight";
+                        String msg = "a1 - Use attack 1\n a2 - Use attack 2\na3 - Use attack 3\na4 - Use attack 4\nskip - don't attack\ninfo - shows stats of your Monster\nend - stops the fight";
                         engine.getDiscEngine().getTextUtils().sendWarining(msg, textChannel);
                         round();
                         break;
@@ -220,19 +253,19 @@ public class FightHandler {
                         }
 
                         try {
-                            sa4 = m.getA4().toString()+ "\n";
+                            sa4 = m.getA4().toString() + "\n";
                         } catch (Exception ex) {
                             sa4 = "not selected";
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp()), sa1, sa2, sa3, sa4}), textChannel, "Monster Info", Color.YELLOW);
+                        engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.pokemon.info.pokemonInfo", "en", new String[]{m.getItemName(), String.valueOf(m.getHp()), "\n" + sa1, sa2, sa3, sa4}), textChannel, "Monster Info", Color.YELLOW);
                         round();
                         break;
 
                     case "end":
                     case "stop":
                         engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
-                        engine.getDiscEngine().getFightHandlers().remove(this);
+                        engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
                         break;
 
                     default:
@@ -248,15 +281,22 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(gamerResponse);
     }
 
-    private void attack(Member user, Member enemy){
-        DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(user.getId());
+    private void attack(Member user, Member enemy) {
+        DiscApplicationUser usr = null;
+        DiscApplicationUser usr2 = null;
+        if (!aiFight) {
+            usr = engine.getDiscEngine().getFilesHandler().getUserById(user.getId());
+            usr2 = engine.getDiscEngine().getFilesHandler().getUserById(enemy.getId());
+        }
+
+
         if (isAttackValid(a, textChannel)) {
             int attackDmg = m.attack(m, a, e);
             int stateDmg = e.calculateStateDmg(false);
             showAttackInfo(m, e, attackDmg, a, stateDmg);
             if (testWinner(e)) {
                 m.earnXP(10, engine, usr);
-                e.earnXP(3, engine, usr);
+                e.earnXP(3, engine, usr2);
                 printWinner(user, enemy);
                 return;
             }
@@ -271,16 +311,17 @@ public class FightHandler {
             return false;
         }
 
-        if(a.getUsed() <= 0){
-            engine.getDiscEngine().getTextUtils().sendError("This attack can't be used anymore!", c, false);
-            return false;
-        }
+        if (!aiFight && turner != null)
+            if (a.getUsed() <= 0) {
+                engine.getDiscEngine().getTextUtils().sendError("This attack can't be used anymore!", c, false);
+                return false;
+            }
         return true;
     }
 
     private void showAttackInfo(Monster own, Monster enemy, int dmg, Attack attack, int dmg2) {
         String msg = own.getItemName() + " attacked " + enemy.getItemName() + " with " + attack.getAttackName() + " and made " + dmg + " damage. " + enemy.getItemName() + " has " + enemy.getHp() + " HP left!";
-        if(dmg2 != 0) {
+        if (dmg2 != 0) {
             msg += "\n" + enemy.getItemName() + " has status effects: " + addStatusEffects(enemy.getStatusEffects()) + " and got " + dmg2 + " damage from it!";
         }
         EmbedBuilder e = new EmbedBuilder()
@@ -288,12 +329,12 @@ public class FightHandler {
                 .setColor(Color.YELLOW)
                 .setImage(own.getImgUrl())
                 .setTitle(own.getItemName() + " against " + enemy.getItemName());
-        textChannel.sendMessage(e.build()).queue();
+        textChannel.sendMessage(e.build()).complete();
     }
 
-    private String addStatusEffects(ArrayList<StatusEffect> e){
+    private String addStatusEffects(ArrayList<StatusEffect> e) {
         String s = "";
-        for (StatusEffect eff:e) {
+        for (StatusEffect eff : e) {
             s += eff.getType().name() + ", ";
         }
         return s;
@@ -304,9 +345,26 @@ public class FightHandler {
     }
 
     private void printWinner(Member winner, Member looser) {
-        String msg = winner.getUser().getName() + " has won the match because the enemy Monster was to weak, congratulations! Your monster got 20 xp!";
+        monsterM2.setStatusEffects(null);
+        monsterM1.setStatusEffects(null);
+        if (!aiFight) {
+            if (winner != null) {
+                String msg = winner.getUser().getName() + " has won the match because the enemy Monster was to weak, congratulations! Your monster got 20 xp!";
+                engine.getDiscEngine().getTextUtils().sendSucces(msg, textChannel);
+                engine.getDiscEngine().getFightHandlers().remove(this);
+            }
+            return;
+        }
+        String winnert = "";
+        if(winner == null){
+            winnert = monsterM2.getItemName();
+        } else {
+            winnert = winner.getUser().getName();
+        }
+        String msg = winnert + " has won the match because the enemy Monster was to weak, congratulations! Your monster got 20 xp!";
         engine.getDiscEngine().getTextUtils().sendSucces(msg, textChannel);
         engine.getDiscEngine().getFightHandlers().remove(this);
+        mf.fightOver(winner != null);
     }
 
     private void makeNewRound() {
