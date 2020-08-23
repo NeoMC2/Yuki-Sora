@@ -6,12 +6,11 @@ import core.Engine;
 import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class XPDrop implements DungeonAction, Serializable {
 
     private Engine engine;
-
-    private String msg = "Seems like this is a XP Drop!";
 
     public XPDrop(Engine engine) {
         this.engine = engine;
@@ -19,7 +18,9 @@ public class XPDrop implements DungeonAction, Serializable {
 
     @Override
     public void action(Dungeon dungeon) {
-        dungeon.getTextChannel().sendMessage(msg).queue();
+        int xp = ThreadLocalRandom.current().nextInt(5, 60);
+        dungeon.getTextChannel().sendMessage("You found a stone of wisdom! Your Monster got " + xp + " xp!").queue();
+        dungeon.getM().earnXP(xp, dungeon.getEngine(), dungeon.getUser());
         dungeon.caveActionFinished(false);
     }
 

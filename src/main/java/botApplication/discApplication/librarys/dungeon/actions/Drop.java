@@ -28,6 +28,8 @@ public class Drop implements DungeonAction, Serializable {
         for (Item item:drops) {
             msg += item.getItemName() + " (" + Item.rarityToString(item.getItemRarity()) + ")\n";
         }
+        dungeon.getTextChannel().sendMessage(msg).queue();
+        drops.forEach(e -> dungeon.foundItem(e));
         dungeon.caveActionFinished(false);
     }
 

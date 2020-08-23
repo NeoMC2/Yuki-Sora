@@ -48,7 +48,8 @@ public class MonsterFight implements DungeonAction, Serializable {
                 dif = Difficulty.Normal;
             else
                 dif = Difficulty.Hard;
-
+            if(engine != null)
+            if(engine.getDiscEngine().getFilesHandler() != null)
         for (Monster m : engine.getDiscEngine().getFilesHandler().getMonsters()) {
             if (dif == Difficulty.Easy) {
                 if (Item.rarityToInt(m.getItemRarity()) <= 0) {

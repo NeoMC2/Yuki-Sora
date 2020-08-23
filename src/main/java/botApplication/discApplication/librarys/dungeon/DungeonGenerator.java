@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys.dungeon;
 
 import botApplication.discApplication.librarys.dungeon.actions.*;
 import botApplication.discApplication.librarys.dungeon.parts.Cave;
+import com.pengrad.telegrambot.request.DeleteChatStickerSet;
 import core.Engine;
 
 import java.util.ArrayList;
@@ -28,8 +29,103 @@ public class DungeonGenerator {
         this.engine = engine;
     }
 
+    public String generateDungeonMap(Cave c) {
+        ArrayList<ArrayList<Character>> map = new ArrayList<>();
+        String re = "";
+        int max = 0;
+        addJunction(c, map, 0, 0);
+
+        for (ArrayList<Character> m : map) {
+            if (m.size() > max)
+                max = m.size();
+        }
+
+        for (int j = 0; j < max; j++) {
+            for (int i = 0; i < map.size(); i++) {
+                if ((map.get(i).size() - 1) < j)
+                    re += ' ';
+                else
+                    re += map.get(i).get(j);
+            }
+            re += "\n";
+        }
+
+        return re;
+    }
+
+
+    private void addJunction(Cave c, ArrayList<ArrayList<Character>> map, int x, int y) {
+        if (c.getJunctions().size() == 1) {
+            addCharToMap('═', map, x, y);
+            addJunction(c.getJunctions().get(0), map, x + 1, y);
+        } else if (c.getJunctions().size() == 2) {
+            if (map.get(x).size() > y)
+                moveYAxisDown(map, x, y, 3);
+            addCharToMap('╗', map, x, y);
+            addCharToMap('╚', map, x, y + 1);
+            addCharToMap('═', map, x + 1, y);
+            addCharToMap('═', map, x + 1, y +1);
+            addJunction(c.getJunctions().get(0), map, x + 1, y);
+            addJunction(c.getJunctions().get(1), map, x + 1, y + 1);
+        } else if (c.getJunctions().size() == 3) {
+            if (map.get(x).size() > y)
+                moveYAxisDown(map, x, y, 4);
+            addCharToMap('╗', map, x, y);
+            addCharToMap('╚', map, x, y + 1);
+            addCharToMap('═', map, x + 1, y);
+            addCharToMap('═', map, x + 1, y + 1);
+            addCharToMap('╚', map, x, y + 2);
+            addCharToMap('═', map, x + 1, y + 2);
+            addJunction(c.getJunctions().get(0), map, x + 1, y);
+            addJunction(c.getJunctions().get(1), map, x + 1, y + 1);
+        } else if (c.getJunctions().size() == 0) {
+
+        }
+    }
+
+    private void addCharToMap(char c, ArrayList<ArrayList<Character>> map, int x, int y) {
+        for (int i = ((map.size() - 1) - x); i <= 0; i++) {
+            map.add(new ArrayList<Character>());
+        }
+
+        for (int i = ((map.get(x).size() - 1) - y); i <= 0; i++) {
+            map.get(x).add(' ');
+        }
+        map.get(x).set(y, c);
+    }
+
+    private void moveYAxisDown(ArrayList<ArrayList<Character>> map, int fromx, int fromy, int steps) {
+        for (int i = 0; i < map.size(); i++) {
+            ArrayList<Character> x = map.get(i);
+            char last = 0;
+            int s = x.size();
+            if (i >= fromx)
+                for (int j = 0; j < steps + s; j++) {
+                    if (j >= fromy) {
+                        char y = ' ';
+                        if (x.size() <= j + 1) {
+                            for (int k = ((x.size() - 1) - (j+1)); k <= 0; k++) {
+                                x.add(' ');
+                            }
+                            last = 0;
+                        } else {
+                            y = x.get(j);
+                            last = x.get(j + 1);
+                        }
+
+                        if (last == 0)
+                            x.set(j + 1, y);
+                        else
+                            x.set(j + 1, last);
+                        if(!x.get(j).equals(' '))
+                        x.set(j, '║');
+                    }
+                }
+        }
+    }
+
     public Cave generateDungeon(Dungeon d) {
-        int caves = ThreadLocalRandom.current().nextInt(5, 40);
+        int caves = ThreadLocalRandom.current().nextInt(20, 70);
         caves--;
         statistics.dungeonLength = caves;
         Cave dungeon = new Cave();
@@ -79,8 +175,9 @@ public class DungeonGenerator {
             c.getJunctions().add(cc);
             left--;
 
-            generateJunctions(cc, left);
-            generateJunctions(cc, getJunctionCount() - 1);
+            //TODO: this is bullshit!!!!!!
+            generateJunctions(c, left);
+            generateJunctions(cc, getJunctionCount());
         }
     }
 
@@ -150,7 +247,7 @@ public class DungeonGenerator {
             case Drop:
                 return 10;
             case MonsterFight:
-                return 50;
+                return 30;
             case Trap:
                 return 30;
             case XPDrop:

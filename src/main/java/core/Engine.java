@@ -1,6 +1,9 @@
 package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
+import botApplication.discApplication.librarys.dungeon.Dungeon;
+import botApplication.discApplication.librarys.dungeon.DungeonGenerator;
+import botApplication.discApplication.librarys.dungeon.parts.Cave;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
@@ -35,7 +38,9 @@ public class Engine {
         if (args.length > 0) {
             switch (args[0]) {
                 case "test":
-
+                    DungeonGenerator g = new DungeonGenerator(this);
+                    Cave c = g.generateDungeon(new Dungeon(null, null, null, null, null, null, null));
+                    System.out.println(g.generateDungeonMap(c));
                     break;
                 case "start":
                     discApplicationEngine.startBotApplication();

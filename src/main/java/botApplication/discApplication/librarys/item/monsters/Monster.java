@@ -110,6 +110,8 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     public int calculateStateDmg(boolean turn) {
         int allDmg = 0;
+        if (statusEffects==null)
+            statusEffects = new ArrayList<>();
         Iterator<StatusEffect> itr = statusEffects.iterator();
         while (itr.hasNext()) {
             StatusEffect ss = itr.next();
@@ -153,13 +155,18 @@ public class Monster extends Item implements Serializable, Cloneable {
             e.setType(attack.getStatusEffect().getType());
             if (attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep || attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
                 e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1, 7));
-            Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
-            while (it.hasNext()) {
-                StatusEffect statusEffect = it.next();
-                if (attack.getStatusEffect().getType() == statusEffect.getType())
-                    enemy.getStatusEffects().remove(statusEffect);
+
+            if(enemy.getStatusEffects()!=null){
+                enemy.setStatusEffects(new ArrayList<>());
+            } else {
+                Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
+                while (it.hasNext()) {
+                    StatusEffect statusEffect = it.next();
+                    if (attack.getStatusEffect().getType() == statusEffect.getType())
+                        enemy.getStatusEffects().remove(statusEffect);
+                }
+                enemy.getStatusEffects().add(e);
             }
-            enemy.getStatusEffects().add(e);
         }
         return (int) dmg;
     }

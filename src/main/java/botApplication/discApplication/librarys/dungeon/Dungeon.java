@@ -3,6 +3,7 @@ package botApplication.discApplication.librarys.dungeon;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.dungeon.parts.Cave;
+import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.response.Response;
 import core.Engine;
@@ -13,6 +14,7 @@ import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -27,6 +29,8 @@ public class Dungeon {
     private Monster m;
     private DiscApplicationServer server;
     private DungeonGenerator dungeonGenerator;
+
+    private ArrayList<Item> foundItems = new ArrayList<>();
 
     private final String cave1 =
             "╔════╗\n" +
@@ -139,6 +143,10 @@ public class Dungeon {
         r.discChannelId = textChannel.getId();
         r.discGuildId = g.getId();
         engine.getResponseHandler().makeResponse(r);
+    }
+
+    public void foundItem(Item item){
+        foundItems.add(item);
     }
 
     public Member getMember() {
