@@ -1,12 +1,9 @@
 package botApplication.discApplication.librarys.dungeon.actions;
 
-import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
 import core.Engine;
-import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.io.Serializable;
-import java.util.Map.Entry;
 
 public class Default implements DungeonAction, Serializable {
 

@@ -3,6 +3,7 @@ package botApplication.discApplication.commands;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
+import botApplication.discApplication.librarys.item.consumable.food.Food;
 import botApplication.discApplication.librarys.item.monsters.Attack;
 import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.librarys.item.monsters.Monster;
@@ -27,7 +28,7 @@ public class DiscCmdMonster implements DiscCommand {
             if (args.length >= 2)
                 try {
                     mn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
-                } catch (Exception e){
+                } catch (Exception e) {
                 }
             switch (args[0]) {
                 case "fight":
@@ -77,7 +78,7 @@ public class DiscCmdMonster implements DiscCommand {
                     if (user.getCoins() >= 20) {
                         user.substractCoins(20);
                         Monster monster = engine.getDiscEngine().getTransaktionHandler().getRandomMonster(Item.Rarity.Normal);
-                        if(monster == null){
+                        if (monster == null) {
                             engine.getDiscEngine().getTextUtils().sendError("An error showed up, you'll get your coins back. Try again soon!", event.getChannel(), false);
                             return;
                         }
@@ -106,7 +107,7 @@ public class DiscCmdMonster implements DiscCommand {
                         int i = Integer.parseInt(args[1]);
                         try {
                             msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
-                        } catch (Exception e){
+                        } catch (Exception e) {
                             engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
                         }
                     } else {
@@ -181,25 +182,18 @@ public class DiscCmdMonster implements DiscCommand {
                     break;
 
                 case "feed":
-                    if (user.getCoins() >= 5) {
-                        String s = "";
-                        try {
-                             s = args[2];
-                        } catch (Exception e){
-                        }
-                        user.substractCoins(5);
-                        mn.getAttacks().forEach(e -> e.setUsed(e.getUsage()));
-                        if(!s.equals("")) {
-                            try {
-                                mn.setEvolveDirection(Monster.stringToMonsterType(s));
-                            } catch (Exception e) {
-                                engine.getDiscEngine().getTextUtils().sendError("Invalid type!", event.getChannel(), false);
-                            }
-                        }
-                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.feed", user.getLang(), null), event.getChannel());
-                    } else {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), false);
+                    Food f;
+                    try {
+                        f = (Food) user.getItems().get(Integer.parseInt(args[2]));
+                    } catch (Exception e) {
+                        engine.getDiscEngine().getTextUtils().sendError("Invalid Food!", event.getChannel(), false);
+                        return;
                     }
+                    user.getItems().remove(f);
+
+                    if (f.getType() != null)
+                        mn.setEvolveDirection(f.getType());
+                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.feed", user.getLang(), null), event.getChannel());
                     break;
 
                 default:

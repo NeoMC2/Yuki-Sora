@@ -1,6 +1,6 @@
 package botApplication.discApplication.librarys.item.collectables.metal;
 
-public class Copper extends Metal{
+public class Copper extends Metal {
 
     public Copper() {
         setItemName("Copper");

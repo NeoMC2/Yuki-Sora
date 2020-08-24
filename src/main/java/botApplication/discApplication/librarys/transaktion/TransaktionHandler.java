@@ -72,7 +72,7 @@ public class TransaktionHandler {
                     if (!((String) o.get("ev")).equals(""))
                         m.getEvolves().add((String) o.get("ev"));
                 } else
-                        m.getEvolves().addAll(Arrays.asList(ev));
+                    m.getEvolves().addAll(Arrays.asList(ev));
             } catch (Exception e) {
             }
 

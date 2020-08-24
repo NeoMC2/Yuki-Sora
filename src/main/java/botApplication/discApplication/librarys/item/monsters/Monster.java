@@ -108,9 +108,69 @@ public class Monster extends Item implements Serializable, Cloneable {
         throw new Exception("Unknown Type");
     }
 
+    public static MonsterType getRandomMonsterType() {
+        int r = ThreadLocalRandom.current().nextInt(0, 17);
+        switch (r) {
+            case 0:
+                return MonsterType.psychic;
+
+            case 1:
+                return MonsterType.ghost;
+
+            case 2:
+                return MonsterType.ice;
+
+            case 3:
+                return MonsterType.dark;
+
+            case 4:
+                return MonsterType.dragon;
+
+            case 5:
+                return MonsterType.steel;
+
+            case 6:
+                return MonsterType.fairy;
+
+            case 7:
+                return MonsterType.normal;
+
+            case 8:
+                return MonsterType.fire;
+
+            case 9:
+                return MonsterType.water;
+
+            case 10:
+                return MonsterType.electric;
+
+            case 11:
+                return MonsterType.grass;
+
+            case 12:
+                return MonsterType.flying;
+
+            case 13:
+                return MonsterType.bug;
+
+            case 14:
+                return MonsterType.poison;
+
+            case 15:
+                return MonsterType.rock;
+
+            case 16:
+                return MonsterType.ground;
+
+            case 17:
+                return MonsterType.fighting;
+        }
+        return MonsterType.Normal;
+    }
+
     public int calculateStateDmg(boolean turn) {
         int allDmg = 0;
-        if (statusEffects==null)
+        if (statusEffects == null)
             statusEffects = new ArrayList<>();
         Iterator<StatusEffect> itr = statusEffects.iterator();
         while (itr.hasNext()) {
@@ -156,10 +216,10 @@ public class Monster extends Item implements Serializable, Cloneable {
             if (attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep || attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
                 e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1, 7));
 
-            if(enemy.getStatusEffects()!=null){
+            if (enemy.getStatusEffects() != null) {
                 enemy.setStatusEffects(new ArrayList<>());
             } else {
-                if(enemy.getStatusEffects() == null)
+                if (enemy.getStatusEffects() == null)
                     enemy.setStatusEffects(new ArrayList<>());
                 Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
                 while (it.hasNext()) {
@@ -217,15 +277,15 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void evolve(Engine e, DiscApplicationUser user) {
-        if(user == null){
+        if (user == null) {
             return;
         }
-        if(evolveDirection!=null) {
-            for (String s:evolves) {
-                for (Monster m:e.getDiscEngine().getFilesHandler().getMonsters()) {
-                    if(m.getItemName().toLowerCase().equals(s.toLowerCase())){
-                        for (MonsterType t:m.getMonsterTypes()) {
-                            if(t == evolveDirection){
+        if (evolveDirection != null) {
+            for (String s : evolves) {
+                for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
+                    if (m.getItemName().toLowerCase().equals(s.toLowerCase())) {
+                        for (MonsterType t : m.getMonsterTypes()) {
+                            if (t == evolveDirection) {
                                 buildThaMonster(m, user);
                                 return;
                             }

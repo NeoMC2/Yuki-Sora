@@ -23,7 +23,7 @@ public class DungeonChannelHandler implements Serializable {
         this.roleId = roleId;
     }
 
-    public void clicked(Engine engine, Guild g, Member member){
+    public void clicked(Engine engine, Guild g, Member member) {
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(member.getId());
         g.addRoleToMember(member, g.getRoleById(roleId)).queue();
         engine.getDiscEngine().getTextUtils().sendWarining("Type in the ID of the Monster you want to go into the dungeon!", g.getTextChannelById(channelId));

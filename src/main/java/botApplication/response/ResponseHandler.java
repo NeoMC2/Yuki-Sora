@@ -63,7 +63,7 @@ public class ResponseHandler {
                 }
                  */
                 if (update.getAuthor().getId().equals(res.discUserId)) {
-                    if(update.getChannel().getId().equals(res.discChannelId)){
+                    if (update.getChannel().getId().equals(res.discChannelId)) {
                         engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
                         responses.remove(res);
                         res.respondDisc(update);

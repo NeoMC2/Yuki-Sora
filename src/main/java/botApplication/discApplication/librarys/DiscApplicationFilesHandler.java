@@ -15,11 +15,9 @@ import java.util.HashMap;
 
 public class DiscApplicationFilesHandler {
 
+    private final Engine engine;
     private HashMap<String, DiscApplicationServer> servers = new HashMap<>();
     private HashMap<String, DiscApplicationUser> users = new HashMap<>();
-
-    private final Engine engine;
-
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
     private HashMap<String, Dungeon> dungeons = new HashMap<>();

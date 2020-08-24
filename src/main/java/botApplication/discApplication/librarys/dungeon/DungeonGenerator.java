@@ -2,7 +2,6 @@ package botApplication.discApplication.librarys.dungeon;
 
 import botApplication.discApplication.librarys.dungeon.actions.*;
 import botApplication.discApplication.librarys.dungeon.parts.Cave;
-import com.pengrad.telegrambot.request.DeleteChatStickerSet;
 import core.Engine;
 
 import java.util.ArrayList;
@@ -12,22 +11,6 @@ public class DungeonGenerator {
 
     private Engine engine;
     private Statistics statistics = new Statistics();
-
-    private class Statistics {
-        int dungeonLength;
-        int dungeonCaves;
-
-        int defaults;
-        int fights;
-        int bos;
-        int drops;
-        int xpDrops;
-        int traps;
-
-        int oneWay;
-        int twoWay;
-        int threeWay;
-    }
 
     public DungeonGenerator(Engine engine) {
         this.engine = engine;
@@ -56,7 +39,6 @@ public class DungeonGenerator {
 
         return re;
     }
-
 
     private void addJunction(Cave c, ArrayList<ArrayList<Character>> map, int x, int y) {
         if (c.getJunctions().size() == 1) {
@@ -154,6 +136,15 @@ public class DungeonGenerator {
                 generateJunctions(c, getJunctionCount() - 1);
             }
         }
+        Cave c = new Cave();
+        BosFight b = new BosFight(engine);
+        b.generate();
+
+        c.setAction(b);
+        c.setD(d);
+        c.setRightDirection(true);
+        statistics.bos++;
+
         if (engine.getProperties().debug) {
             System.out.println("---------\n" +
                     "Generated Dungeon\n\n" +
@@ -318,5 +309,21 @@ public class DungeonGenerator {
 
     private enum DungeonActionType {
         BosFight, Default, Drop, MonsterFight, Trap, XPDrop
+    }
+
+    private class Statistics {
+        int dungeonLength;
+        int dungeonCaves;
+
+        int defaults;
+        int fights;
+        int bos;
+        int drops;
+        int xpDrops;
+        int traps;
+
+        int oneWay;
+        int twoWay;
+        int threeWay;
     }
 }

@@ -1,9 +1,8 @@
 package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
-import botApplication.discApplication.librarys.dungeon.Dungeon;
-import botApplication.discApplication.librarys.dungeon.DungeonGenerator;
-import botApplication.discApplication.librarys.dungeon.parts.Cave;
+import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
@@ -11,18 +10,19 @@ import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
+import java.util.Iterator;
 import java.util.Set;
 
 public class Engine {
 
     private final String consMsgDef = "[Engine]";
-    public JSONObject lang;
-    public JSONObject pics;
     private final FileUtils fileUtils = new FileUtils(this);
     private final UtilityBase utilityBase = new UtilityBase(this);
-    private Properties properties;
     private final DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
     private final ResponseHandler responseHandler = new ResponseHandler(this);
+    public JSONObject lang;
+    public JSONObject pics;
+    private Properties properties;
     private NetworkManager networkManager = new NetworkManager(this);
 
     public void boot(String[] args) {
@@ -38,9 +38,25 @@ public class Engine {
         if (args.length > 0) {
             switch (args[0]) {
                 case "test":
-                    DungeonGenerator g = new DungeonGenerator(this);
-                    Cave c = g.generateDungeon(new Dungeon(null, null, null, null, null, null, null));
-                    System.out.println(g.generateDungeonMap(c));
+                    discApplicationEngine.startBotApplication();
+                    Iterator<DiscApplicationUser> t = discApplicationEngine.getFilesHandler().getUsers().values().iterator();
+
+                    DiscApplicationUser us = t.next();
+                    if (us.getItems().size() > 0) {
+                        Diamond diamond;
+                        try {
+                            diamond = (Diamond) us.getItems().get(0);
+                        } catch (Exception e) {
+                            System.out.println("Experiment failed!");
+                            return;
+                        }
+                        us.getItems().remove(diamond);
+                        System.out.println("Expermiment done!");
+                    } else {
+                        Diamond diamond = new Diamond();
+                        us.getItems().add(diamond);
+                        System.out.println("Started experiment");
+                    }
                     break;
                 case "start":
                     discApplicationEngine.startBotApplication();
@@ -122,7 +138,7 @@ public class Engine {
     }
 
     public String lang(String phrase, String langg, String[] arg) {
-        if(lang == null){
+        if (lang == null) {
             return "```@languageSupportError```";
         }
         if (langg == null || langg.equals("")) {

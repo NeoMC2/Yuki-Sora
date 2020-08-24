@@ -123,14 +123,14 @@ public class ConsoleCommandHandler {
                 break;
 
             case "addbotslave":
-                if(engine.getProperties().botSlaves == null)
+                if (engine.getProperties().botSlaves == null)
                     engine.getProperties().botSlaves = new ArrayList<>();
                 engine.getProperties().botSlaves.add(command.split(" ")[1]);
                 System.out.println("added");
                 break;
 
             case "removebotslave":
-                if(engine.getProperties().botSlaves == null)
+                if (engine.getProperties().botSlaves == null)
                     engine.getProperties().botSlaves = new ArrayList<>();
                 engine.getProperties().botSlaves.remove(command.split(" ")[1]);
                 System.out.println("removed");

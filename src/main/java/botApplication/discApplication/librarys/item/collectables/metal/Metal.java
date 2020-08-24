@@ -13,10 +13,6 @@ public class Metal extends Item implements Serializable {
     //0 = fluid, 1 = soft, 2 = soft - hard, 3 = hard, 4 = superhard
     private int hardness = 1;
 
-    public enum Form {
-        Ore, Ingot
-    }
-
     public Form getForm() {
         return form;
     }
@@ -31,5 +27,9 @@ public class Metal extends Item implements Serializable {
 
     public void setHardness(int hardness) {
         this.hardness = hardness;
+    }
+
+    public enum Form {
+        Ore, Ingot
     }
 }

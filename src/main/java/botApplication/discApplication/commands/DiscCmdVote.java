@@ -17,9 +17,9 @@ import java.util.ArrayList;
 
 public class DiscCmdVote implements DiscCommand {
 
+    private final Engine engine;
     public ArrayList<Poll> polls;
     String[] counting = {"0️⃣", "1️⃣", "2️⃣", "3️⃣", "4️⃣", "5️⃣", "6️⃣", "7️⃣", "8️⃣", "9️⃣", "\uD83D\uDD1F"};
-    private final Engine engine;
 
     public DiscCmdVote(Engine engine) {
         this.engine = engine;

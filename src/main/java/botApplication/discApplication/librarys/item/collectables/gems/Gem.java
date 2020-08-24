@@ -10,15 +10,15 @@ public class Gem extends Item implements Serializable {
 
     private Form form = Form.Hard;
 
-    public enum Form {
-        Dust, Hard
-    }
-
     public Form getForm() {
         return form;
     }
 
     public void setForm(Form form) {
         this.form = form;
+    }
+
+    public enum Form {
+        Dust, Hard
     }
 }

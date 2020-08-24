@@ -10,6 +10,7 @@ import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -19,18 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Dungeon {
-
-    private Cave currentCave;
-    private Member member;
-    private TextChannel textChannel;
-    private Guild g;
-    private Engine engine;
-    private DiscApplicationUser user;
-    private Monster m;
-    private DiscApplicationServer server;
-    private DungeonGenerator dungeonGenerator;
-
-    private ArrayList<Item> foundItems = new ArrayList<>();
 
     private final String cave1 =
             "╔════╗\n" +
@@ -52,6 +41,16 @@ public class Dungeon {
                     "╝▒▒▒▒║\n" +
                     "╗▒▒▒▒║\n" +
                     "╚════╝";
+    private Cave currentCave;
+    private Member member;
+    private TextChannel textChannel;
+    private Guild g;
+    private Engine engine;
+    private DiscApplicationUser user;
+    private Monster m;
+    private DiscApplicationServer server;
+    private DungeonGenerator dungeonGenerator;
+    private ArrayList<Item> foundItems = new ArrayList<>();
 
     public Dungeon(Member member, TextChannel textChannel, Guild g, Engine engine, DiscApplicationUser user, Monster m, DiscApplicationServer server) {
         this.member = member;
@@ -83,13 +82,28 @@ public class Dungeon {
 
     public void caveActionFinished(boolean returnToHome) {
         if (returnToHome) {
-            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!", textChannel);
+            String coll = "";
+            user.getItems().addAll(foundItems);
+            for (Item i : foundItems) {
+                coll += i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
+            }
+            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!\n\nList of found Items:\n" + coll, textChannel);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     server.getDungeonQueueHandler().unuseChannel(textChannel.getId(), g);
                 }
-            }, 1000);
+            }, 10000);
+
+            if (user.getMaxItems() - user.getItems().size() < 1) {
+                PrivateChannel c;
+                try {
+                    c = engine.getDiscEngine().getBotJDA().openPrivateChannelById(member.getUser().getId()).complete();
+                } catch (Exception e) {
+                    return;
+                }
+                engine.getDiscEngine().getTextUtils().sendError("It seems like, you don't have much inventory space left!", c, false);
+            }
             return;
         }
         if (currentCave.junctions() == 0) {
@@ -110,7 +124,7 @@ public class Dungeon {
                     return;
                 }
                 if (msg.equals("back")) {
-                    if(currentCave.getGoneBefore() == null){
+                    if (currentCave.getGoneBefore() == null) {
                         engine.getDiscEngine().getTextUtils().sendError("Seems like, this is the start of the dungeon! If you want to leave the dungeon you can use end!", textChannel, false);
                     } else {
                         currentCave = currentCave.getGoneBefore();
@@ -145,7 +159,7 @@ public class Dungeon {
         engine.getResponseHandler().makeResponse(r);
     }
 
-    public void foundItem(Item item){
+    public void foundItem(Item item) {
         foundItems.add(item);
     }
 

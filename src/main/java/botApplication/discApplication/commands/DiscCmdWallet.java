@@ -29,7 +29,7 @@ public class DiscCmdWallet implements DiscCommand {
                 case "give":
                     if (args.length >= 3) {
                         Member m;
-                        if(event.getMessage().getMentionedMembers().size()!=0){
+                        if (event.getMessage().getMentionedMembers().size() != 0) {
                             m = event.getMessage().getMentionedMembers().get(0);
                         } else {
                             m = event.getGuild().getMemberById(args[1]);

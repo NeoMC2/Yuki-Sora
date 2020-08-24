@@ -16,27 +16,21 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class FightHandler {
 
+    private final Guild guild;
+    private final Member turner = null;
+    private final Member enemy = null;
     private Engine engine;
-
     private Monster monsterM1;
     private Monster monsterM2;
     private Member m1 = null;
     private Member m2 = null;
-
     private TextChannel textChannel;
-    private final Guild guild;
-
     private boolean m1Choose = false;
     private boolean m2Choose = false;
-
     private int turn = 2;
-
     private Monster m = null;
     private Monster e = null;
     private Attack a = null;
-    private final Member turner = null;
-    private final Member enemy = null;
-
     private boolean aiFight = false;
     private MonsterFight mf;
 
@@ -356,7 +350,7 @@ public class FightHandler {
             return;
         }
         String winnert = "";
-        if(winner == null){
+        if (winner == null) {
             winnert = monsterM2.getItemName();
         } else {
             winnert = winner.getUser().getName();

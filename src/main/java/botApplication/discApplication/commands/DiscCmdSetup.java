@@ -44,10 +44,10 @@ public class DiscCmdSetup implements DiscCommand {
                         switch (args[1].toLowerCase()) {
 
                             case "dungeon":
-                                switch (args[2].toLowerCase()){
+                                switch (args[2].toLowerCase()) {
                                     case "queue":
                                         TextChannel tc = event.getGuild().getTextChannelById(args[3]);
-                                        if(tc == null){
+                                        if (tc == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
                                             return;
                                         }
@@ -62,21 +62,21 @@ public class DiscCmdSetup implements DiscCommand {
 
                                     case "chan":
                                     case "channel":
-                                        if(server.getDungeonQueueHandler() == null){
+                                        if (server.getDungeonQueueHandler() == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("You don't have a queue handler message yet!", event.getChannel(), false);
                                             return;
                                         }
                                         Role r = event.getGuild().getRoleById(args[4]);
                                         TextChannel ttc = event.getGuild().getTextChannelById(args[3]);
-                                        if(ttc == null){
+                                        if (ttc == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
                                             return;
                                         }
-                                        if(r == null){
+                                        if (r == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Role not found!", event.getChannel(), false);
                                             return;
                                         }
-                                        DungeonChannelHandler ch = new DungeonChannelHandler(ttc.getId(),r.getId());
+                                        DungeonChannelHandler ch = new DungeonChannelHandler(ttc.getId(), r.getId());
                                         server.getDungeonQueueHandler().getChannels().add(ch);
                                         break;
                                 }

@@ -14,6 +14,7 @@ public abstract class Response {
     public String discChannelId;
     public String discUserId;
     public ResponseTyp responseTyp;
+
     public Response(ResponseTyp responseTyp) {
         this.responseTyp = responseTyp;
     }

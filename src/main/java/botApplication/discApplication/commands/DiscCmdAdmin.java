@@ -21,7 +21,7 @@ public class DiscCmdAdmin implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         switch (args[0]) {
             case "reset":
-                for (Object u:engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
+                for (Object u : engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
                     DiscApplicationUser usr = (DiscApplicationUser) u;
                     usr.getMonsters().clear();
                     usr.setCoins(usr.getCoins() + 20);
@@ -80,7 +80,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                         }
                                     }
                                 } else {
-                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]) -1);
+                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]) - 1);
                                 }
 
                                 if (rM == null) {

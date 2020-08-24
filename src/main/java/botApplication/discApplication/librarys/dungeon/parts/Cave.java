@@ -1,6 +1,5 @@
 package botApplication.discApplication.librarys.dungeon.parts;
 
-import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
 import botApplication.discApplication.librarys.dungeon.actions.DungeonAction;
 

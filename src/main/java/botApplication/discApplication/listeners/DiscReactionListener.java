@@ -40,7 +40,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         }
         DungeonQueueHandler qh = getDungeonQueueHandler(s, event.getMessageId());
-        if(qh != null){
+        if (qh != null) {
             event.getChannel().clearReactionsById(event.getMessageId()).complete();
             event.getChannel().addReactionById(qh.getMsgId(), qh.getEmoji()).queue();
             qh.click(event.getChannel(), engine, event.getGuild(), event.getMember());
@@ -133,10 +133,10 @@ public class DiscReactionListener extends ListenerAdapter {
         return null;
     }
 
-    private DungeonQueueHandler getDungeonQueueHandler(DiscApplicationServer server, String msgId){
-        if(server.getDungeonQueueHandler() == null)
+    private DungeonQueueHandler getDungeonQueueHandler(DiscApplicationServer server, String msgId) {
+        if (server.getDungeonQueueHandler() == null)
             return null;
-        if(server.getDungeonQueueHandler().getMsgId().equals(msgId)){
+        if (server.getDungeonQueueHandler().getMsgId().equals(msgId)) {
             return server.getDungeonQueueHandler();
         }
         return null;

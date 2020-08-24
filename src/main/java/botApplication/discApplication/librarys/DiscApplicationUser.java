@@ -171,15 +171,15 @@ public class DiscApplicationUser implements Serializable {
         return monsters;
     }
 
-    public void addMonster(Monster m) throws Exception{
-        if(monsters.size() >= maxMonsters){
+    public void setMonsters(ArrayList<Monster> monsters) {
+        this.monsters = monsters;
+    }
+
+    public void addMonster(Monster m) throws Exception {
+        if (monsters.size() >= maxMonsters) {
             throw new Exception("To many monsters");
         }
         monsters.add(m);
-    }
-
-    public void setMonsters(ArrayList<Monster> monsters) {
-        this.monsters = monsters;
     }
 
     public int getMaxMonsters() {
@@ -188,5 +188,32 @@ public class DiscApplicationUser implements Serializable {
 
     public void setMaxMonsters(int maxMonsters) {
         this.maxMonsters = maxMonsters;
+    }
+
+    public int getMaxItems() {
+        return maxItems;
+    }
+
+    public void setMaxItems(int maxItems) {
+        this.maxItems = maxItems;
+    }
+
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
+    }
+
+    public void addItem(Item item) throws Exception {
+        if (items.size() >= maxItems) {
+            throw new Exception("To many Items");
+        }
+        items.add(item);
+    }
+
+    public void upgrade() {
+
     }
 }

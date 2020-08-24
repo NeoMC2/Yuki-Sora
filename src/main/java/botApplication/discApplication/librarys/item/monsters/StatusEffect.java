@@ -9,13 +9,9 @@ public class StatusEffect implements Serializable {
     private StatusEffectType type;
     private int roundsLeft;
 
-    public enum StatusEffectType implements Serializable{
-        Burn, Freeze, Paralysis, Poison, Sleep, Confusion
-    }
-
-    public static StatusEffect stringToStatEffect(String s){
+    public static StatusEffect stringToStatEffect(String s) {
         StatusEffect eff = new StatusEffect();
-        switch (s.toLowerCase()){
+        switch (s.toLowerCase()) {
             case "fire":
             case "burn":
                 eff.setType(StatusEffectType.Burn);
@@ -55,5 +51,9 @@ public class StatusEffect implements Serializable {
 
     public void setRoundsLeft(int roundsLeft) {
         this.roundsLeft = roundsLeft;
+    }
+
+    public enum StatusEffectType implements Serializable {
+        Burn, Freeze, Paralysis, Poison, Sleep, Confusion
     }
 }

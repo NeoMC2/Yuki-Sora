@@ -199,7 +199,7 @@ public class DiscMessageListener extends ListenerAdapter {
             } catch (Exception e) {
                 return;
             }
-            pic = (String) pics.get(ThreadLocalRandom.current().nextInt(0, pics.size()-1));
+            pic = (String) pics.get(ThreadLocalRandom.current().nextInt(0, pics.size() - 1));
             to = grp.get("prn") + " " + ca[1];
             try {
                 color = Color.decode((String) grp.get("color"));

@@ -17,7 +17,7 @@ public class DiscCmdHelp implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         String msg = "";
-        for (String s:engine.getDiscEngine().getCommandHandler().commandIvokes) {
+        for (String s : engine.getDiscEngine().getCommandHandler().commandIvokes) {
             msg += s + "\n";
         }
         engine.getDiscEngine().getTextUtils().sendHelp(msg, event.getChannel());
