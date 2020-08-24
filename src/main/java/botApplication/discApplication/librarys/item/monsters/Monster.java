@@ -159,6 +159,8 @@ public class Monster extends Item implements Serializable, Cloneable {
             if(enemy.getStatusEffects()!=null){
                 enemy.setStatusEffects(new ArrayList<>());
             } else {
+                if(enemy.getStatusEffects() == null)
+                    enemy.setStatusEffects(new ArrayList<>());
                 Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
                 while (it.hasNext()) {
                     StatusEffect statusEffect = it.next();

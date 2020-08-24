@@ -23,6 +23,10 @@ public class DungeonGenerator {
         int drops;
         int xpDrops;
         int traps;
+
+        int oneWay;
+        int twoWay;
+        int threeWay;
     }
 
     public DungeonGenerator(Engine engine) {
@@ -64,7 +68,7 @@ public class DungeonGenerator {
             addCharToMap('╗', map, x, y);
             addCharToMap('╚', map, x, y + 1);
             addCharToMap('═', map, x + 1, y);
-            addCharToMap('═', map, x + 1, y +1);
+            addCharToMap('═', map, x + 1, y + 1);
             addJunction(c.getJunctions().get(0), map, x + 1, y);
             addJunction(c.getJunctions().get(1), map, x + 1, y + 1);
         } else if (c.getJunctions().size() == 3) {
@@ -104,7 +108,7 @@ public class DungeonGenerator {
                     if (j >= fromy) {
                         char y = ' ';
                         if (x.size() <= j + 1) {
-                            for (int k = ((x.size() - 1) - (j+1)); k <= 0; k++) {
+                            for (int k = ((x.size() - 1) - (j + 1)); k <= 0; k++) {
                                 x.add(' ');
                             }
                             last = 0;
@@ -117,8 +121,8 @@ public class DungeonGenerator {
                             x.set(j + 1, y);
                         else
                             x.set(j + 1, last);
-                        if(!x.get(j).equals(' '))
-                        x.set(j, '║');
+                        if (!x.get(j).equals(' '))
+                            x.set(j, '║');
                     }
                 }
         }
@@ -147,7 +151,7 @@ public class DungeonGenerator {
             } else {
                 lastCave.getJunctions().add(c);
                 lastCave = c;
-                generateJunctions(c, getJunctionCount());
+                generateJunctions(c, getJunctionCount() - 1);
             }
         }
         if (engine.getProperties().debug) {
@@ -156,6 +160,9 @@ public class DungeonGenerator {
                     "length: " + statistics.dungeonLength + "\n" +
                     "generated caves: " + statistics.dungeonCaves + "\n" +
                     "wrong way caves: " + (statistics.dungeonCaves - statistics.dungeonLength) + "\n\n" +
+                    "1 way: " + statistics.oneWay + "\n" +
+                    "2 way: " + statistics.twoWay + "\n" +
+                    "3 way: " + statistics.threeWay + "\n\n" +
                     "default: " + statistics.defaults + "\n" +
                     "drops: " + statistics.drops + "\n" +
                     "xpdrops: " + statistics.xpDrops + "\n" +
@@ -175,20 +182,37 @@ public class DungeonGenerator {
             c.getJunctions().add(cc);
             left--;
 
-            //TODO: this is bullshit!!!!!!
+            if (c.isRightDirection())
+                generateDeepCave(cc, ThreadLocalRandom.current().nextInt(2, 15));
+
             generateJunctions(c, left);
-            generateJunctions(cc, getJunctionCount());
+        }
+    }
+
+    private void generateDeepCave(Cave c, int length) {
+        if (length > 0) {
+            length--;
+            generateJunctions(c, getJunctionCount());
+            for (int i = 0; i < c.getJunctions().size(); i++) {
+                if (i == 0)
+                    generateDeepCave(c.getJunctions().get(i), length);
+                else if (i == 1 || i == 2)
+                    generateDeepCave(c.getJunctions().get(i), ThreadLocalRandom.current().nextInt(1, 3));
+            }
         }
     }
 
     private int getJunctionCount() {
         int r = ThreadLocalRandom.current().nextInt(0, 100);
-        int caves = 0;
+        int caves = 1;
         if (r > 80) {
+            statistics.threeWay++;
             caves = 3;
         } else if (r > 70) {
+            statistics.twoWay++;
             caves = 2;
-        } else if (r > 60) {
+        } else {
+            statistics.oneWay++;
             caves = 1;
         }
         return caves;

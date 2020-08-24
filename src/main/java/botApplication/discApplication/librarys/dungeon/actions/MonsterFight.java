@@ -30,7 +30,6 @@ public class MonsterFight implements DungeonAction, Serializable {
     @Override
     public void action(Dungeon dungeon) {
         m = m.clone();
-        m.finish();
         dungeon.getTextChannel().sendMessage(msg).queue();
         d = dungeon;
         FightHandler h = new FightHandler(engine, dungeon.getTextChannel(), dungeon.getG());
