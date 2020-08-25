@@ -11,13 +11,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class ItemStorage {
 
-    private static ArrayList<Gem> gems;
-    private static ArrayList<Metal> metals;
-    private static ArrayList<Food> foods;
-    private static ArrayList<Stuff> stuffs;
-
     public static Stuff getRandomStuff() {
-        stuffs = new ArrayList<>();
+        ArrayList<Stuff> stuffs = new ArrayList<>();
 
         stuffs.add(new Cable());
         stuffs.add(new Cobweb());
@@ -30,15 +25,16 @@ public class ItemStorage {
     }
 
     public static Food getRandomFood() {
-        foods = new ArrayList<>();
+        ArrayList<Food> foods = new ArrayList<>();
 
+        foods.add(new Fruit());
         foods.add(new Fruit());
 
         return foods.get(ThreadLocalRandom.current().nextInt(0, foods.size() - 1));
     }
 
     public static Metal getRandomMetal() {
-        metals = new ArrayList<>();
+        ArrayList<Metal> metals = new ArrayList<>();
 
         metals.add(new Aluminium());
         metals.add(new Copper());
@@ -51,7 +47,7 @@ public class ItemStorage {
     }
 
     public static Gem getRandomGem() {
-        gems = new ArrayList<>();
+        ArrayList<Gem> gems = new ArrayList<>();
 
         gems.add(new Diamond());
         gems.add(new Emerald());

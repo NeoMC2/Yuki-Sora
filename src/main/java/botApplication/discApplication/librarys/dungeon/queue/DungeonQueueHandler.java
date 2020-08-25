@@ -32,22 +32,23 @@ public class DungeonQueueHandler implements Serializable {
             m.delete().queueAfter(8, TimeUnit.SECONDS);
             return;
         }
-        if (usedChannels == null) {
-            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("There is no dungeon channel left sorry, wait 3 minutes and try again!");
-            Message m = textChannel.sendMessage(b.build()).complete();
-            m.delete().queueAfter(8, TimeUnit.SECONDS);
-        } else {
+
+        if (usedChannels == null)
             usedChannels = new HashMap<>();
 
-            DungeonChannelHandler channelHandler = null;
-            for (DungeonChannelHandler ch : channels) {
-                if (!usedChannels.containsKey(ch.getChannelId())) {
-                    channelHandler = ch;
-                    break;
-                }
+        DungeonChannelHandler channelHandler = null;
+        for (DungeonChannelHandler ch : channels) {
+            if (!usedChannels.containsKey(ch.getChannelId())) {
+                channelHandler = ch;
+                break;
             }
-            if (channelHandler == null)
-                channelHandler.clicked(engine, g, member);
+        }
+        if (channelHandler == null) {
+            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("There is no dungeon channel left sorry, wait 3 minutes and try again!");
+            Message m = textChannel.sendMessage(b.build()).complete();
+            m.delete().queueAfter(5, TimeUnit.SECONDS);
+        } else {
+            channelHandler.clicked(engine, g, member);
             UsedDungeonChannel chanel = new UsedDungeonChannel(channelHandler, member, g);
             usedChannels.put(channelHandler.getChannelId(), chanel);
         }

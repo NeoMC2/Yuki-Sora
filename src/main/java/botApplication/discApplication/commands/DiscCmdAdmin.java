@@ -144,7 +144,7 @@ public class DiscCmdAdmin implements DiscCommand {
                             case "monsters":
                                 String msgg = "";
                                 for (int i = 0; i < rUser.getMonsters().size(); i++) {
-                                    Monster m = user.getMonsters().get(i);
+                                    Monster m = rUser.getMonsters().get(i);
                                     msgg += "[" + (i + 1) + "] " + m.getItemName() + "\n";
                                 }
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(msgg, event.getChannel(), "Info", Color.MAGENTA);

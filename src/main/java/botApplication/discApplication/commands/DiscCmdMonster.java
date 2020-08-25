@@ -109,6 +109,7 @@ public class DiscCmdMonster implements DiscCommand {
                             msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
                         } catch (Exception e) {
                             engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
+                            return;
                         }
                     } else {
                         for (int i = 0; i < user.getMonsters().size(); i++) {
