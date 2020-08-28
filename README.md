@@ -1,4 +1,4 @@
-# Welcome to the Yuki-Sora wiki!
+# Yuki Sora
 Yuki-Sora is a Discordbot with a lot of features. Here you can see all the stuff you need to know about each module.
 
 # Wikis
