@@ -83,11 +83,10 @@ public class Dungeon {
     public void caveActionFinished(boolean returnToHome) {
         if (returnToHome) {
             String coll = "";
-            user.getItems().addAll(foundItems);
             for (Item i : foundItems) {
                 coll += i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
             }
-            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!\n\nList of found Items:\n" + coll, textChannel);
+            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!\n\n**List of found Items:**\n" + coll, textChannel);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
@@ -161,6 +160,7 @@ public class Dungeon {
 
     public void foundItem(Item item) {
         foundItems.add(item);
+        user.getItems().add(item);
     }
 
     public Member getMember() {

@@ -7,6 +7,7 @@ import botApplication.discApplication.librarys.item.monsters.Monster;
 import core.Engine;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class MonsterFight implements DungeonAction, Serializable {
@@ -41,30 +42,38 @@ public class MonsterFight implements DungeonAction, Serializable {
                 dif = Difficulty.Normal;
             else
                 dif = Difficulty.Easy;
+
+            ArrayList<Monster> mnster = new ArrayList<>();
         if (engine != null)
             if (engine.getDiscEngine().getFilesHandler() != null)
                 for (Monster m : engine.getDiscEngine().getFilesHandler().getMonsters()) {
                     if (dif == Difficulty.Easy) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 0) {
-                            this.m = m;
-                            break;
+                            if(m.isShown())
+                            mnster.add(m);
                         }
                     }
 
                     if (dif == Difficulty.Normal) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 1) {
-                            this.m = m;
-                            break;
+                            if(m.isShown())
+                            mnster.add(m);
                         }
 
                     }
 
                     if (dif == Difficulty.Hard) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 2) {
-                            this.m = m;
-                            break;
+                            if(m.isShown())
+                            mnster.add(m);
                         }
                     }
+
+                    try {
+                        this.m = mnster.get(ThreadLocalRandom.current().nextInt(0, mnster.size() - 1));
+                    } catch (Exception e){
+                    }
+
                     if (this.m == null) {
                         this.m = engine.getDiscEngine().getFilesHandler().getMonsters().get(ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() - 1));
                     }

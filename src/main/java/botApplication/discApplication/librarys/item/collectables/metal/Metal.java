@@ -12,6 +12,7 @@ public class Metal extends Item implements Serializable {
 
     //0 = fluid, 1 = soft, 2 = soft - hard, 3 = hard, 4 = superhard
     private int hardness = 1;
+    private int cookTime = 5;
 
     public Form getForm() {
         return form;
@@ -27,6 +28,14 @@ public class Metal extends Item implements Serializable {
 
     public void setHardness(int hardness) {
         this.hardness = hardness;
+    }
+
+    public int getCookTime() {
+        return cookTime;
+    }
+
+    public void setCookTime(int cookTime) {
+        this.cookTime = cookTime;
     }
 
     public enum Form {

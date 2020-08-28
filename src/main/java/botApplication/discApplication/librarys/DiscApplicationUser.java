@@ -214,6 +214,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void upgrade() {
-
+        maxItems = 30;
+        items = new ArrayList<>();
     }
 }

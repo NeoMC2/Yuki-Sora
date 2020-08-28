@@ -46,7 +46,13 @@ public class DiscCmdSetup implements DiscCommand {
                             case "dungeon":
                                 switch (args[2].toLowerCase()) {
                                     case "queue":
-                                        TextChannel tc = event.getGuild().getTextChannelById(args[3]);
+                                        String textChannel = args[3];
+                                        TextChannel tc;
+                                        if (textChannel.toLowerCase().equals("new")) {
+                                            tc = event.getGuild().createTextChannel("dungeonqueue").complete();
+                                        } else
+                                            tc = event.getGuild().getTextChannelById(textChannel);
+
                                         if (tc == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
                                             return;
@@ -66,8 +72,20 @@ public class DiscCmdSetup implements DiscCommand {
                                             engine.getDiscEngine().getTextUtils().sendError("You don't have a queue handler message yet!", event.getChannel(), false);
                                             return;
                                         }
-                                        Role r = event.getGuild().getRoleById(args[4]);
-                                        TextChannel ttc = event.getGuild().getTextChannelById(args[3]);
+                                        String roleTxt = args[4];
+                                        String textChannelTxt = args[3];
+                                        Role r;
+                                        if (roleTxt.toLowerCase().equals("new"))
+                                            r = event.getGuild().createRole().setName("dungeon").setColor(Color.GRAY).complete();
+                                        else
+                                            r = event.getGuild().getRoleById(roleTxt);
+
+                                        TextChannel ttc;
+                                        if (textChannelTxt.toLowerCase().equals("new"))
+                                            ttc = event.getGuild().createTextChannel("dungeon").complete();
+                                        else
+                                            ttc = event.getGuild().getTextChannelById(textChannelTxt);
+
                                         if (ttc == null) {
                                             engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
                                             return;

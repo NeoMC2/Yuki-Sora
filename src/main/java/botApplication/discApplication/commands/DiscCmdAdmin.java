@@ -23,9 +23,9 @@ public class DiscCmdAdmin implements DiscCommand {
             case "reset":
                 for (Object u : engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
                     DiscApplicationUser usr = (DiscApplicationUser) u;
-                    usr.getMonsters().clear();
-                    usr.setCoins(usr.getCoins() + 20);
-                    usr.setLastWorkTime(null);
+                    user.addCoins(100);
+                    user.getMonsters().clear();
+                    usr.upgrade();
                 }
                 engine.getDiscEngine().getTextUtils().sendSucces("Done!", event.getChannel());
                 break;

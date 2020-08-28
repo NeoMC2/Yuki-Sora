@@ -51,6 +51,7 @@ public class FightHandler {
         this.m1 = m1;
         monsterM2 = enemy;
         aiFight = true;
+        turn = 1;
         round();
     }
 
@@ -176,7 +177,10 @@ public class FightHandler {
         }
 
         if (aiFight && turner == null) {
-            a = m.getAllowedAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAllowedAttacks().size() - 1));
+            if (m.getAllowedAttacks().size() > 1)
+                a = m.getAllowedAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAllowedAttacks().size() - 1));
+            else
+                a = m.getAllowedAttacks().get(0);
             attack(turner, enemy);
             return;
         }
@@ -258,8 +262,13 @@ public class FightHandler {
 
                     case "end":
                     case "stop":
-                        engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
-                        engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
+                        if(aiFight){
+                            engine.getDiscEngine().getTextUtils().sendWarining("You can't escape this fight!", textChannel);
+                            round();
+                        } else {
+                            engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
+                            engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
+                        }
                         break;
 
                     default:
@@ -285,6 +294,7 @@ public class FightHandler {
 
 
         if (isAttackValid(a, textChannel)) {
+            a.setLeftUses(a.getLeftUses()-1);
             int attackDmg = m.attack(m, a, e);
             int stateDmg = e.calculateStateDmg(false);
             showAttackInfo(m, e, attackDmg, a, stateDmg);
@@ -306,7 +316,7 @@ public class FightHandler {
         }
 
         if (!aiFight && turner != null)
-            if (a.getUsed() <= 0) {
+            if (a.getLeftUses() <= 0) {
                 engine.getDiscEngine().getTextUtils().sendError("This attack can't be used anymore!", c, false);
                 return false;
             }

@@ -11,8 +11,8 @@ public class Attack implements Serializable, Cloneable {
     private String attackName;
     private ArrayList<Monster.MonsterType> monsterTypes = new ArrayList<>();
     private int lvl;
-    private int usage;
-    private int used;
+    private int maxUsages;
+    private int leftUses;
     private StatusEffect statusEffect;
 
     public int getBaseDamage() {
@@ -47,20 +47,20 @@ public class Attack implements Serializable, Cloneable {
         this.lvl = lvl;
     }
 
-    public int getUsed() {
-        return used;
+    public int getLeftUses() {
+        return leftUses;
     }
 
-    public void setUsed(int used) {
-        this.used = used;
+    public void setLeftUses(int leftUses) {
+        this.leftUses = leftUses;
     }
 
-    public int getUsage() {
-        return usage;
+    public int getMaxUsages() {
+        return maxUsages;
     }
 
-    public void setUsage(int usage) {
-        this.usage = usage;
+    public void setMaxUsages(int maxUsages) {
+        this.maxUsages = maxUsages;
     }
 
     public StatusEffect getStatusEffect() {
@@ -81,7 +81,7 @@ public class Attack implements Serializable, Cloneable {
             if (statusEffect.getType() != null)
                 status = statusEffect.getType().name();
 
-        return "Name: " + attackName + "\nUsed: " + used + " (" + usage + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s + "\nStatus effect: " + status;
+        return "Name: " + attackName + "\nUsed: " + leftUses + " (" + maxUsages + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s + "\nStatus effect: " + status;
     }
 
     public Attack clone() {
@@ -97,8 +97,8 @@ public class Attack implements Serializable, Cloneable {
         t.setAttackName(attackName);
         t.setLvl(lvl);
         t.setMonsterTypes(cloneMonsterTypes());
-        t.setUsage(usage);
-        t.setUsed(usage);
+        t.setMaxUsages(maxUsages);
+        t.setLeftUses(maxUsages);
         t.setStatusEffect(statusEffect);
         return t;
     }
@@ -110,6 +110,6 @@ public class Attack implements Serializable, Cloneable {
     }
 
     public void use() {
-        used++;
+        leftUses++;
     }
 }

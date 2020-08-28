@@ -23,7 +23,7 @@ public class Drop implements DungeonAction, Serializable {
     @Override
     public void action(Dungeon dungeon) {
         String msg = dropText;
-        msg += "\n\n**You've got\n\n";
+        msg += "Wait, there is a chest in the middle of this room\n\n**You've got**\n\n";
 
         for (Item item : drops) {
             msg += item.getItemName() + " (" + Item.rarityToString(item.getItemRarity()) + ")\n";
@@ -38,14 +38,14 @@ public class Drop implements DungeonAction, Serializable {
         int q = ThreadLocalRandom.current().nextInt(1, 100);
         int quantity;
 
-        if (q > 80) {
-            quantity = ThreadLocalRandom.current().nextInt(15, 20);
+        if (q > 90) {
+            quantity = ThreadLocalRandom.current().nextInt(9, 15);
         } else if (q > 70) {
-            quantity = ThreadLocalRandom.current().nextInt(10, 14);
+            quantity = ThreadLocalRandom.current().nextInt(5, 8);
         } else if (q > 60) {
-            quantity = ThreadLocalRandom.current().nextInt(5, 10);
+            quantity = ThreadLocalRandom.current().nextInt(3, 5);
         } else {
-            quantity = ThreadLocalRandom.current().nextInt(2, 5);
+            quantity = ThreadLocalRandom.current().nextInt(1, 2);
         }
 
         for (int i = 0; i < quantity; i++) {

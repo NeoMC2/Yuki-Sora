@@ -22,8 +22,9 @@ public class DiscCmdItem implements DiscCommand {
             switch (args[0].toLowerCase()) {
                 case "list":
                     String itemList = "";
-                    for (Item i : user.getItems()) {
-                        itemList += i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
+                    for (int j = 0; j < user.getItems().size(); j++) {
+                        Item i = user.getItems().get(j);
+                        itemList += "(" + (j+1) + ") " + i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
                     }
                     engine.getDiscEngine().getTextUtils().sendCustomMessage(itemList, event.getChannel(), "list", Color.BLUE);
                     break;

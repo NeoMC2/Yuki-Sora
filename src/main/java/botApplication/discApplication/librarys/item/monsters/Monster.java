@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
+import botApplication.discApplication.librarys.item.consumable.food.Food;
 import core.Engine;
 
 import java.io.Serializable;
@@ -208,7 +209,7 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     public int attack(Monster o, Attack attack, Monster enemy) {
         attack.use();
-        double dmg = (((level * (1 / 8)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        double dmg = (((level * (1 / 16)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
         if (attack.getStatusEffect() != null) {
             StatusEffect e = new StatusEffect();
@@ -810,9 +811,10 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     private String addStatusEffects() {
         String s = "";
-        for (StatusEffect eff : statusEffects) {
-            s += eff.getType().name() + ", ";
-        }
+        if (statusEffects != null)
+            for (StatusEffect eff : statusEffects) {
+                s += eff.getType().name() + ", ";
+            }
         return s;
     }
 
@@ -912,6 +914,16 @@ public class Monster extends Item implements Serializable, Cloneable {
         ArrayList<MonsterType> t = new ArrayList<>();
         monsterTypes.forEach(e -> t.add(e));
         return t;
+    }
+
+    public void feed(Food f) {
+        a1.setLeftUses(a1.getMaxUsages());
+        a2.setLeftUses(a2.getMaxUsages());
+        a3.setLeftUses(a3.getMaxUsages());
+        a4.setLeftUses(a4.getMaxUsages());
+
+        if (f.getType() != null)
+            setEvolveDirection(f.getType());
     }
 
     public enum MonsterType {

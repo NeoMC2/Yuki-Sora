@@ -82,6 +82,7 @@ public class TransaktionHandler {
                     if (s.equals("false"))
                         m.setShown(false);
             } catch (Exception e) {
+                m.setShown(true);
             }
 
             JSONArray attacks = (JSONArray) o.get("attacks");
@@ -89,7 +90,7 @@ public class TransaktionHandler {
                 JSONObject attack = (JSONObject) att;
                 Attack a = new Attack();
                 try {
-                    a.setUsage(Integer.parseInt((String) attack.get("usage")));
+                    a.setMaxUsages(Integer.parseInt((String) attack.get("usage")));
                     a.setAttackName((String) attack.get("name"));
                     a.setBaseDamage(Integer.parseInt((String) attack.get("dmg")));
                     a.setMonsterTypes(getMonsterTypesFromJson(attack));
@@ -126,10 +127,11 @@ public class TransaktionHandler {
     }
 
     public Monster getRandomMonster(Item.Rarity minRarity) {
-        int r = ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() - 1);
+        ArrayList<Monster> monsters = getShownListOfMonsters();
+        int r = ThreadLocalRandom.current().nextInt(0, monsters.size() - 1);
         Monster m = null;
         try {
-            m = engine.getDiscEngine().getFilesHandler().getMonsters().get(r).clone();
+            m = monsters.get(r).clone();
         } catch (Exception e) {
             return null;
         }
@@ -153,5 +155,12 @@ public class TransaktionHandler {
             }
         }
         return getRandomMonster(minRarity);
+    }
+
+    public ArrayList<Monster> getShownListOfMonsters(){
+        ArrayList<Monster> mnstr = new ArrayList<>();
+        engine.getDiscEngine().getFilesHandler().getMonsters().forEach(e -> {if(e.isShown()) mnstr.add(e);});
+
+        return mnstr;
     }
 }

@@ -23,12 +23,12 @@ public class FileUtils {
     public Object loadObject(String path) throws Exception {
         String filePath = new File(path).getAbsolutePath();
         File file = new File(filePath);
-        engine.getUtilityBase().printOutput("[File loader] Loading Object Flile: " + filePath, false);
+        engine.getUtilityBase().printOutput("[File loader] Loading Object Flile: " + filePath, true);
         FileInputStream stream = null;
         ObjectInputStream objStream = null;
         Object obj = null;
         if (!file.exists()) {
-            engine.getUtilityBase().printOutput("The File was never created!", false);
+            engine.getUtilityBase().printOutput("The File was never created!", true);
             throw new Exception("File was never created!");
         }
         stream = new FileInputStream(file);
@@ -42,7 +42,7 @@ public class FileUtils {
     public void saveObject(String path, Object obj) throws Exception {
         String filePath = new File(path).getAbsolutePath();
         File file = new File(filePath);
-        engine.getUtilityBase().printOutput("[File loader] Save Object File: " + filePath, false);
+        engine.getUtilityBase().printOutput("[File loader] Save Object File: " + filePath, true);
         FileOutputStream stream = null;
         ObjectOutputStream objStream = null;
         createFileRootAndFile(file);
@@ -64,7 +64,6 @@ public class FileUtils {
             object = (JSONObject) parser.parse(reader);
             reader.close();
         } catch (Exception e) {
-            System.out.println("ERRORORORRO!!!!");
             throw new Exception("File load error");
         }
         return object;
@@ -79,7 +78,7 @@ public class FileUtils {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
             }
-            engine.getUtilityBase().printOutput("Invalid Json", false);
+            engine.getUtilityBase().printOutput("Invalid Json", true);
         }
         return object;
     }
