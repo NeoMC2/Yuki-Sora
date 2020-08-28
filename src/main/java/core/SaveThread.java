@@ -2,8 +2,8 @@ package core;
 
 public class SaveThread implements Runnable {
 
-    boolean stop = false;
     private final Engine engine;
+    boolean stop = false;
 
     public SaveThread(Engine engine) {
         this.engine = engine;

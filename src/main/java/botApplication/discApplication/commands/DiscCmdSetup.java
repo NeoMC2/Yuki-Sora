@@ -3,6 +3,8 @@ package botApplication.discApplication.commands;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.DiscRole;
+import botApplication.discApplication.librarys.dungeon.queue.DungeonChannelHandler;
+import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -40,6 +42,63 @@ public class DiscCmdSetup implements DiscCommand {
                             return;
                         }
                         switch (args[1].toLowerCase()) {
+
+                            case "dungeon":
+                                switch (args[2].toLowerCase()) {
+                                    case "queue":
+                                        String textChannel = args[3];
+                                        TextChannel tc;
+                                        if (textChannel.toLowerCase().equals("new")) {
+                                            tc = event.getGuild().createTextChannel("dungeonqueue").complete();
+                                        } else
+                                            tc = event.getGuild().getTextChannelById(textChannel);
+
+                                        if (tc == null) {
+                                            engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
+                                            return;
+                                        }
+                                        String emoji = args[4];
+                                        DungeonQueueHandler qh = new DungeonQueueHandler();
+                                        qh.setEmoji(emoji);
+                                        Message m = tc.sendMessage("To enter a dungeon press " + emoji + " bellow and you get a own channel!").complete();
+                                        m.addReaction(emoji).queue();
+                                        qh.setMsgId(m.getId());
+                                        server.setDungeonQueueHandler(qh);
+                                        break;
+
+                                    case "chan":
+                                    case "channel":
+                                        if (server.getDungeonQueueHandler() == null) {
+                                            engine.getDiscEngine().getTextUtils().sendError("You don't have a queue handler message yet!", event.getChannel(), false);
+                                            return;
+                                        }
+                                        String roleTxt = args[4];
+                                        String textChannelTxt = args[3];
+                                        Role r;
+                                        if (roleTxt.toLowerCase().equals("new"))
+                                            r = event.getGuild().createRole().setName("dungeon").setColor(Color.GRAY).complete();
+                                        else
+                                            r = event.getGuild().getRoleById(roleTxt);
+
+                                        TextChannel ttc;
+                                        if (textChannelTxt.toLowerCase().equals("new"))
+                                            ttc = event.getGuild().createTextChannel("dungeon").complete();
+                                        else
+                                            ttc = event.getGuild().getTextChannelById(textChannelTxt);
+
+                                        if (ttc == null) {
+                                            engine.getDiscEngine().getTextUtils().sendError("Text channel not found!", event.getChannel(), false);
+                                            return;
+                                        }
+                                        if (r == null) {
+                                            engine.getDiscEngine().getTextUtils().sendError("Role not found!", event.getChannel(), false);
+                                            return;
+                                        }
+                                        DungeonChannelHandler ch = new DungeonChannelHandler(ttc.getId(), r.getId());
+                                        server.getDungeonQueueHandler().getChannels().add(ch);
+                                        break;
+                                }
+                                break;
 
                             case "membercount":
                             case "mc":

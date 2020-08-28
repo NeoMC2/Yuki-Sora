@@ -30,10 +30,10 @@ public class DiscCertificationHandler {
         for (String s : server.getDefaultRoles()) {
             roles.add(guild.getRoleById(s));
         }
-        for (Role r:roles) {
+        for (Role r : roles) {
             try {
                 guild.addRoleToMember(member, r).queue();
-            } catch (Exception e){
+            } catch (Exception e) {
 
             }
         }
@@ -70,7 +70,7 @@ public class DiscCertificationHandler {
             roles.add(guild.getRoleById(s));
         }
 
-        for (Role r:roles) {
+        for (Role r : roles) {
             guild.removeRoleFromMember(member, r).queue();
         }
     }

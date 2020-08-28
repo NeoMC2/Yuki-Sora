@@ -1,6 +1,7 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
+import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
 import net.dv8tion.jda.api.entities.User;
@@ -29,8 +30,10 @@ public class DiscApplicationUser implements Serializable {
     private int level;
 
     private int maxMonsters = 10;
+    private int maxItems = 30;
 
     private ArrayList<Monster> monsters = new ArrayList<>();
+    private ArrayList<Item> items = new ArrayList<>();
 
     private boolean saidHello = false;
 
@@ -172,11 +175,46 @@ public class DiscApplicationUser implements Serializable {
         this.monsters = monsters;
     }
 
+    public void addMonster(Monster m) throws Exception {
+        if (monsters.size() >= maxMonsters) {
+            throw new Exception("To many monsters");
+        }
+        monsters.add(m);
+    }
+
     public int getMaxMonsters() {
         return maxMonsters;
     }
 
     public void setMaxMonsters(int maxMonsters) {
         this.maxMonsters = maxMonsters;
+    }
+
+    public int getMaxItems() {
+        return maxItems;
+    }
+
+    public void setMaxItems(int maxItems) {
+        this.maxItems = maxItems;
+    }
+
+    public ArrayList<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<Item> items) {
+        this.items = items;
+    }
+
+    public void addItem(Item item) throws Exception {
+        if (items.size() >= maxItems) {
+            throw new Exception("To many Items");
+        }
+        items.add(item);
+    }
+
+    public void upgrade() {
+        maxItems = 30;
+        items = new ArrayList<>();
     }
 }

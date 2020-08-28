@@ -6,8 +6,8 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
 import botApplication.discApplication.librarys.item.monsters.FightHandler;
+import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import botApplication.discApplication.listeners.*;
-import botApplication.discApplication.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
@@ -24,25 +24,18 @@ public class DiscApplicationEngine {
 
     private final String consMsgDef = "[Discord application]";
     private final Engine engine;
+    private final DiscCommandHandler commandHandler = new DiscCommandHandler();
+    private final DiscCommandParser commandParser = new DiscCommandParser();
+    private final ArrayList<FightHandler> fightHandlers = new ArrayList<>();
     private boolean isRunning = false;
-
     private DiscTextUtils textUtils;
     private DiscApplicationFilesHandler filesHandler;
     private DiscUtilityBase utilityBase;
-
-    private final DiscCommandHandler commandHandler = new DiscCommandHandler();
-    private final DiscCommandParser commandParser = new DiscCommandParser();
     private TransaktionHandler transaktionHandler;
-
     private DiscCertificationHandler certificationHandler;
-
     private JDABuilder builder;
     private JDA botJDA;
-
     private DiscCmdVote voteCmd;
-
-    private final ArrayList<FightHandler> fightHandlers = new ArrayList<>();
-
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
     public DiscApplicationEngine(Engine engine) {
@@ -112,6 +105,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("wallet", new DiscCmdWallet());
         commandHandler.createNewCommand("monster", new DiscCmdMonster());
         commandHandler.createNewCommand("m", new DiscCmdMusic());
+        commandHandler.createNewCommand("item", new DiscCmdItem());
     }
 
     private void addBotListeners() {

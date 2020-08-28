@@ -63,10 +63,12 @@ public class ResponseHandler {
                 }
                  */
                 if (update.getAuthor().getId().equals(res.discUserId)) {
-                    engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
-                    responses.remove(res);
-                    res.respondDisc(update);
-                    return true;
+                    if (update.getChannel().getId().equals(res.discChannelId)) {
+                        engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                        responses.remove(res);
+                        res.respondDisc(update);
+                        return true;
+                    }
                 }
             }
         } catch (Exception e) {

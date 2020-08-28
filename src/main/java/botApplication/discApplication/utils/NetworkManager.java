@@ -23,13 +23,17 @@ public class NetworkManager {
         try {
             connection = makeConnection(path);
         } catch (Exception e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
             return null;
         }
         try {
             connection.setRequestMethod("POST");
         } catch (ProtocolException e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
             return null;
         }
         connection.setDoInput(true);
@@ -40,7 +44,9 @@ public class NetworkManager {
             os.write(json);
             os.flush();
         } catch (IOException e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
         }
 
         return readResponse(connection);
@@ -50,7 +56,9 @@ public class NetworkManager {
         try {
             return readResponse(makeConnection(path));
         } catch (Exception e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
@@ -66,7 +74,9 @@ public class NetworkManager {
             }
             responseString = response.toString();
         } catch (IOException e) {
-            if(engine.getProperties().debug){e.printStackTrace();}
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
         }
         return responseString;
     }

@@ -21,13 +21,19 @@ public class DiscCmdAdmin implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         switch (args[0]) {
             case "reset":
-                for (Object u:engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
+                for (Object u : engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
                     DiscApplicationUser usr = (DiscApplicationUser) u;
-                    usr.getMonsters().clear();
-                    usr.setCoins(usr.getCoins() + 20);
-                    usr.setLastWorkTime(null);
+                    user.addCoins(100);
+                    user.getMonsters().clear();
+                    usr.upgrade();
                 }
                 engine.getDiscEngine().getTextUtils().sendSucces("Done!", event.getChannel());
+                break;
+
+            case "regguild":
+                engine.getDiscEngine().getFilesHandler().getServers().remove(event.getGuild().getId());
+                engine.getDiscEngine().getFilesHandler().createNewServer(event.getGuild());
+                engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId()).setSetupDone(true);
                 break;
 
             case "user":
@@ -74,7 +80,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                         }
                                     }
                                 } else {
-                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]) -1);
+                                    rM = rUser.getMonsters().get(Integer.parseInt(args[4]) - 1);
                                 }
 
                                 if (rM == null) {
@@ -95,6 +101,7 @@ public class DiscCmdAdmin implements DiscCommand {
                                             case "lvl":
                                                 rM.setLevel(Integer.parseInt(args[7]));
                                                 rM.isEvolve(engine, rUser);
+                                                rM.finish();
                                                 break;
 
                                             default:
@@ -137,7 +144,7 @@ public class DiscCmdAdmin implements DiscCommand {
                             case "monsters":
                                 String msgg = "";
                                 for (int i = 0; i < rUser.getMonsters().size(); i++) {
-                                    Monster m = user.getMonsters().get(i);
+                                    Monster m = rUser.getMonsters().get(i);
                                     msgg += "[" + (i + 1) + "] " + m.getItemName() + "\n";
                                 }
                                 engine.getDiscEngine().getTextUtils().sendCustomMessage(msgg, event.getChannel(), "Info", Color.MAGENTA);

@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys;
 
+import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 
@@ -35,6 +36,7 @@ public class DiscApplicationServer implements Serializable {
     private String memberCountCategoryId = "";
 
     private ArrayList<String> autoChannels = new ArrayList<>();
+    private DungeonQueueHandler dungeonQueueHandler;
 
     public DiscApplicationServer(Guild guild) {
         this.serverName = guild.getName();
@@ -220,5 +222,13 @@ public class DiscApplicationServer implements Serializable {
 
     public void setMemberCountCategoryId(String memberCountCategoryId) {
         this.memberCountCategoryId = memberCountCategoryId;
+    }
+
+    public DungeonQueueHandler getDungeonQueueHandler() {
+        return dungeonQueueHandler;
+    }
+
+    public void setDungeonQueueHandler(DungeonQueueHandler dungeonQueueHandler) {
+        this.dungeonQueueHandler = dungeonQueueHandler;
     }
 }

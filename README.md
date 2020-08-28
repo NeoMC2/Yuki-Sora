@@ -4,12 +4,18 @@ Yuki-Sora is a Discordbot with a lot of features. Here you can see all the stuff
 # Wikis
 * [Monsters](https://github.com/NeoMC2/Yuki-Sora/wiki/Monsters)
 * [Items](https://github.com/NeoMC2/Yuki-Sora/wiki/Item)
+* [Dungeon](https://github.com/MindCollaps/Yuki-Sora/wiki/Dungeon)
 * [Commands](https://github.com/NeoMC2/Yuki-Sora/wiki/Commands)
 * [Gif list](https://github.com/NeoMC2/Yuki-Sora/wiki/Gifs)
 
-# Credits
+
+***
+
+
+# Credits 
+
 ## Main Developer
-### [Noah Till (MindCollaps)](https://github.com/NeoMC2)
+### [Noah Till (MindCollaps)](https://github.com/mindcollaps)
 
 ## Developer support
 ### Hanna (scnrjse)
@@ -21,13 +27,16 @@ Gif list, Monsters, enhancements
 ### Kaito 
 Language-Support
 
+### Edward Wolf (Pastelicious) 
+Monsters
+
 ### Karoline Fließ (Grand Goddess)
 Monsters
-### Pastelicious 
-Monsters
+
 ### TheRealMelone 
 Monsters
-### Tunder1344 
+
+### Thunder1344 
 Monsters
 
 ## Used packages

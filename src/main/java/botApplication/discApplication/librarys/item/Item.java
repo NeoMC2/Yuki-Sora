@@ -25,8 +25,8 @@ public class Item implements Serializable, Cloneable {
         return null;
     }
 
-    public static Color rarityToColor(Rarity r){
-        switch (r){
+    public static Color rarityToColor(Rarity r) {
+        switch (r) {
 
             case Normal:
                 return Color.GRAY;
@@ -70,8 +70,8 @@ public class Item implements Serializable, Cloneable {
         return 0;
     }
 
-    public static int rarityToMarketValue(Rarity r){
-        switch (r){
+    public static int rarityToMarketValue(Rarity r) {
+        switch (r) {
 
             case Normal:
                 return 5;

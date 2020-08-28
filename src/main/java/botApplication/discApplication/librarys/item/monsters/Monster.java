@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
+import botApplication.discApplication.librarys.item.consumable.food.Food;
 import core.Engine;
 
 import java.io.Serializable;
@@ -108,8 +109,70 @@ public class Monster extends Item implements Serializable, Cloneable {
         throw new Exception("Unknown Type");
     }
 
+    public static MonsterType getRandomMonsterType() {
+        int r = ThreadLocalRandom.current().nextInt(0, 17);
+        switch (r) {
+            case 0:
+                return MonsterType.psychic;
+
+            case 1:
+                return MonsterType.ghost;
+
+            case 2:
+                return MonsterType.ice;
+
+            case 3:
+                return MonsterType.dark;
+
+            case 4:
+                return MonsterType.dragon;
+
+            case 5:
+                return MonsterType.steel;
+
+            case 6:
+                return MonsterType.fairy;
+
+            case 7:
+                return MonsterType.normal;
+
+            case 8:
+                return MonsterType.fire;
+
+            case 9:
+                return MonsterType.water;
+
+            case 10:
+                return MonsterType.electric;
+
+            case 11:
+                return MonsterType.grass;
+
+            case 12:
+                return MonsterType.flying;
+
+            case 13:
+                return MonsterType.bug;
+
+            case 14:
+                return MonsterType.poison;
+
+            case 15:
+                return MonsterType.rock;
+
+            case 16:
+                return MonsterType.ground;
+
+            case 17:
+                return MonsterType.fighting;
+        }
+        return MonsterType.Normal;
+    }
+
     public int calculateStateDmg(boolean turn) {
         int allDmg = 0;
+        if (statusEffects == null)
+            statusEffects = new ArrayList<>();
         Iterator<StatusEffect> itr = statusEffects.iterator();
         while (itr.hasNext()) {
             StatusEffect ss = itr.next();
@@ -146,18 +209,27 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     public int attack(Monster o, Attack attack, Monster enemy) {
         attack.use();
-        double dmg = (((level * (1 / 8)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        double dmg = (((level * (1 / 16)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
         if (attack.getStatusEffect() != null) {
             StatusEffect e = new StatusEffect();
             e.setType(attack.getStatusEffect().getType());
             if (attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Sleep || attack.getStatusEffect().getType() == StatusEffect.StatusEffectType.Confusion)
                 e.setRoundsLeft(ThreadLocalRandom.current().nextInt(1, 7));
-            for (StatusEffect statusEffect : enemy.getStatusEffects()) {
-                if (attack.getStatusEffect().getType() == statusEffect.getType())
-                    enemy.getStatusEffects().remove(statusEffect);
+
+            if (enemy.getStatusEffects() != null) {
+                enemy.setStatusEffects(new ArrayList<>());
+            } else {
+                if (enemy.getStatusEffects() == null)
+                    enemy.setStatusEffects(new ArrayList<>());
+                Iterator<StatusEffect> it = enemy.getStatusEffects().iterator();
+                while (it.hasNext()) {
+                    StatusEffect statusEffect = it.next();
+                    if (attack.getStatusEffect().getType() == statusEffect.getType())
+                        enemy.getStatusEffects().remove(statusEffect);
+                }
+                enemy.getStatusEffects().add(e);
             }
-            enemy.getStatusEffects().add(e);
         }
         return (int) dmg;
     }
@@ -206,12 +278,15 @@ public class Monster extends Item implements Serializable, Cloneable {
     }
 
     private void evolve(Engine e, DiscApplicationUser user) {
-        if(evolveDirection!=null) {
-            for (String s:evolves) {
-                for (Monster m:e.getDiscEngine().getFilesHandler().getMonsters()) {
-                    if(m.getItemName().toLowerCase().equals(s.toLowerCase())){
-                        for (MonsterType t:m.getMonsterTypes()) {
-                            if(t == evolveDirection){
+        if (user == null) {
+            return;
+        }
+        if (evolveDirection != null) {
+            for (String s : evolves) {
+                for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
+                    if (m.getItemName().toLowerCase().equals(s.toLowerCase())) {
+                        for (MonsterType t : m.getMonsterTypes()) {
+                            if (t == evolveDirection) {
                                 buildThaMonster(m, user);
                                 return;
                             }
@@ -736,9 +811,10 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     private String addStatusEffects() {
         String s = "";
-        for (StatusEffect eff : statusEffects) {
-            s += eff.getType().name() + ", ";
-        }
+        if (statusEffects != null)
+            for (StatusEffect eff : statusEffects) {
+                s += eff.getType().name() + ", ";
+            }
         return s;
     }
 
@@ -838,6 +914,16 @@ public class Monster extends Item implements Serializable, Cloneable {
         ArrayList<MonsterType> t = new ArrayList<>();
         monsterTypes.forEach(e -> t.add(e));
         return t;
+    }
+
+    public void feed(Food f) {
+        a1.setLeftUses(a1.getMaxUsages());
+        a2.setLeftUses(a2.getMaxUsages());
+        a3.setLeftUses(a3.getMaxUsages());
+        a4.setLeftUses(a4.getMaxUsages());
+
+        if (f.getType() != null)
+            setEvolveDirection(f.getType());
     }
 
     public enum MonsterType {
