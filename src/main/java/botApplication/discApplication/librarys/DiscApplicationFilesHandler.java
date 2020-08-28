@@ -69,7 +69,7 @@ public class DiscApplicationFilesHandler {
             monsters = TransaktionHandler.parseJsonToMonster(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/monsters.json"));
         } catch (Exception e) {
             e.printStackTrace();
-            engine.getUtilityBase().printOutput("!!Pokemons cant load!!", true);
+            engine.getUtilityBase().printOutput("!!Monsers cant load!!", true);
             e.printStackTrace();
         }
         try {

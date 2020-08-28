@@ -3,6 +3,7 @@ package core;
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
+import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
@@ -57,6 +58,36 @@ public class Engine {
                         us.getItems().add(diamond);
                         System.out.println("Started experiment");
                     }
+                    break;
+
+                case "reform":
+                    JSONObject o = null;
+                    try {
+                        o = getFileUtils().loadJsonFile(getFileUtils().home + "/transactions/monsters.json");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    Object[] ob = o.keySet().toArray();
+
+                    for (Object oS:ob){
+                        String s = (String) oS;
+                        JSONObject mnster = (JSONObject) o.get(s);
+
+                        for (Object oSS:ob){
+                            String ss = (String) oSS;
+                            JSONObject mnsterr = (JSONObject) o.get(ss);
+
+                            String ev = (String) mnsterr.get("ev");
+                            if(ev!=null)
+                            if(ev.equals(s)){
+                                mnster.put("shown", "false");
+                                System.out.println(s);
+                            }
+                        }
+                    }
+
+                    getFileUtils().saveJsonFile(getFileUtils().home +"/transactions/monsters.json", o);
                     break;
                 case "start":
                     discApplicationEngine.startBotApplication();
