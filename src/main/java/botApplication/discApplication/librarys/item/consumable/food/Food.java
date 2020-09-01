@@ -18,4 +18,15 @@ public class Food extends Item implements Serializable {
     public void setType(Monster.MonsterType type) {
         this.type = type;
     }
+
+    @Override
+    public Item clone() {
+        Food t = new Food();
+        t.setImgUrl(getImgUrl());
+        t.setItemName(getItemName());
+        t.setItemRarity(getItemRarity());
+        t.setItemState(getItemState());
+        t.setType(type);
+        return t;
+    }
 }

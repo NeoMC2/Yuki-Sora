@@ -1,12 +1,12 @@
-package botApplication.discApplication.librarys.item.collectables.stuff;
+package botApplication.discApplication.librarys.item.collectables.trophy;
 
 import botApplication.discApplication.librarys.item.Item;
 
-public class Stuff extends Item {
+public class Trophy extends Item {
 
     @Override
     public Item clone() {
-        Stuff t = new Stuff();
+        Trophy t = new Trophy();
         t.setImgUrl(getImgUrl());
         t.setItemName(getItemName());
         t.setItemRarity(getItemRarity());
