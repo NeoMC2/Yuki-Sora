@@ -10,6 +10,7 @@ public class Item implements Serializable, Cloneable {
     private String itemName;
     private Rarity itemRarity;
     private String imgUrl;
+    private int itemState;
 
     public static Rarity stringToRarity(String s) {
         switch (s.toLowerCase()) {
@@ -109,11 +110,20 @@ public class Item implements Serializable, Cloneable {
         this.imgUrl = imgUrl;
     }
 
+    public int getItemState() {
+        return itemState;
+    }
+
+    public void setItemState(int itemState) {
+        this.itemState = itemState;
+    }
+
     public Item clone() {
         Item t = new Item();
         t.setImgUrl(imgUrl);
         t.setItemName(itemName);
         t.setItemRarity(itemRarity);
+        t.setItemState(itemState);
         return t;
     }
 

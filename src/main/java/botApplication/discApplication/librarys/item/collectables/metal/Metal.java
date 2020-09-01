@@ -14,12 +14,43 @@ public class Metal extends Item implements Serializable {
     private int hardness = 1;
     private int cookTime = 5;
 
+    private String defItemName;
+
     public Form getForm() {
         return form;
     }
 
     public void setForm(Form form) {
+        if (form == Form.Ingot) {
+            setItemState(1);
+            setItemName(defItemName + " ingot");
+        } else {
+            setItemState(0);
+            setItemName(defItemName + " ore");
+        }
+
         this.form = form;
+    }
+
+    @Override
+    public void setItemName(String itemName) {
+        if (defItemName == null) {
+            defItemName = itemName;
+            setForm(form);
+        }
+        super.setItemName(itemName);
+    }
+
+    @Override
+    public Item clone() {
+        Metal t = new Metal();
+        t.setImgUrl(getImgUrl());
+        t.setItemName(getItemName());
+        t.setItemRarity(getItemRarity());
+        t.setItemState(getItemState());
+        t.setCookTime(cookTime);
+        t.setHardness(hardness);
+        return t;
     }
 
     public int getHardness() {

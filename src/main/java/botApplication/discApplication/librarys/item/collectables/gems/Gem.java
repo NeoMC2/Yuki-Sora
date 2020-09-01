@@ -21,4 +21,15 @@ public class Gem extends Item implements Serializable {
     public enum Form {
         Dust, Hard
     }
+
+    @Override
+    public Item clone() {
+        Gem t = new Gem();
+        t.setImgUrl(getImgUrl());
+        t.setItemName(getItemName());
+        t.setItemRarity(getItemRarity());
+        t.setItemState(getItemState());
+        t.setForm(form);
+        return t;
+    }
 }

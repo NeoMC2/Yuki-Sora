@@ -177,10 +177,10 @@ public class FightHandler {
         }
 
         if (aiFight && turner == null) {
-            if (m.getAllowedAttacks().size() > 1)
-                a = m.getAllowedAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAllowedAttacks().size() - 1));
+            if (m.getAttacks().size() > 1)
+                a = m.getAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAttacks().size() - 1));
             else
-                a = m.getAllowedAttacks().get(0);
+                a = m.getAttacks().get(0);
             attack(turner, enemy);
             return;
         }
@@ -262,13 +262,11 @@ public class FightHandler {
 
                     case "end":
                     case "stop":
-                        if(aiFight){
-                            engine.getDiscEngine().getTextUtils().sendWarining("You can't escape this fight!", textChannel);
-                            round();
-                        } else {
                             engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
                             engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
-                        }
+                            if(aiFight) {
+                                mf.fightOver(true);
+                            }
                         break;
 
                     default:

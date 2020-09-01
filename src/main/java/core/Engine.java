@@ -79,10 +79,21 @@ public class Engine {
                             JSONObject mnsterr = (JSONObject) o.get(ss);
 
                             String ev = (String) mnsterr.get("ev");
-                            if(ev!=null)
-                            if(ev.equals(s)){
-                                mnster.put("shown", "false");
-                                System.out.println(s);
+                            if(ev!=null){
+                                String[] evos = ev.split(",");
+                                if(evos.length>1) {
+                                    for (String evosS:evos){
+                                        if(s.equals(evosS)){
+                                            mnster.put("shown", "false");
+                                            System.out.println(s);
+                                        }
+                                    }
+                                } else {
+                                    if(ev.equals(s)){
+                                        mnster.put("shown", "false");
+                                        System.out.println(s);
+                                    }
+                                }
                             }
                         }
                     }

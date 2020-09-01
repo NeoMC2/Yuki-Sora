@@ -43,35 +43,41 @@ public class MonsterFight implements DungeonAction, Serializable {
             else
                 dif = Difficulty.Easy;
 
-            ArrayList<Monster> mnster = new ArrayList<>();
+        ArrayList<Monster> mnster = new ArrayList<>();
         if (engine != null)
             if (engine.getDiscEngine().getFilesHandler() != null)
                 for (Monster m : engine.getDiscEngine().getFilesHandler().getMonsters()) {
                     if (dif == Difficulty.Easy) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 0) {
-                            if(m.isShown())
-                            mnster.add(m);
+                            if (m.isShown()) {
+                                m.setLevel(ThreadLocalRandom.current().nextInt(2, 5));
+                                mnster.add(m);
+                            }
                         }
                     }
 
                     if (dif == Difficulty.Normal) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 1) {
-                            if(m.isShown())
-                            mnster.add(m);
+                            if (m.isShown()) {
+                                m.setLevel(ThreadLocalRandom.current().nextInt(5, 10));
+                                mnster.add(m);
+                            }
                         }
 
                     }
 
                     if (dif == Difficulty.Hard) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 2) {
-                            if(m.isShown())
-                            mnster.add(m);
+                            if (m.isShown()){
+                                m.setLevel(ThreadLocalRandom.current().nextInt(9, 15));
+                                mnster.add(m);
+                            }
                         }
                     }
 
                     try {
                         this.m = mnster.get(ThreadLocalRandom.current().nextInt(0, mnster.size() - 1));
-                    } catch (Exception e){
+                    } catch (Exception e) {
                     }
 
                     if (this.m == null) {
