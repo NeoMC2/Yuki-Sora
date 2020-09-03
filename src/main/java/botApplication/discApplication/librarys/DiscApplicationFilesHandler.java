@@ -20,7 +20,7 @@ public class DiscApplicationFilesHandler {
     private HashMap<String, DiscApplicationUser> users = new HashMap<>();
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
-    private HashMap<String, Dungeon> dungeons = new HashMap<>();
+    private final HashMap<String, Dungeon> dungeons = new HashMap<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;

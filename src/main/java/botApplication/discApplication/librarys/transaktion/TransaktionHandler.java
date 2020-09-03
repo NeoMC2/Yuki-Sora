@@ -69,7 +69,7 @@ public class TransaktionHandler {
             try {
                 String[] ev = ((String) o.get("ev")).split(",");
                 if (ev[0].equals("")) {
-                    if (!((String) o.get("ev")).equals(""))
+                    if (!o.get("ev").equals(""))
                         m.getEvolves().add((String) o.get("ev"));
                 } else
                     m.getEvolves().addAll(Arrays.asList(ev));

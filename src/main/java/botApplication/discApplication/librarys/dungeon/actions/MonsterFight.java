@@ -16,7 +16,7 @@ public class MonsterFight implements DungeonAction, Serializable {
     private Monster m;
     public Engine engine;
     public Dungeon d;
-    private String msg = "Seems like here is a monster!";
+    private final String msg = "Seems like here is a monster!";
 
     public MonsterFight(Engine engine) {
         this.engine = engine;

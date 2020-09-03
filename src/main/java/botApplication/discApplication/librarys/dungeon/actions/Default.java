@@ -7,8 +7,8 @@ import java.io.Serializable;
 
 public class Default implements DungeonAction, Serializable {
 
-    private Engine engine;
-    private String msg = "Seems like this is a normal cave with nothing special in it!";
+    private final Engine engine;
+    private final String msg = "Seems like this is a normal cave with nothing special in it!";
 
     public Default(Engine engine) {
         this.engine = engine;

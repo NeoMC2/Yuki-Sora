@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mindcollaps.yukisora</groupId>
   <artifactId>Yuki-Sora</artifactId>
-  <version>SNAPSHOT_S05a</version>
+  <version>SNAPSHOT_S06a</version>
   <build>
     <plugins>
       <plugin>
@@ -35,8 +35,8 @@
     </repository>
   </repositories>
   <properties>
-    <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
 </project>

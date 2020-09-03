@@ -9,10 +9,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class NetworkManager {
 
-    private Engine engine;
+    private final Engine engine;
 
     public NetworkManager(Engine engine) {
         this.engine = engine;
@@ -66,7 +67,7 @@ public class NetworkManager {
     private String readResponse(HttpURLConnection connection) {
         String responseString = "";
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), "utf-8"));
+            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
             StringBuilder response = new StringBuilder();
             String responseLine = null;
             while ((responseLine = br.readLine()) != null) {
