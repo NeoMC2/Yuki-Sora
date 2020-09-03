@@ -42,15 +42,15 @@ public class Dungeon {
                     "╗▒▒▒▒║\n" +
                     "╚════╝";
     private Cave currentCave;
-    private Member member;
-    private TextChannel textChannel;
-    private Guild g;
-    private Engine engine;
-    private DiscApplicationUser user;
+    private final Member member;
+    private final TextChannel textChannel;
+    private final Guild g;
+    private final Engine engine;
+    private final DiscApplicationUser user;
     private Monster m;
-    private DiscApplicationServer server;
-    private DungeonGenerator dungeonGenerator;
-    private ArrayList<Item> foundItems = new ArrayList<>();
+    private final DiscApplicationServer server;
+    private final DungeonGenerator dungeonGenerator;
+    private final ArrayList<Item> foundItems = new ArrayList<>();
 
     public Dungeon(Member member, TextChannel textChannel, Guild g, Engine engine, DiscApplicationUser user, Monster m, DiscApplicationServer server) {
         this.member = member;

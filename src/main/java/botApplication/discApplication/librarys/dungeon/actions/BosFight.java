@@ -6,14 +6,13 @@ import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import core.Engine;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class BosFight extends MonsterFight implements DungeonAction{
 
     private Difficulty dif;
-    private String msg = "Seems like this is a bosfight!";
+    private final String msg = "Seems like this is a bosfight!";
     private Monster m;
 
     public BosFight(Engine engine) {

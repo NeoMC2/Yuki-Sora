@@ -11,10 +11,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop implements DungeonAction, Serializable {
 
-    private Engine engine;
+    private final Engine engine;
 
-    private ArrayList<Item> drops = new ArrayList<>();
-    private String dropText = "";
+    private final ArrayList<Item> drops = new ArrayList<>();
+    private final String dropText = "";
 
     public Drop(Engine engine) {
         this.engine = engine;

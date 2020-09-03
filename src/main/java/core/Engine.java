@@ -3,7 +3,6 @@ package core;
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
-import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
@@ -24,7 +23,7 @@ public class Engine {
     public JSONObject lang;
     public JSONObject pics;
     private Properties properties;
-    private NetworkManager networkManager = new NetworkManager(this);
+    private final NetworkManager networkManager = new NetworkManager(this);
 
     public void boot(String[] args) {
         loadLanguage();

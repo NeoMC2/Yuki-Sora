@@ -9,8 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DungeonGenerator {
 
-    private Engine engine;
-    private Statistics statistics = new Statistics();
+    private final Engine engine;
+    private final Statistics statistics = new Statistics();
 
     public DungeonGenerator(Engine engine) {
         this.engine = engine;

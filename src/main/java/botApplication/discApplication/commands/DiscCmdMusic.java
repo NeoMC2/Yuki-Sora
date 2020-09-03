@@ -54,13 +54,13 @@ public class DiscCmdMusic implements DiscCommand {
                     o.put("guild", event.getGuild().getId());
                     Object[] array = channelMusicBots.keySet().toArray();
                     for (Object ob : array) {
-                        String s = channelMusicBots.get((String) ob);
+                        String s = channelMusicBots.get(ob);
                         String res = engine.getNetworkManager().post(s + "/state", o.toJSONString());
                         JSONObject obj = engine.getFileUtils().convertStringToJson(res);
                         String ev = (String) obj.get("response");
                         if (ev.equals("true")) {
                         } else if (ev.equals("false")) {
-                            channelMusicBots.remove((String) ob);
+                            channelMusicBots.remove(ob);
                             botUrl = s;
                         }
                     }
@@ -97,9 +97,9 @@ public class DiscCmdMusic implements DiscCommand {
                 return "null";
             }
         if (g != null && m != null && vcId != null && botUrl != null)
-            if (((String) req.get("status")).equals("200")) {
+            if (req.get("status").equals("200")) {
                 responseChannel.sendMessage(new EmbedBuilder().setDescription((String) req.get("response")).setColor(Color.GREEN).build()).queue();
-            } else if (((String) req.get("status")).equals("400")) {
+            } else if (req.get("status").equals("400")) {
                 responseChannel.sendMessage(new EmbedBuilder().setDescription((String) req.get("response")).setColor(Color.RED).build()).queue();
             }
         return (String) req.get("response");

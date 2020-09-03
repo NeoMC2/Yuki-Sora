@@ -8,7 +8,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class XPDrop implements DungeonAction, Serializable {
 
-    private Engine engine;
+    private final Engine engine;
 
     public XPDrop(Engine engine) {
         this.engine = engine;

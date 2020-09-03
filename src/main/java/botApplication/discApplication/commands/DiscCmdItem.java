@@ -4,23 +4,17 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
-import botApplication.discApplication.librarys.item.collectables.metal.Copper;
 import botApplication.discApplication.librarys.item.collectables.metal.Iron;
-import botApplication.discApplication.librarys.item.collectables.metal.Metal;
 import botApplication.discApplication.librarys.item.collectables.stuff.Cable;
 import botApplication.discApplication.librarys.item.collectables.stuff.Tape;
 import botApplication.discApplication.librarys.item.crafting.CraftItem;
 import botApplication.discApplication.librarys.item.crafting.CraftingRecipe;
-import botApplication.discApplication.librarys.item.crafting.Smelter;
-import com.iwebpp.crypto.TweetNaclFast;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 public class DiscCmdItem implements DiscCommand {

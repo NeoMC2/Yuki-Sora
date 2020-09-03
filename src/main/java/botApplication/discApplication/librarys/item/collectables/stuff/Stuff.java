@@ -2,7 +2,11 @@ package botApplication.discApplication.librarys.item.collectables.stuff;
 
 import botApplication.discApplication.librarys.item.Item;
 
-public class Stuff extends Item {
+import java.io.Serializable;
+
+public class Stuff extends Item implements Serializable {
+
+    private static final long serialVersionUID = 42L;
 
     @Override
     public Item clone() {

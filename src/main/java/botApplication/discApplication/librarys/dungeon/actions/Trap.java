@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Trap implements DungeonAction {
 
-    private Engine engine;
+    private final Engine engine;
 
     private int dmg = 0;
 
