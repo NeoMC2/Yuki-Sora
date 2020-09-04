@@ -1,10 +1,5 @@
-# Yuki Sora
+# Welcome to the Yuki-Sora wiki!
 Yuki-Sora is a Discordbot with a lot of features. Here you can see all the stuff you need to know about each module.
-
-# Contribute to Yuki-Sora
-[Contributing](https://github.com/MindCollaps/Yuki-Sora/blob/master/CONTRIBUTING.md) 
-
-[Contributor Covenant Code of Conduct](https://github.com/MindCollaps/Yuki-Sora/blob/master/CODE_OF_CONDUCT.md)
 
 # Wikis
 * [Monsters](https://github.com/NeoMC2/Yuki-Sora/wiki/Monsters)
@@ -28,6 +23,9 @@ Gif list, Language-Support, enhancements
 
 ### Dragon
 Gif list, Monsters, enhancements
+
+### Nameless
+Illustration
 
 ### Kaito 
 Language-Support
