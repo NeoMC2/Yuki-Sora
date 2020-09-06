@@ -18,15 +18,6 @@ public class ResponseHandler {
     }
 
     public void makeResponse(Response response) {
-        /*
-        response.creationTime = lookForCurrentTime();
-        for (Response res: responses) {
-            if(response.discUserId.equals(res.discUserId)){
-                responses.remove(res);
-                engine.getUtilityBase().printOutput(consMsgDef + " !User has already a response -> Override!", true);
-            }
-        }
-         */
         responses.add(response);
     }
 
@@ -55,13 +46,6 @@ public class ResponseHandler {
         final ArrayList<Response> r = responses;
         try {
             for (Response res : r) {
-                /*
-                if(res.creationTime+2<lookForCurrentTime()){
-                    responses.remove(res);
-                    engine.getUtilityBase().printOutput(consMsgDef + " !Response is outdated -> Delete!", true);
-                    continue;
-                }
-                 */
                 if (update.getAuthor().getId().equals(res.discUserId)) {
                     if (update.getChannel().getId().equals(res.discChannelId)) {
                         engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);

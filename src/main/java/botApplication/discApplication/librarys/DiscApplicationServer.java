@@ -38,6 +38,8 @@ public class DiscApplicationServer implements Serializable {
     private ArrayList<String> autoChannels = new ArrayList<>();
     private DungeonQueueHandler dungeonQueueHandler;
 
+    private String baitChannel;
+
     public DiscApplicationServer(Guild guild) {
         this.serverName = guild.getName();
         this.serverID = guild.getId();
@@ -230,5 +232,13 @@ public class DiscApplicationServer implements Serializable {
 
     public void setDungeonQueueHandler(DungeonQueueHandler dungeonQueueHandler) {
         this.dungeonQueueHandler = dungeonQueueHandler;
+    }
+
+    public String getBaitChannel() {
+        return baitChannel;
+    }
+
+    public void setBaitChannel(String baitChannel) {
+        this.baitChannel = baitChannel;
     }
 }

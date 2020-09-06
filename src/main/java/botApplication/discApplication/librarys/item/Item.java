@@ -11,6 +11,9 @@ public class Item implements Serializable, Cloneable {
     private Rarity itemRarity;
     private String imgUrl;
     private int itemState;
+    private String description;
+
+    public static final String imageItemPath = "http://mindcollaps.de/yukisora/assets/items/";
 
     public static Rarity stringToRarity(String s) {
         switch (s.toLowerCase()) {
@@ -116,6 +119,14 @@ public class Item implements Serializable, Cloneable {
 
     public void setItemState(int itemState) {
         this.itemState = itemState;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Item clone() {

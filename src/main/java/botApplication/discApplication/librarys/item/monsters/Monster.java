@@ -295,7 +295,11 @@ public class Monster extends Item implements Serializable, Cloneable {
                 }
             }
         } else {
-            String evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() - 1));
+            String evolvesIn = "";
+            if(evolves.size() - 1 > 1)
+                evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() - 1));
+            else
+                evolves.get(0);
             for (Monster m : e.getDiscEngine().getFilesHandler().getMonsters()) {
                 if (evolvesIn.toLowerCase().equals(m.getItemName().toLowerCase())) {
                     buildThaMonster(m, user);
@@ -868,20 +872,6 @@ public class Monster extends Item implements Serializable, Cloneable {
         t.setImgUrl(getImgUrl());
         t.setItemName(getItemName());
         t.setItemRarity(getItemRarity());
-        /*
-        private ArrayList<Attack> attacks = new ArrayList<>();
-    private Attack a1;
-    private Attack a2;
-    private Attack a3;
-    private Attack a4;
-    private int dv = ThreadLocalRandom.current().nextInt(0, 15);
-    private int baseHp;
-    private int hp;
-    private int maxHp;
-    private int level = 1;
-    private int xp;
-    private ArrayList<MonsterType> monsterTypes = new ArrayList<>();
-         */
         t.setHp(hp);
         t.setBaseHp(baseHp);
         t.setLevel(level);

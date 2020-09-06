@@ -194,7 +194,8 @@ public class DiscCmdMonster implements DiscCommand {
                     }
                     user.getItems().remove(f);
                     mn.feed(f);
-                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.feed", user.getLang(), null), event.getChannel());
+                    EmbedBuilder b = new EmbedBuilder().setAuthor("Feed " + mn.getItemName(), null, f.getImgUrl()).setDescription(engine.lang("cmd.pokemon.success.feed", user.getLang(), null));
+                    event.getChannel().sendMessage(b.build()).queue();
                     break;
 
                 default:

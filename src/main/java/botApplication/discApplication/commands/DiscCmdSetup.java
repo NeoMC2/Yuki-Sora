@@ -43,6 +43,23 @@ public class DiscCmdSetup implements DiscCommand {
                         }
                         switch (args[1].toLowerCase()) {
 
+                            case "bait":
+                                VoiceChannel voiceChannel = null;
+
+                                try {
+                                    voiceChannel = event.getGuild().getVoiceChannelById(args[2]);
+                                } catch (Exception e){
+                                }
+
+                                if (voiceChannel == null) {
+                                    engine.getDiscEngine().getTextUtils().sendError("This channel doesn't exist", event.getChannel(), false);
+                                    return;
+                                }
+
+                                server.setBaitChannel(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("Bait channel set!", event.getChannel());
+                                break;
+
                             case "dungeon":
                                 switch (args[2].toLowerCase()) {
                                     case "queue":
@@ -229,7 +246,7 @@ public class DiscCmdSetup implements DiscCommand {
                                 break;
                         }
                     } else {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.setup.mod.setupOn", user.getLang(), null), event.getChannel(), false);
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
                     }
                     break;
 
