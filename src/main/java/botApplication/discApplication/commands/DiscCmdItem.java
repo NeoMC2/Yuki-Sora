@@ -15,6 +15,7 @@ import botApplication.discApplication.librarys.item.crafting.CraftingRecipe;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -56,7 +57,7 @@ public class DiscCmdItem implements DiscCommand {
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        perform(args, event.getChannel(), null, engine, user);
+        perform(args, event.getChannel(), null, engine, user, event.getMessage());
     }
 
     @Override
@@ -66,12 +67,12 @@ public class DiscCmdItem implements DiscCommand {
 
     @Override
     public void actionPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine) {
-        perform(args, null, event.getChannel(), engine, user);
+        perform(args, null, event.getChannel(), engine, user, event.getMessage());
     }
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return null;
+        return engine.lang("cmd.item.help", user.getLang(), null);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class DiscCmdItem implements DiscCommand {
 
     }
 
-    private void perform(String[] args, TextChannel tc, PrivateChannel pc, Engine engine, DiscApplicationUser user) {
+    private void perform(String[] args, TextChannel tc, PrivateChannel pc, Engine engine, DiscApplicationUser user, Message message) {
         if (args.length > 0)
             switch (args[0].toLowerCase()) {
                 case "list":
@@ -92,6 +93,50 @@ public class DiscCmdItem implements DiscCommand {
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(itemList, pc, "list", Color.BLUE);
                     else
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(itemList, tc, "list", Color.BLUE);
+                    break;
+
+                case "give":
+                    Item giveItem;
+                    try {
+                        giveItem = user.getItems().get(Integer.parseInt(args[1]) - 1);
+                    } catch (Exception e) {
+                        if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), pc);
+                        else
+                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), tc);
+                        return;
+                    }
+
+                    Member memberUsr;
+                    memberUsr = message.getMentionedMembers().get(0);
+                    DiscApplicationUser giveUsr = null;
+                    if (memberUsr == null)
+                        try {
+                            engine.getDiscEngine().getBotJDA().getUserById(args[2]);
+                            giveUsr = engine.getDiscEngine().getFilesHandler().getUserById(memberUsr.getId());
+                        } catch (Exception e) {
+                            if (pc != null)
+                                engine.getDiscEngine().getTextUtils().sendError("Member not found!", pc, false);
+                            else
+                                engine.getDiscEngine().getTextUtils().sendError("Member not found!", tc, false);
+                            return;
+                        }
+                    if (giveUsr == null) {
+                        if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendError("Member not found!", pc, false);
+                        else
+                            engine.getDiscEngine().getTextUtils().sendError("Member not found!", tc, false);
+                        return;
+                    }
+
+                    giveUsr.getItems().add(giveItem);
+
+                    EmbedBuilder builder = new EmbedBuilder().setAuthor(user.getUserName() + " gave " + giveItem.getItemName() + " to " + memberUsr.getNickname(), null, memberUsr.getUser().getAvatarUrl()).setColor(Color.GREEN).setImage(giveItem.getImgUrl());
+
+                    if (pc != null)
+                        pc.sendMessage(builder.build()).queue();
+                    else
+                        tc.sendMessage(builder.build()).queue();
                     break;
 
                 case "trash":
@@ -170,11 +215,11 @@ public class DiscCmdItem implements DiscCommand {
                         return;
                     }
                     String des = it.getDescription();
-                    if(des == null)
+                    if (des == null)
                         des = "no description!";
 
                     EmbedBuilder bb = new EmbedBuilder().setTitle(it.getItemName()).setColor(Item.rarityToColor(it.getItemRarity())).setDescription("Description:\n`" + des + "`").setImage(it.getImgUrl());
-                    if(pc != null)
+                    if (pc != null)
                         pc.sendMessage(bb.build()).queue();
                     else
                         tc.sendMessage(bb.build()).queue();

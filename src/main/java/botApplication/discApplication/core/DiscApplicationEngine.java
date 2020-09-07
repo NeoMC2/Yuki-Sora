@@ -106,7 +106,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("monster", new DiscCmdMonster());
         commandHandler.createNewCommand("m", new DiscCmdMusic());
         commandHandler.createNewCommand("item", new DiscCmdItem());
-        commandHandler.createNewCommand("cook", new DiscCmdCook());
+        commandHandler.createNewCommand("oven", new DiscCmdOven());
         commandHandler.createNewCommand("bait", new DiscCmdBait());
     }
 

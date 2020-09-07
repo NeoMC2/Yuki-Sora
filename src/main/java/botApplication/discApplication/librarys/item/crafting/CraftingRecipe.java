@@ -22,10 +22,6 @@ public class CraftingRecipe {
                 if (!i.getItemName().equals(in.item.getItemName()))
                     continue;
 
-                if (in.state != -1)
-                    if (in.state != i.getItemState())
-                        continue;
-
                 if (in.craftUsage == CraftItem.CraftUsage.externalUse) {
                     tools.add((Tools) i);
                 } else if (in.amount > 1) {
@@ -37,10 +33,6 @@ public class CraftingRecipe {
 
                         if (!i.getItemName().equals(in.item.getItemName()))
                             continue;
-
-                        if (in.state != -1)
-                            if (in.state != i.getItemState())
-                                continue;
 
                         amountF++;
                         f.add(itt);

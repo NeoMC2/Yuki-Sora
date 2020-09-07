@@ -9,7 +9,6 @@ import botApplication.discApplication.librarys.poll.Poll;
 import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ public class DiscApplicationFilesHandler {
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
     private final HashMap<String, Dungeon> dungeons = new HashMap<>();
-    private ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
+    private final ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;

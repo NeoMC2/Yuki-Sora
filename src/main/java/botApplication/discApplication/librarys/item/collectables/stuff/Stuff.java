@@ -14,7 +14,6 @@ public class Stuff extends Item implements Serializable {
         t.setImgUrl(getImgUrl());
         t.setItemName(getItemName());
         t.setItemRarity(getItemRarity());
-        t.setItemState(getItemState());
         return t;
     }
 }

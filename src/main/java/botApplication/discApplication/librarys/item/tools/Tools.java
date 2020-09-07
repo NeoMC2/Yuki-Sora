@@ -16,7 +16,6 @@ public class Tools extends Item {
         t.setImgUrl(getImgUrl());
         t.setItemName(getItemName());
         t.setItemRarity(getItemRarity());
-        t.setItemState(getItemState());
         t.setDestruction(destruction);
 
         ArrayList<Item> nRep = new ArrayList<>();

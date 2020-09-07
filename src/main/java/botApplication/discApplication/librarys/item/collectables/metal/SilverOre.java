@@ -6,6 +6,7 @@ import botApplication.discApplication.librarys.item.crafting.Cookable;
 public class SilverOre extends Metal implements Cookable {
 
     public SilverOre() {
+        setDescription("A peace of stone with some shining metal lines in it");
         setImgUrl(Item.imageItemPath + "silver-ore.PNG");
         setItemName("Silver Ore");
         setItemRarity(Rarity.Legendary);

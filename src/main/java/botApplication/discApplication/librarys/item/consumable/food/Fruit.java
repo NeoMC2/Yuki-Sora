@@ -6,6 +6,7 @@ import botApplication.discApplication.librarys.item.monsters.Monster;
 public class Fruit extends Food {
 
     public Fruit() {
+        setDescription("A fruit with a big amount of power");
         setType(Monster.getRandomMonsterType());
         setImgUrl(Item.imageItemPath + getType().name() + "-fruit.PNG");
         setItemRarity(Rarity.Epic);

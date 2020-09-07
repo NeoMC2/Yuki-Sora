@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import java.awt.*;
 import java.util.HashMap;
 
-public class DiscCmdCook implements DiscCommand {
+public class DiscCmdOven implements DiscCommand {
 
     HashMap<String, Cooking> smelter = new HashMap<>();
 
@@ -43,7 +43,7 @@ public class DiscCmdCook implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return null;
+        return engine.lang("cmd.cook.help", user.getLang(), null);
     }
 
     @Override
@@ -54,7 +54,7 @@ public class DiscCmdCook implements DiscCommand {
     private void perform(String[] args, User u, DiscApplicationUser user, Engine engine, PrivateChannel pc, TextChannel tc) {
         if (args.length > 0)
             switch (args[0]) {
-                case "smelt":
+                case "cook":
                     Item item;
                     try {
                         item = user.getItems().get(Integer.parseInt(args[1]) - 1);

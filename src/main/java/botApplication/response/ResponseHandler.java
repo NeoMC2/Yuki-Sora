@@ -1,6 +1,6 @@
 package botApplication.response;
 
-import com.pengrad.telegrambot.model.Update;
+//import com.pengrad.telegrambot.model.Update;
 import core.Engine;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -21,6 +21,7 @@ public class ResponseHandler {
         responses.add(response);
     }
 
+    /*
     public boolean lookForResponse(Update update) {
         try {
             for (Response res : responses) {
@@ -41,6 +42,7 @@ public class ResponseHandler {
         }
         return false;
     }
+     */
 
     public boolean lookForResponse(GuildMessageReceivedEvent update) {
         final ArrayList<Response> r = responses;
