@@ -39,6 +39,7 @@ public class DiscCmdWallet implements DiscCommand {
                         try {
                             usr = engine.getDiscEngine().getFilesHandler().getUserById(m.getUser().getId());
                         } catch (Exception e) {
+                            engine.getDiscEngine().getTextUtils().sendError("Member not found!", event.getChannel(), false);
                             return;
                         }
                         int c;

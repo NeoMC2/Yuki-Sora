@@ -81,7 +81,7 @@ public class Attack implements Serializable, Cloneable {
             if (statusEffect.getType() != null)
                 status = statusEffect.getType().name();
 
-        return "Name: " + attackName + "\nUsed: " + leftUses + " (" + maxUsages + ")" + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nAttack Type: " + s + "\nStatus effect: " + status;
+        return "Name: " + attackName + "\nLevel: " + lvl + "\nPower: " + baseDamage + "\nUsed: " + leftUses + " (" + maxUsages + ")" + "\nAttack Type: " + s + "\nStatus effect: " + status;
     }
 
     public Attack clone() {
@@ -110,6 +110,6 @@ public class Attack implements Serializable, Cloneable {
     }
 
     public void use() {
-        leftUses++;
+        leftUses--;
     }
 }

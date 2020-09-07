@@ -1,45 +1,44 @@
 package botApplication.discApplication.librarys.item.crafting;
 
-import botApplication.discApplication.librarys.item.collectables.metal.Metal;
-import net.dv8tion.jda.api.entities.Member;
+import botApplication.discApplication.librarys.item.Item;
+import net.dv8tion.jda.api.entities.User;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
 
-public class Smelter {
+public class Cooking {
 
-    private Metal smelting;
+    private Cookable smelting;
     private Date startTime;
-    private Member member;
+    private User member;
 
-    public Smelter(Metal smelting, Member member) {
+    public Cooking(Cookable smelting, User member) {
         this.smelting = smelting;
         this.member = member;
     }
 
-    public void startSmelting(){
+    public void startCooking(){
         startTime = new Date();
-        smelting.setForm(Metal.Form.Ingot);
     }
 
-    public Metal open() throws Exception{
+    public Item open() throws Exception{
         if(startTime==null)
             throw new Exception("Doesn't even start!");
-        Instant time = Instant.now().minus(Duration.ofMinutes(smelting.getCookTime()));
+        Instant time = Instant.now().minus(Duration.ofMinutes(smelting.cookTime()));
         Date dTime = Date.from(time);
 
         if(startTime.after(dTime))
-            return smelting;
+            return smelting.result();
 
         throw new Exception("Still cooking!");
     }
 
-    public Metal getSmelting() {
+    public Cookable getSmelting() {
         return smelting;
     }
 
-    public void setSmelting(Metal smelting) {
+    public void setSmelting(Cookable smelting) {
         this.smelting = smelting;
     }
 
@@ -51,11 +50,11 @@ public class Smelter {
         this.startTime = startTime;
     }
 
-    public Member getMember() {
+    public User getMember() {
         return member;
     }
 
-    public void setMember(Member member) {
+    public void setMember(User member) {
         this.member = member;
     }
 }

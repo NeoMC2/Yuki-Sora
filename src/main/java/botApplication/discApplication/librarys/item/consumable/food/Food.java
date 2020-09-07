@@ -25,7 +25,6 @@ public class Food extends Item implements Serializable {
         t.setImgUrl(getImgUrl());
         t.setItemName(getItemName());
         t.setItemRarity(getItemRarity());
-        t.setItemState(getItemState());
         t.setType(type);
         return t;
     }

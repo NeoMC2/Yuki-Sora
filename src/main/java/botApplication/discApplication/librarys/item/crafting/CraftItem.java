@@ -8,6 +8,13 @@ public class CraftItem {
     public int amount = 1;
     public int state = -1;
 
+    public CraftUsage craftUsage = CraftUsage.internUse;
+    public int toolDestruction = 5;
+
+    public enum CraftUsage{
+        internUse, externalUse
+    }
+
     public CraftItem(Item item) {
         this.item = item;
     }

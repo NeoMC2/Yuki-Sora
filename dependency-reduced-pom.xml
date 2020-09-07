@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mindcollaps.yukisora</groupId>
   <artifactId>Yuki-Sora</artifactId>
-  <version>SNAPSHOT_S06a</version>
+  <version>RELEASE_3.0</version>
   <build>
     <plugins>
       <plugin>

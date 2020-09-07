@@ -1,11 +1,13 @@
 package botApplication.discApplication.librarys.item.collectables.metal;
 
+import botApplication.discApplication.librarys.item.Item;
+
 public class Aluminium extends Metal {
 
     public Aluminium() {
-        setCookTime(2);
+        setDescription("A soft metal that shines white");
+        setImgUrl(Item.imageItemPath + "aluminium.PNG");
         setItemName("Aluminium");
-        setHardness(1);
         setItemRarity(Rarity.Normal);
     }
 }

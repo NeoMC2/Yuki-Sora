@@ -1,6 +1,6 @@
 package botApplication.response;
 
-import com.pengrad.telegrambot.model.Update;
+//import com.pengrad.telegrambot.model.Update;
 import core.Engine;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
@@ -18,18 +18,10 @@ public class ResponseHandler {
     }
 
     public void makeResponse(Response response) {
-        /*
-        response.creationTime = lookForCurrentTime();
-        for (Response res: responses) {
-            if(response.discUserId.equals(res.discUserId)){
-                responses.remove(res);
-                engine.getUtilityBase().printOutput(consMsgDef + " !User has already a response -> Override!", true);
-            }
-        }
-         */
         responses.add(response);
     }
 
+    /*
     public boolean lookForResponse(Update update) {
         try {
             for (Response res : responses) {
@@ -50,18 +42,12 @@ public class ResponseHandler {
         }
         return false;
     }
+     */
 
     public boolean lookForResponse(GuildMessageReceivedEvent update) {
         final ArrayList<Response> r = responses;
         try {
             for (Response res : r) {
-                /*
-                if(res.creationTime+2<lookForCurrentTime()){
-                    responses.remove(res);
-                    engine.getUtilityBase().printOutput(consMsgDef + " !Response is outdated -> Delete!", true);
-                    continue;
-                }
-                 */
                 if (update.getAuthor().getId().equals(res.discUserId)) {
                     if (update.getChannel().getId().equals(res.discChannelId)) {
                         engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);

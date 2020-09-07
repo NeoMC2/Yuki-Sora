@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys;
 
+import botApplication.discApplication.commands.DiscCmdBait;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
 import botApplication.discApplication.librarys.item.monsters.Monster;
@@ -21,6 +22,7 @@ public class DiscApplicationFilesHandler {
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
     private final HashMap<String, Dungeon> dungeons = new HashMap<>();
+    private final ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;
@@ -159,5 +161,9 @@ public class DiscApplicationFilesHandler {
 
     public HashMap<String, Dungeon> getDungeons() {
         return dungeons;
+    }
+
+    public ArrayList<DiscCmdBait.Bait> getBaits() {
+        return baits;
     }
 }

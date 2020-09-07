@@ -84,6 +84,7 @@ public class MonsterFight implements DungeonAction, Serializable {
                         this.m = engine.getDiscEngine().getFilesHandler().getMonsters().get(ThreadLocalRandom.current().nextInt(0, engine.getDiscEngine().getFilesHandler().getMonsters().size() - 1));
                     }
                 }
+        m.finish();
     }
 
     public void setDif(Difficulty dif) {

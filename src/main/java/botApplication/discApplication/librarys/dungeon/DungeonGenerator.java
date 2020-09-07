@@ -260,7 +260,7 @@ public class DungeonGenerator {
             case Default:
                 return 90;
             case Drop:
-                return 10;
+                return 25;
             case MonsterFight:
                 return 30;
             case Trap:
