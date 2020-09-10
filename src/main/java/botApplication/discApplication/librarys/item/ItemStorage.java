@@ -20,6 +20,7 @@ public class ItemStorage {
         stuffs.add(new Glass());
         stuffs.add(new MetalScrew());
         stuffs.add(new Stick());
+        stuffs.add(new Tape());
 
         return stuffs.get(ThreadLocalRandom.current().nextInt(0, stuffs.size() - 1));
     }
@@ -36,12 +37,12 @@ public class ItemStorage {
     public static Metal getRandomMetal() {
         ArrayList<Metal> metals = new ArrayList<>();
 
-        metals.add(new Aluminium());
-        metals.add(new Copper());
-        metals.add(new Gold());
-        metals.add(new Iron());
-        metals.add(new Platinum());
-        metals.add(new Silver());
+        metals.add(new AluminiumOre());
+        metals.add(new CopperOre());
+        metals.add(new GoldOre());
+        metals.add(new IronOre());
+        metals.add(new PlatinumOre());
+        metals.add(new SilverOre());
 
         return metals.get(ThreadLocalRandom.current().nextInt(0, metals.size() - 1));
     }

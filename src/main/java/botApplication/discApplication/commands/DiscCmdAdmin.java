@@ -2,6 +2,7 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.librarys.item.collectables.metal.AluminiumOre;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
@@ -10,16 +11,83 @@ import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class DiscCmdAdmin implements DiscCommand {
+
+    ArrayList<String> had = new ArrayList<>();
+
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         return user.isAdmin();
     }
 
+    private boolean isForEv(Monster m, ArrayList<Monster> monsters) {
+        for (Monster mm : monsters) {
+            for (String ss : mm.getEvolves()) {
+                if (ss.equals(m.getItemName()))
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private String addMonster(String s, Monster m, ArrayList<Monster> monsters, boolean inEv) {
+        if (!inEv)
+            if (isForEv(m, monsters))
+                return s;
+
+        if (had.contains(m.getItemName()))
+            return s;
+        had.add(m.getItemName());
+        if (m.getEvolves().size() > 0) {
+            if (inEv)
+                s += " -> " + m.getItemName();
+            else
+                s += m.getItemName();
+            for (String ss : m.getEvolves()) {
+                Monster monster = null;
+                for (Monster mm : monsters) {
+                    if (mm.getItemName().equals(ss)) {
+                        monster = mm;
+                        break;
+                    }
+                }
+                if (monster != null)
+                    s = addMonster(s, monster, monsters, true);
+            }
+            if(!inEv)
+            s += "\n";
+        } else {
+            if (inEv)
+                s += " -> " + m.getItemName();
+            else
+                s += m.getItemName() + "\n";
+        }
+        return s;
+    }
+
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         switch (args[0]) {
+            case "info":
+                switch (args[1]) {
+                    case "monster":
+                        had.clear();
+                        String monsterMG = "";
+                        ArrayList<Monster> monstersHad = new ArrayList<>();
+                        for (Monster m : engine.getDiscEngine().getFilesHandler().getMonsters()) {
+                            monsterMG = addMonster(monsterMG, m, engine.getDiscEngine().getFilesHandler().getMonsters(), false);
+                        }
+                        engine.getDiscEngine().getTextUtils().sendCustomMessage(monsterMG, event.getChannel(), "Monsters", Color.ORANGE);
+                        break;
+                }
+                break;
+
+            case "test":
+                user.getItems().add(new AluminiumOre());
+                break;
+
             case "reset":
                 for (Object u : engine.getDiscEngine().getFilesHandler().getUsers().values().toArray()) {
                     DiscApplicationUser usr = (DiscApplicationUser) u;

@@ -22,7 +22,7 @@ public class DiscCmdJob implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length > 0) {
-            if (args[0].equals("list")) {
+            if (args[0].toLowerCase().equals("list")) {
                 String msg = "";
                 for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
                     msg += "[" + j.getShortName() + "] " + j.getJobName() + "\n";
@@ -30,7 +30,7 @@ public class DiscCmdJob implements DiscCommand {
                 engine.getDiscEngine().getTextUtils().sendSucces(msg, event.getChannel());
                 return;
             }
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
                 case "take":
                     for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
                         if (j.getShortName().toLowerCase().equals(args[1].toLowerCase())) {

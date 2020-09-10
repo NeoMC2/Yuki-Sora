@@ -28,10 +28,16 @@ public class Cooking {
         Instant time = Instant.now().minus(Duration.ofMinutes(smelting.cookTime()));
         Date dTime = Date.from(time);
 
-        if(startTime.after(dTime))
+        if(startTime.before(dTime))
             return smelting.result();
 
         throw new Exception("Still cooking!");
+    }
+
+    public int minutesLeft(){
+        Instant time = Instant.now().minus(Duration.ofMinutes(smelting.cookTime()));
+        Date dTime = Date.from(time);
+        return (int) (startTime.getTime() - dTime.getTime());
     }
 
     public Cookable getSmelting() {

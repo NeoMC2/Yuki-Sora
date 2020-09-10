@@ -53,7 +53,7 @@ public class DiscCmdOven implements DiscCommand {
 
     private void perform(String[] args, User u, DiscApplicationUser user, Engine engine, PrivateChannel pc, TextChannel tc) {
         if (args.length > 0)
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
                 case "cook":
                     Item item;
                     try {
@@ -90,7 +90,7 @@ public class DiscCmdOven implements DiscCommand {
                     Cooking sm = new Cooking(metal, u);
                     sm.startCooking();
                     smelter.put(u.getId(), sm);
-                    EmbedBuilder b = new EmbedBuilder().setImage(engine.lang("cmd.cook.info.nowCooking", user.getLang(), new String[]{item.getItemName(), String.valueOf(metal.cookTime())})).setTitle("Smelting");
+                    EmbedBuilder b = new EmbedBuilder().setImage(item.getImgUrl()).setDescription(engine.lang("cmd.cook.info.nowCooking", user.getLang(), new String[]{item.getItemName(), String.valueOf(metal.cookTime())})).setTitle("Smelting");
                     if (pc != null)
                         pc.sendMessage(b.build()).queue();
                     else
@@ -112,11 +112,13 @@ public class DiscCmdOven implements DiscCommand {
                         readyItem = smelt.open();
                     } catch (Exception e) {
                         if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.cook.error.notReady", user.getLang(), null), pc, false);
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.cook.error.notReady", user.getLang(), new String[]{engine.getUtilityBase().convertTimeToString(smelt.minutesLeft())}), pc, false);
                         else
-                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.cook.error.notReady", user.getLang(), null), tc, false);
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.cook.error.notReady", user.getLang(), new String[]{engine.getUtilityBase().convertTimeToString(smelt.minutesLeft())}), tc, false);
                         return;
                     }
+                    smelter.remove(u.getId());
+
                     try {
                         user.addItem(readyItem);
                     } catch (Exception e) {
@@ -125,7 +127,8 @@ public class DiscCmdOven implements DiscCommand {
                         else
                             engine.getDiscEngine().getTextUtils().sendWarining("Your inventory is full! ", tc);
                     }
-                    EmbedBuilder bb = new EmbedBuilder().setImage(readyItem.getImgUrl()).setColor(Color.GREEN).setFooter(readyItem.getItemName()).setTitle("Finish");
+
+                    EmbedBuilder bb = new EmbedBuilder().setImage(readyItem.getImgUrl()).setColor(Color.GREEN).setFooter("You've got " + readyItem.getItemName()).setTitle("Cooking finished");
                     if (pc != null)
                         pc.sendMessage(bb.build()).queue();
                     else
