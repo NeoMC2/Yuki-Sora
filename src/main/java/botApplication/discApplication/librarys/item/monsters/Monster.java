@@ -209,7 +209,7 @@ public class Monster extends Item implements Serializable, Cloneable {
 
     public int attack(Monster o, Attack attack, Monster enemy) {
         attack.use();
-        double dmg = (((level * (1 / 16)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        double dmg = (((level * (1 / 3)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
         enemy.setHp((int) (enemy.getHp() - dmg));
         if (attack.getStatusEffect() != null) {
             StatusEffect e = new StatusEffect();
@@ -250,8 +250,12 @@ public class Monster extends Item implements Serializable, Cloneable {
         isLvlUp(e, user);
     }
 
+    public int getLevelUpXp (){
+        return level * 7 + ((dv / 5) * 10);
+    }
+
     private void isLvlUp(Engine e, DiscApplicationUser user) {
-        int levelUpXp = level * 7 + ((dv / 5) * 10);
+        int levelUpXp = getLevelUpXp();
         if (xp >= levelUpXp) {
             this.xp -= levelUpXp;
             lvlUp(e, user);
@@ -783,7 +787,7 @@ public class Monster extends Item implements Serializable, Cloneable {
     public String toString() {
         String msg = "";
         String g = addStatusEffects();
-        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nStaus Effects: " + g + "\nTypes: ";
+        msg += "Name: " + getItemName() + "\nLevel: " + level + "\nXP: " + xp + " (" + getLevelUpXp() + ")" + "\nRarity: " + Item.rarityToString(getItemRarity()) + "\n" + "HP: " + hp + " (" + maxHp + ")" + "\nStaus Effects: " + g + "\nTypes: ";
         msg = addTypes(monsterTypes, msg);
         msg += "\n\n**Attacks:**\n";
         msg += "A1: \n";

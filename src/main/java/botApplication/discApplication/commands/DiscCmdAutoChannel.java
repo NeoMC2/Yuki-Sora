@@ -19,7 +19,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length >= 1) {
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
                 case "add":
                     if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);

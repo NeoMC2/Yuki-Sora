@@ -30,7 +30,7 @@ public class DiscCmdMonster implements DiscCommand {
                     mn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
                 } catch (Exception e) {
                 }
-            switch (args[0]) {
+            switch (args[0].toLowerCase()) {
                 case "fight":
                     if (args.length > 1)
                         if (args[1].equals("accept")) {

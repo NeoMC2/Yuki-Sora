@@ -24,7 +24,7 @@ public class DiscCmdMove implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length >= 2) {
-            if (args[0].equals("us")) {
+            if (args[0].toLowerCase().equals("us")) {
                 VoiceChannel vc = event.getMember().getVoiceState().getChannel();
                 VoiceChannel to = event.getGuild().getVoiceChannelById(args[1]);
                 if (vc == null) {

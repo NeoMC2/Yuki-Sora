@@ -50,7 +50,7 @@ public class MonsterFight implements DungeonAction, Serializable {
                     if (dif == Difficulty.Easy) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 0) {
                             if (m.isShown()) {
-                                m.setLevel(ThreadLocalRandom.current().nextInt(2, 5));
+                                m.setLevel(getLvlMin(ThreadLocalRandom.current().nextInt(5, 10)));
                                 mnster.add(m);
                             }
                         }
@@ -59,7 +59,7 @@ public class MonsterFight implements DungeonAction, Serializable {
                     if (dif == Difficulty.Normal) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 1) {
                             if (m.isShown()) {
-                                m.setLevel(ThreadLocalRandom.current().nextInt(5, 10));
+                                m.setLevel(getLvlMin(ThreadLocalRandom.current().nextInt(-2, 2)));
                                 mnster.add(m);
                             }
                         }
@@ -69,7 +69,7 @@ public class MonsterFight implements DungeonAction, Serializable {
                     if (dif == Difficulty.Hard) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 2) {
                             if (m.isShown()){
-                                m.setLevel(ThreadLocalRandom.current().nextInt(9, 15));
+                                m.setLevel(m.getLevel() + ThreadLocalRandom.current().nextInt(3, 5));
                                 mnster.add(m);
                             }
                         }
@@ -85,6 +85,13 @@ public class MonsterFight implements DungeonAction, Serializable {
                     }
                 }
         m.finish();
+    }
+
+    private int getLvlMin(int minus){
+        int lvl = m.getLevel() - minus;
+        if(lvl<1)
+            lvl = 1;
+        return lvl;
     }
 
     public void setDif(Difficulty dif) {

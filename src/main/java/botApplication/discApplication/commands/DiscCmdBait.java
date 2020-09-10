@@ -20,7 +20,7 @@ public class DiscCmdBait implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
 
-        if (args[0].equals("remove")) {
+        if (args[0].toLowerCase().equals("remove")) {
             ArrayList<Bait> baits = engine.getDiscEngine().getFilesHandler().getBaits();
             for (Bait bait : baits) {
                 if (bait.baider.getId().equals(event.getMember().getId())) {
