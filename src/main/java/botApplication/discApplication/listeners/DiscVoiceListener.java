@@ -120,10 +120,10 @@ public class DiscVoiceListener extends ListenerAdapter {
             nvc.getManager().setParent(vc.getParent()).queue();
 
         gc.modifyVoiceChannelPositions().selectPosition(nvc).moveTo(vc.getPosition() + 1).queue();
-        gc.moveVoiceMember(m, nvc).queue();
         for (PermissionOverride or : vc.getPermissionOverrides()) {
             nvc.createPermissionOverride(or.getRole()).setAllow(or.getAllowed()).setDeny(or.getDenied()).queue();
         }
+        gc.moveVoiceMember(m, nvc).queue();
 
         active.add(nvc);
     }
