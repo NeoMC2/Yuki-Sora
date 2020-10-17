@@ -93,7 +93,7 @@ public class DiscVoiceListener extends ListenerAdapter {
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
         DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
         if (server == null) {
-            engine.getUtilityBase().printOutput("[Guld Voice Join] !!!Fatal Server error!!!", true);
+            engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
         }
 
@@ -120,10 +120,10 @@ public class DiscVoiceListener extends ListenerAdapter {
             nvc.getManager().setParent(vc.getParent()).queue();
 
         gc.modifyVoiceChannelPositions().selectPosition(nvc).moveTo(vc.getPosition() + 1).queue();
-        gc.moveVoiceMember(m, nvc).queue();
         for (PermissionOverride or : vc.getPermissionOverrides()) {
-            nvc.createPermissionOverride(or.getRole()).setAllow(or.getAllowed()).setDeny(or.getDenied()).queue();
+            nvc.createPermissionOverride(or.getRole()).setAllow(or.getAllowed()).setDeny(or.getDenied()).complete();
         }
+        gc.moveVoiceMember(m, nvc).complete();
 
         active.add(nvc);
     }
