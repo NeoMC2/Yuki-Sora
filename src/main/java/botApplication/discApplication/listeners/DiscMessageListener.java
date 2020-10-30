@@ -34,6 +34,7 @@ public class DiscMessageListener extends ListenerAdapter {
         boolean commandWorked = false;
 
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+            engine.getUtilityBase().printOutput(" message listener received guild message!", true);
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
             }
@@ -83,7 +84,7 @@ public class DiscMessageListener extends ListenerAdapter {
         boolean commandWorked = false;
 
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
-            engine.getUtilityBase().printOutput(" message listener received guild message!", true);
+            engine.getUtilityBase().printOutput(" message listener received private message!", true);
             if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {
                 //command exist check
                 for (int i = 0; engine.getDiscEngine().getCommandHandler().commandIvokes.size() > i; i++) {
