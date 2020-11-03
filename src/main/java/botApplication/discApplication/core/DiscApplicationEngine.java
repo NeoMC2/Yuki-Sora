@@ -67,8 +67,7 @@ public class DiscApplicationEngine {
         utilityBase = new DiscUtilityBase(engine);
         certificationHandler = new DiscCertificationHandler(engine);
 
-        builder = new JDABuilder(AccountType.BOT);
-        builder.setToken(engine.getProperties().discBotApplicationToken);
+        builder = JDABuilder.createDefault(engine.getProperties().discBotApplicationToken);
         builder.setAutoReconnect(true);
         builder.setStatus(OnlineStatus.ONLINE);
         addBotCommands();
