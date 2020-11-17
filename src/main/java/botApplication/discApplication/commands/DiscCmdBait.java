@@ -63,7 +63,7 @@ public class DiscCmdBait implements DiscCommand {
             } catch (Exception e) {
             }
 
-        if(bait == null){
+        if (bait == null) {
             engine.getDiscEngine().getTextUtils().sendError("Member not found!", event.getChannel(), false);
             return;
         }

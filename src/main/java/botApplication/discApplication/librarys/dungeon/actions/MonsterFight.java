@@ -12,11 +12,11 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class MonsterFight implements DungeonAction, Serializable {
 
-    private Difficulty dif;
-    private Monster m;
+    private final String msg = "Seems like here is a monster!";
     public Engine engine;
     public Dungeon d;
-    private final String msg = "Seems like here is a monster!";
+    private Difficulty dif;
+    private Monster m;
 
     public MonsterFight(Engine engine) {
         this.engine = engine;
@@ -68,7 +68,7 @@ public class MonsterFight implements DungeonAction, Serializable {
 
                     if (dif == Difficulty.Hard) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 2) {
-                            if (m.isShown()){
+                            if (m.isShown()) {
                                 m.setLevel(m.getLevel() + ThreadLocalRandom.current().nextInt(3, 5));
                                 mnster.add(m);
                             }
@@ -87,9 +87,9 @@ public class MonsterFight implements DungeonAction, Serializable {
         m.finish();
     }
 
-    private int getLvlMin(int minus){
+    private int getLvlMin(int minus) {
         int lvl = m.getLevel() - minus;
-        if(lvl<1)
+        if (lvl < 1)
             lvl = 1;
         return lvl;
     }

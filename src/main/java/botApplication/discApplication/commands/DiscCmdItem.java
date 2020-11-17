@@ -12,6 +12,7 @@ import botApplication.discApplication.librarys.item.collectables.stuff.Tape;
 import botApplication.discApplication.librarys.item.collectables.trophy.CraftEmblem;
 import botApplication.discApplication.librarys.item.crafting.CraftItem;
 import botApplication.discApplication.librarys.item.crafting.CraftingRecipe;
+import botApplication.discApplication.librarys.item.tools.IronHammer;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -36,6 +37,7 @@ public class DiscCmdItem implements DiscCommand {
         iron.amount = 3;
         CraftingRecipe hammer = makeRecipe(new Stick());
         hammer.ingredients.add(iron);
+        hammer.result = new IronHammer();
 
         craftingRecipes.put("cemblm", em);
 

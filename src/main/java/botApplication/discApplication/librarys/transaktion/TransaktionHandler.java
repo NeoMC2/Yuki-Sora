@@ -157,9 +157,11 @@ public class TransaktionHandler {
         return getRandomMonster(minRarity);
     }
 
-    public ArrayList<Monster> getShownListOfMonsters(){
+    public ArrayList<Monster> getShownListOfMonsters() {
         ArrayList<Monster> mnstr = new ArrayList<>();
-        engine.getDiscEngine().getFilesHandler().getMonsters().forEach(e -> {if(e.isShown()) mnstr.add(e);});
+        engine.getDiscEngine().getFilesHandler().getMonsters().forEach(e -> {
+            if (e.isShown()) mnstr.add(e);
+        });
 
         return mnstr;
     }

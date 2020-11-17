@@ -11,11 +11,11 @@ public class CraftItem {
     public CraftUsage craftUsage = CraftUsage.internUse;
     public int toolDestruction = 5;
 
-    public enum CraftUsage{
-        internUse, externalUse
-    }
-
     public CraftItem(Item item) {
         this.item = item;
+    }
+
+    public enum CraftUsage {
+        internUse, externalUse
     }
 }

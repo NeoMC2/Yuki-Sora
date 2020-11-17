@@ -5,14 +5,12 @@ import java.io.Serializable;
 
 public class Item implements Serializable, Cloneable {
 
+    public static final String imageItemPath = "http://mindcollaps.de/yukisora/assets/items/";
     private static final long serialVersionUID = 42L;
-
     private String itemName;
     private Rarity itemRarity;
     private String imgUrl;
     private String description;
-
-    public static final String imageItemPath = "http://mindcollaps.de/yukisora/assets/items/";
 
     public static Rarity stringToRarity(String s) {
         switch (s.toLowerCase()) {

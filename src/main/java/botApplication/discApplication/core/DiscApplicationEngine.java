@@ -11,7 +11,6 @@ import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
-import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;

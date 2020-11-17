@@ -262,11 +262,11 @@ public class FightHandler {
 
                     case "end":
                     case "stop":
-                            engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
-                            engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
-                            if(aiFight) {
-                                mf.fightOver(true);
-                            }
+                        engine.getDiscEngine().getTextUtils().sendWarining("Fight stopped!", textChannel);
+                        engine.getDiscEngine().getFightHandlers().remove(finalFightHandler);
+                        if (aiFight) {
+                            mf.fightOver(true);
+                        }
                         break;
 
                     default:
@@ -292,7 +292,7 @@ public class FightHandler {
 
 
         if (isAttackValid(a, textChannel)) {
-            a.setLeftUses(a.getLeftUses()-1);
+            a.setLeftUses(a.getLeftUses() - 1);
             int attackDmg = m.attack(m, a, e);
             int stateDmg = e.calculateStateDmg(false);
             showAttackInfo(m, e, attackDmg, a, stateDmg);

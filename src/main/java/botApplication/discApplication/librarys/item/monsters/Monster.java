@@ -250,7 +250,7 @@ public class Monster extends Item implements Serializable, Cloneable {
         isLvlUp(e, user);
     }
 
-    public int getLevelUpXp (){
+    public int getLevelUpXp() {
         return level * 7 + ((dv / 5) * 10);
     }
 
@@ -300,7 +300,7 @@ public class Monster extends Item implements Serializable, Cloneable {
             }
         } else {
             String evolvesIn = "";
-            if(evolves.size() - 1 > 1)
+            if (evolves.size() - 1 > 1)
                 evolvesIn = evolves.get(ThreadLocalRandom.current().nextInt(0, evolves.size() - 1));
             else
                 evolves.get(0);

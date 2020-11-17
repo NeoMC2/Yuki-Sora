@@ -41,16 +41,16 @@ public class Dungeon {
                     "╝▒▒▒▒║\n" +
                     "╗▒▒▒▒║\n" +
                     "╚════╝";
-    private Cave currentCave;
     private final Member member;
     private final TextChannel textChannel;
     private final Guild g;
     private final Engine engine;
     private final DiscApplicationUser user;
-    private Monster m;
     private final DiscApplicationServer server;
     private final DungeonGenerator dungeonGenerator;
     private final ArrayList<Item> foundItems = new ArrayList<>();
+    private Cave currentCave;
+    private Monster m;
 
     public Dungeon(Member member, TextChannel textChannel, Guild g, Engine engine, DiscApplicationUser user, Monster m, DiscApplicationServer server) {
         this.member = member;

@@ -9,10 +9,10 @@ import core.Engine;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class BosFight extends MonsterFight implements DungeonAction{
+public class BosFight extends MonsterFight implements DungeonAction {
 
-    private Difficulty dif;
     private final String msg = "Seems like this is a bosfight!";
+    private Difficulty dif;
     private Monster m;
 
     public BosFight(Engine engine) {
@@ -64,7 +64,7 @@ public class BosFight extends MonsterFight implements DungeonAction{
 
                     if (dif == Difficulty.Hard) {
                         if (Item.rarityToInt(m.getItemRarity()) <= 2) {
-                            if (m.isShown()){
+                            if (m.isShown()) {
                                 m.setLevel(ThreadLocalRandom.current().nextInt(35, 60));
                                 mnster.add(m);
                             }

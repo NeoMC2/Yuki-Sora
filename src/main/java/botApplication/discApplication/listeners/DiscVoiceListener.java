@@ -33,10 +33,10 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
 
         ArrayList<DiscCmdBait.Bait> baits = engine.getDiscEngine().getFilesHandler().getBaits();
-        for (Member ba:event.getChannelJoined().getMembers()) {
-            for (DiscCmdBait.Bait b:baits) {
-                if(ba.getId().equals(b.baider.getId())){
-                    if(event.getMember().getId().equals(b.bait.getId())){
+        for (Member ba : event.getChannelJoined().getMembers()) {
+            for (DiscCmdBait.Bait b : baits) {
+                if (ba.getId().equals(b.baider.getId())) {
+                    if (event.getMember().getId().equals(b.bait.getId())) {
                         event.getGuild().moveVoiceMember(b.bait, event.getGuild().getVoiceChannelById(server.getBaitChannel())).queue();
                     }
                 }
@@ -67,10 +67,10 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
 
         ArrayList<DiscCmdBait.Bait> baits = engine.getDiscEngine().getFilesHandler().getBaits();
-        for (Member ba:event.getChannelJoined().getMembers()) {
-            for (DiscCmdBait.Bait b:baits) {
-                if(ba.getId().equals(b.baider.getId())){
-                    if(event.getMember().getId().equals(b.bait.getId())){
+        for (Member ba : event.getChannelJoined().getMembers()) {
+            for (DiscCmdBait.Bait b : baits) {
+                if (ba.getId().equals(b.baider.getId())) {
+                    if (event.getMember().getId().equals(b.bait.getId())) {
                         event.getGuild().moveVoiceMember(b.bait, event.getGuild().getVoiceChannelById(server.getBaitChannel())).queue();
                     }
                 }

@@ -56,8 +56,8 @@ public class DiscCmdAdmin implements DiscCommand {
                 if (monster != null)
                     s = addMonster(s, monster, monsters, true);
             }
-            if(!inEv)
-            s += "\n";
+            if (!inEv)
+                s += "\n";
         } else {
             if (inEv)
                 s += " -> " + m.getItemName();

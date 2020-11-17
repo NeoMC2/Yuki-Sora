@@ -52,10 +52,10 @@ public class FileUtils {
         objStream.flush();
         objStream.close();
         stream.close();
-
     }
 
     public JSONObject loadJsonFile(String path) throws Exception {
+        engine.getUtilityBase().printOutput("[File loader] Loading JSON Flile: " + path, true);
         File file = new File(path);
         JSONObject object;
         JSONParser parser = new JSONParser();
@@ -89,6 +89,7 @@ public class FileUtils {
 
     public void saveJsonFile(String path, JSONObject object) {
         try {
+            engine.getUtilityBase().printOutput("[File loader] Save JSON File: " + path, true);
             FileWriter fileWriter = new FileWriter(path);
             fileWriter.write(object.toJSONString());
             fileWriter.close();

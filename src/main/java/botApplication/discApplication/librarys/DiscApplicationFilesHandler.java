@@ -17,12 +17,12 @@ import java.util.HashMap;
 public class DiscApplicationFilesHandler {
 
     private final Engine engine;
+    private final HashMap<String, Dungeon> dungeons = new HashMap<>();
+    private final ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
     private HashMap<String, DiscApplicationServer> servers = new HashMap<>();
     private HashMap<String, DiscApplicationUser> users = new HashMap<>();
     private ArrayList<Job> jobs = new ArrayList<>();
     private ArrayList<Monster> monsters;
-    private final HashMap<String, Dungeon> dungeons = new HashMap<>();
-    private final ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
 
     public DiscApplicationFilesHandler(Engine engine) {
         this.engine = engine;

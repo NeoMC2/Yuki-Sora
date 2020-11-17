@@ -109,7 +109,7 @@ public class DiscCmdMonster implements DiscCommand {
                             msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
                         } catch (Exception e) {
                             engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
-                            if(engine.getProperties().debug)
+                            if (engine.getProperties().debug)
                                 e.printStackTrace();
                             return;
                         }
@@ -187,7 +187,7 @@ public class DiscCmdMonster implements DiscCommand {
                 case "feed":
                     Food f;
                     try {
-                        f = (Food) user.getItems().get(Integer.parseInt(args[2])-1);
+                        f = (Food) user.getItems().get(Integer.parseInt(args[2]) - 1);
                     } catch (Exception e) {
                         engine.getDiscEngine().getTextUtils().sendError("Invalid Food!", event.getChannel(), false);
                         return;

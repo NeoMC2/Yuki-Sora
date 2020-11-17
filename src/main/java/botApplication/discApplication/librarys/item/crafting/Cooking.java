@@ -18,23 +18,23 @@ public class Cooking {
         this.member = member;
     }
 
-    public void startCooking(){
+    public void startCooking() {
         startTime = new Date();
     }
 
-    public Item open() throws Exception{
-        if(startTime==null)
+    public Item open() throws Exception {
+        if (startTime == null)
             throw new Exception("Doesn't even start!");
         Instant time = Instant.now().minus(Duration.ofMinutes(smelting.cookTime()));
         Date dTime = Date.from(time);
 
-        if(startTime.before(dTime))
+        if (startTime.before(dTime))
             return smelting.result();
 
         throw new Exception("Still cooking!");
     }
 
-    public int minutesLeft(){
+    public int minutesLeft() {
         Instant time = Instant.now().minus(Duration.ofMinutes(smelting.cookTime()));
         Date dTime = Date.from(time);
         return (int) (startTime.getTime() - dTime.getTime());
