@@ -6,7 +6,7 @@
 
     <groupId>mindcollaps.yukisora</groupId>
     <artifactId>Yuki-Sora</artifactId>
-    <version>RELEASE_3.0</version>
+    <version>PATCH_3.1</version>
 
     <packaging>jar</packaging>
     <properties>
