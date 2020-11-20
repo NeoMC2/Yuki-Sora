@@ -125,7 +125,7 @@ public class DiscCmdMusic implements DiscCommand {
 
     @Override
     public String help(Engine engine, DiscApplicationUser user) {
-        return makeSlaveRequest(null, null, null, null, engine.getProperties().botSlaves.get(0), new String[]{"-m help"}, engine);
+        return makeSlaveRequest(null, null, null, null, engine.getProperties().botSlaves.get(0), new String[]{"help"}, engine);
     }
 
     @Override
