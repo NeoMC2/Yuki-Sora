@@ -11,8 +11,10 @@ import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 
 public class DiscVoiceListener extends ListenerAdapter {
@@ -106,6 +108,17 @@ public class DiscVoiceListener extends ListenerAdapter {
         for (VoiceChannel vc : active) {
             if (vc.getId().equals(event.getChannel().getId())) {
                 server.getAutoChannels().remove(vc);
+            }
+        }
+    }
+
+    @Override
+    public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
+        DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
+        if(server.isMoveMemberOnSDeafen()){
+            VoiceChannel afk = event.getGuild().getAfkChannel();
+            if(afk != null){
+                event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
             }
         }
     }

@@ -181,7 +181,7 @@ public class FightHandler {
                 a = m.getAttacks().get(ThreadLocalRandom.current().nextInt(0, m.getAttacks().size() - 1));
             else
                 a = m.getAttacks().get(0);
-            attack(turner, enemy);
+            attack(turner, enemy, engine);
             return;
         }
 
@@ -201,22 +201,22 @@ public class FightHandler {
                 switch (respondingEvent.getMessage().getContentDisplay()) {
                     case "a1":
                         a = m.getA1();
-                        attack(finalTurner, finalEnemy);
+                        attack(finalTurner, finalEnemy, engine);
                         break;
 
                     case "a2":
                         a = m.getA2();
-                        attack(finalTurner, finalEnemy);
+                        attack(finalTurner, finalEnemy, engine);
                         break;
 
                     case "a3":
                         a = m.getA3();
-                        attack(finalTurner, finalEnemy);
+                        attack(finalTurner, finalEnemy, engine);
                         break;
 
                     case "a4":
                         a = m.getA4();
-                        attack(finalTurner, finalEnemy);
+                        attack(finalTurner, finalEnemy, engine);
                         break;
 
                     case "skip":
@@ -282,7 +282,7 @@ public class FightHandler {
         engine.getResponseHandler().makeResponse(gamerResponse);
     }
 
-    private void attack(Member user, Member enemy) {
+    private void attack(Member user, Member enemy, Engine engine) {
         DiscApplicationUser usr = null;
         DiscApplicationUser usr2 = null;
         if (!aiFight) {
@@ -293,7 +293,7 @@ public class FightHandler {
 
         if (isAttackValid(a, textChannel)) {
             a.setLeftUses(a.getLeftUses()-1);
-            int attackDmg = m.attack(m, a, e);
+            int attackDmg = m.attack(m, a, e, engine);
             int stateDmg = e.calculateStateDmg(false);
             showAttackInfo(m, e, attackDmg, a, stateDmg);
             if (testWinner(e)) {

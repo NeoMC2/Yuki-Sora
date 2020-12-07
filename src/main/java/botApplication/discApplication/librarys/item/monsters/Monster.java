@@ -4,6 +4,7 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.consumable.food.Food;
 import core.Engine;
+import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -207,9 +208,16 @@ public class Monster extends Item implements Serializable, Cloneable {
         return allDmg;
     }
 
-    public int attack(Monster o, Attack attack, Monster enemy) {
+    public int attack(Monster o, Attack attack, Monster enemy, Engine engine) {
         attack.use();
-        double dmg = (((level * (1 / 3)) + 2) + attack.getBaseDamage()) * calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes()) * calculateSTAB(o, enemy);
+        //game is fck'n unbalanced...so we do this......
+        int baseDmg = attack.getBaseDamage() / 3;
+        double attackEfficiency = calculateAttackEfficiency(monsterTypes, enemy.getMonsterTypes());
+        double stab = calculateSTAB(o, enemy);
+        double lvl = level;
+        double dmg = (((lvl * (1 / 3)) + 2) + baseDmg) * attackEfficiency * stab;
+        //BIG DEBUG O.O
+        engine.getUtilityBase().printOutput("[attack damage calculation] monster attacker: " + o.toString() + " \nenemy: " + enemy.toString() + " \nattack: " + attack.toString() + " \nbase dmg: " + baseDmg + " efficiency: " + attackEfficiency + " stab: " + stab + " dmg: " + dmg, true);
         enemy.setHp((int) (enemy.getHp() - dmg));
         if (attack.getStatusEffect() != null) {
             StatusEffect e = new StatusEffect();

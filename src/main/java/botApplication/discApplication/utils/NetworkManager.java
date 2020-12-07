@@ -1,7 +1,9 @@
 package botApplication.discApplication.utils;
 
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import core.Engine;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +11,11 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.util.Collections;
+import java.util.List;
 
 public class NetworkManager {
 
@@ -19,7 +25,19 @@ public class NetworkManager {
         this.engine = engine;
     }
 
-    public String post(String path, String json) {
+    public String post(String path, String json, String apiToken) {
+        return req(path,json,apiToken,"POST");
+    }
+
+    public String patch(String path, String json, String apiToken) {
+        return req(path,json,apiToken,"PATCH");
+    }
+
+    public String delete(String path, String json, String apiToken){
+        return req(path,json,apiToken,"DELETE");
+    }
+
+    private String req(String path, String json, String apiToken, String methode){
         HttpURLConnection connection;
         try {
             connection = makeConnection(path);
@@ -29,8 +47,13 @@ public class NetworkManager {
             }
             return null;
         }
+        if (apiToken != null) {
+            addApiToken(apiToken, connection);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestProperty("Accept", "application/json");
+        }
         try {
-            connection.setRequestMethod("POST");
+            connection.setRequestMethod(methode);
         } catch (ProtocolException e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -39,11 +62,13 @@ public class NetworkManager {
         }
         connection.setDoInput(true);
         connection.setDoOutput(true);
-        connection.setUseCaches(false);
         try {
             OutputStreamWriter os = new OutputStreamWriter(connection.getOutputStream());
+            char[] ar = json.toCharArray();
+            System.out.println("ASHJDKJASHD : " + json);
             os.write(json);
             os.flush();
+            os.close();
         } catch (IOException e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -53,9 +78,14 @@ public class NetworkManager {
         return readResponse(connection);
     }
 
-    public String get(String path) {
+    public String get(String path, String apiToken) {
         try {
-            return readResponse(makeConnection(path));
+            HttpURLConnection c = makeConnection(path);
+            if (apiToken != null) {
+                addApiToken(apiToken, c);
+                c.setRequestProperty("Accept", "application/json");
+            }
+            return readResponse(c);
         } catch (Exception e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -86,5 +116,9 @@ public class NetworkManager {
         HttpURLConnection c = (HttpURLConnection) new URL(path).openConnection();
         c.setConnectTimeout(3000);
         return c;
+    }
+
+    private void addApiToken(String token, HttpURLConnection c) {
+        c.setRequestProperty("api-token", token);
     }
 }

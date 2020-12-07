@@ -8,6 +8,7 @@ import botApplication.discApplication.librarys.certification.DiscCertificationHa
 import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import botApplication.discApplication.listeners.*;
+import botApplication.discApplication.utils.ApiManager;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
@@ -28,6 +29,7 @@ public class DiscApplicationEngine {
     private final DiscCommandParser commandParser = new DiscCommandParser();
     private final ArrayList<FightHandler> fightHandlers = new ArrayList<>();
     private boolean isRunning = false;
+    private ApiManager apiManager;
     private DiscTextUtils textUtils;
     private DiscApplicationFilesHandler filesHandler;
     private DiscUtilityBase utilityBase;
@@ -83,6 +85,8 @@ public class DiscApplicationEngine {
             return;
         }
         updateAllServerStats();
+
+        apiManager = new ApiManager(engine);
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot successfully started!", false);
     }
 
@@ -194,5 +198,9 @@ public class DiscApplicationEngine {
 
     public JDA getBotJDA() {
         return botJDA;
+    }
+
+    public ApiManager getApiManager() {
+        return apiManager;
     }
 }

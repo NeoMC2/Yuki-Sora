@@ -10,6 +10,8 @@ import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -141,6 +143,50 @@ public class DiscApplicationFilesHandler {
             engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - users", false);
         }
         engine.getUtilityBase().printOutput("~finished saving all bot files", true);
+    }
+
+    public JSONObject serverToJson(DiscApplicationServer server){
+        JSONObject obj = new JSONObject();
+        //    serverName: String,
+        //    serverId: String,
+        //    serverYtPlaylist: String,
+        //    musicListenerId: String,
+        //    certificationMessageId: String,
+        //    certificationChannelId: String,
+        //    welcomeMessageChannelId: String,
+        //    welcomeText: String,
+        //    memberCountStatsChannelId: String,
+        //    setupDone: { tyoe: Boolean, default: false },
+        //    roleIds: [String],
+        //    defaultMemberRoleId: String,
+        //    defaultTempGamerRoleId: String,
+        //    autoChannelIds: [String],
+        //    primeRoleId: String,
+        //    vipRoleId: String
+        obj.put("serverName", server.getServerName());
+        obj.put("serverId",server.getServerID());
+        obj.put("serverYtPlaylist",server.getServerYTPlaylist());
+        obj.put("certificationMessageId",server.getCertificationMessageId());
+        obj.put("certificationChannelId",server.getCertificationChannelId());
+        obj.put("welcomeMessageChannelId",server.getWelcomeMessageChannel());
+        obj.put("welcomeText",server.getWelcomeText());
+        obj.put("memberCountStatsChannelId",server.getMemberCountCategoryId());
+        obj.put("setupDone",server.isSetupDone());
+        obj.put("defaultMemberRoleId",server.getDefaultMemberRoleId());
+        obj.put("defaultTempGamerRoleId",server.getDefaultTempGamerRoleId());
+        obj.put("primeRoleId",server.getPrimeRoleId());
+        obj.put("vipRoleId",server.getVipRoleId());
+        obj.put("roleIds",getArrayFromArray(server.getDefaultRoles()));
+        obj.put("autoChannelIds",getArrayFromArray(server.getAutoChannels()));
+        return obj;
+    }
+
+    private JSONArray getArrayFromArray(ArrayList<String> ar){
+        JSONArray arr = new JSONArray();
+        for (String s:ar) {
+            arr.add(s);
+        }
+        return arr;
     }
 
     public HashMap<String, DiscApplicationServer> getServers() {

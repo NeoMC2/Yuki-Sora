@@ -14,6 +14,8 @@ public class DiscApplicationUser implements Serializable {
 
     private static final long serialVersionUID = 42L;
 
+    private boolean edit = false;
+
     private String userName;
     private String ytPlaylist;
     private String userId;
@@ -24,6 +26,7 @@ public class DiscApplicationUser implements Serializable {
     private String lang = "en";
 
     private Date lastWorkTime;
+    private Date lastDungeonVisit;
     private long coins = 20;
     private UserJob userJob;
     private int xp;
@@ -53,6 +56,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+        edit = true;
     }
 
     public String getYtPlaylist() {
@@ -61,6 +65,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setYtPlaylist(String ytPlaylist) {
         this.ytPlaylist = ytPlaylist;
+        edit = true;
     }
 
     public String getUserId() {
@@ -69,6 +74,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+        edit = true;
     }
 
     public boolean isAdmin() {
@@ -77,6 +83,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+        edit = true;
     }
 
     public long getTelegramId() {
@@ -85,6 +92,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setTelegramId(long telegramId) {
         this.telegramId = telegramId;
+        edit = true;
     }
 
     public DiscCertificationLevel getDiscCertificationLevel() {
@@ -93,13 +101,16 @@ public class DiscApplicationUser implements Serializable {
 
     public void setDiscCertificationLevel(DiscCertificationLevel discCertificationLevel) {
         this.discCertificationLevel = discCertificationLevel;
+        edit = true;
     }
 
     public ArrayList<String> getServers() {
+        edit = true;
         return servers;
     }
 
     public void setServers(ArrayList<String> servers) {
+        edit = true;
         this.servers = servers;
     }
 
@@ -108,6 +119,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setLang(String lang) {
+        edit = true;
         this.lang = lang;
     }
 
@@ -116,6 +128,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setLastWorkTime(Date lastWorkTime) {
+        edit = true;
         this.lastWorkTime = lastWorkTime;
     }
 
@@ -124,14 +137,17 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setCoins(long coins) {
+        edit = true;
         this.coins = coins;
     }
 
     public UserJob getUserJob() {
+        edit = true;
         return userJob;
     }
 
     public void setUserJob(UserJob userJob) {
+        edit = true;
         this.userJob = userJob;
     }
 
@@ -140,6 +156,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setXp(int xp) {
+        edit = true;
         this.xp = xp;
     }
 
@@ -148,14 +165,17 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setLevel(int level) {
+        edit = true;
         this.level = level;
     }
 
     public void addCoins(int coins) {
+        edit = true;
         this.coins += coins;
     }
 
     public void substractCoins(int coins) {
+        edit = true;
         this.coins -= coins;
     }
 
@@ -168,14 +188,17 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public ArrayList<Monster> getMonsters() {
+        edit = true;
         return monsters;
     }
 
     public void setMonsters(ArrayList<Monster> monsters) {
+        edit = true;
         this.monsters = monsters;
     }
 
     public void addMonster(Monster m) throws Exception {
+        edit = true;
         if (monsters.size() >= maxMonsters) {
             throw new Exception("To many monsters");
         }
@@ -187,6 +210,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setMaxMonsters(int maxMonsters) {
+        edit = true;
         this.maxMonsters = maxMonsters;
     }
 
@@ -195,18 +219,31 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setMaxItems(int maxItems) {
+        edit = true;
         this.maxItems = maxItems;
     }
 
     public ArrayList<Item> getItems() {
+        edit = true;
         return items;
     }
 
     public void setItems(ArrayList<Item> items) {
+        edit = true;
         this.items = items;
     }
 
+    public Date getLastDungeonVisit() {
+        return lastDungeonVisit;
+    }
+
+    public void setLastDungeonVisit(Date lastDungeonVisit) {
+        edit = true;
+        this.lastDungeonVisit = lastDungeonVisit;
+    }
+
     public void addItem(Item item) throws Exception {
+        edit = true;
         if (items.size() >= maxItems) {
             throw new Exception("To many Items");
         }
@@ -214,6 +251,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void upgrade() {
+        edit = true;
         maxItems = 30;
         items = new ArrayList<>();
     }

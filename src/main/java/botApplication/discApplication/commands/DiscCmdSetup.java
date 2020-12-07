@@ -43,6 +43,11 @@ public class DiscCmdSetup implements DiscCommand {
                         }
                         switch (args[1].toLowerCase()) {
 
+                            case "deafenmove":
+                                server.setMoveMemberOnSDeafen(!server.isMoveMemberOnSDeafen());
+                                engine.getDiscEngine().getTextUtils().sendWarining("deafen move is now: " + server.isMoveMemberOnSDeafen() + "!", event.getChannel());
+                                break;
+
                             case "bait":
                                 VoiceChannel voiceChannel = null;
 
