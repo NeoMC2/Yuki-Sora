@@ -322,4 +322,8 @@ public class DiscApplicationServer implements Serializable {
     public void setPrimeRoleId(String primeRoleId) {
         this.primeRoleId = primeRoleId;
     }
+
+    public boolean isEdit() {
+        return edit;
+    }
 }

@@ -6,7 +6,6 @@ import botApplication.discApplication.librarys.dungeon.Dungeon;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.poll.Poll;
-import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
@@ -69,6 +68,26 @@ public class DiscApplicationFilesHandler {
     public void loadAllBotFiles() {
         engine.getUtilityBase().printOutput("~load all bot files!", true);
 
+        for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
+            JSONObject ob = engine.getDiscEngine().getApiManager().getServerById(g.getId());
+            if (((Integer) ob.get("status")) == 200) {
+                DiscApplicationServer ser = new DiscApplicationServer(g);
+                ser.generateFromJSON(ob);
+                servers.put(g.getId(), ser);
+            }
+        }
+
+        JSONObject ob = engine.getDiscEngine().getApiManager().getUsers();
+        if ((Integer) (ob.get("status")) == 200) {
+            JSONArray dat = (JSONArray) ob.get("data");
+            for (Object o : dat) {
+                JSONObject dato = (JSONObject) o;
+                DiscApplicationUser user = new DiscApplicationUser();
+                user.generateFromJSON(dato, engine);
+                users.put(user.getUserId(), user);
+            }
+        }
+        /*
         try {
             monsters = TransaktionHandler.parseJsonToMonster(engine.getFileUtils().loadJsonFile(engine.getFileUtils().home + "/transactions/monsters.json"));
         } catch (Exception e) {
@@ -82,12 +101,15 @@ public class DiscApplicationFilesHandler {
             engine.getUtilityBase().printOutput("!!Jobs cant load!!", true);
             e.printStackTrace();
         }
+         */
+
         try {
             engine.getDiscEngine().getVoteCmd().setPolls((ArrayList<Poll>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/vote/votes.dat"));
         } catch (Exception e) {
             engine.getUtilityBase().printOutput("!!Votes cant load!!", true);
             e.printStackTrace();
         }
+        /*
         try {
             servers = (HashMap<String, DiscApplicationServer>) engine.getFileUtils().loadObject(engine.getFileUtils().getHome() + "/bot/utilize/servers.server");
         } catch (Exception e) {
@@ -110,6 +132,7 @@ public class DiscApplicationFilesHandler {
             engine.getUtilityBase().printOutput("!!Recreate Users data!!", true);
             users = new HashMap<>();
         }
+         */
         if (engine.getDiscEngine().getVoteCmd().getPolls() == null) {
             engine.getUtilityBase().printOutput("!!Recreate Vote data!!", true);
             engine.getDiscEngine().getVoteCmd().setPolls(new ArrayList<Poll>());
@@ -120,6 +143,21 @@ public class DiscApplicationFilesHandler {
 
     public void saveAllBotFiles() {
         engine.getUtilityBase().printOutput("~safe all bot files!", true);
+        Object[] sers = servers.entrySet().toArray();
+        for (Object ss : sers) {
+            DiscApplicationServer s = (DiscApplicationServer) ss;
+            if (s.isEdit()) {
+                engine.getDiscEngine().getApiManager().patchServer(serverToJson(s), s.getServerID());
+            }
+        }
+
+        Object[] usrs = users.entrySet().toArray();
+        for (Object ss : usrs) {
+            DiscApplicationUser s = (DiscApplicationUser) ss;
+            if (s.isEdit()) {
+                engine.getDiscEngine().getApiManager().patchUser(userToJson(s), s.getUserId());
+            }
+        }
         try {
             engine.getFileUtils().saveObject(engine.getFileUtils().home + "/vote/votes.dat", engine.getDiscEngine().getVoteCmd().getPolls());
         } catch (Exception e) {
@@ -128,6 +166,8 @@ public class DiscApplicationFilesHandler {
             }
             engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - Votes", false);
         }
+
+        /*
         try {
             engine.getFileUtils().saveObject(engine.getFileUtils().getHome() + "/bot/utilize/servers.server", servers);
         } catch (Exception e) {
@@ -143,9 +183,10 @@ public class DiscApplicationFilesHandler {
             engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - users", false);
         }
         engine.getUtilityBase().printOutput("~finished saving all bot files", true);
+         */
     }
 
-    public JSONObject serverToJson(DiscApplicationServer server){
+    public JSONObject serverToJson(DiscApplicationServer server) {
         JSONObject obj = new JSONObject();
         //    serverName: String,
         //    serverId: String,
@@ -164,26 +205,56 @@ public class DiscApplicationFilesHandler {
         //    primeRoleId: String,
         //    vipRoleId: String
         obj.put("serverName", server.getServerName());
-        obj.put("serverId",server.getServerID());
-        obj.put("serverYtPlaylist",server.getServerYTPlaylist());
-        obj.put("certificationMessageId",server.getCertificationMessageId());
-        obj.put("certificationChannelId",server.getCertificationChannelId());
-        obj.put("welcomeMessageChannelId",server.getWelcomeMessageChannel());
-        obj.put("welcomeText",server.getWelcomeText());
-        obj.put("memberCountStatsChannelId",server.getMemberCountCategoryId());
-        obj.put("setupDone",server.isSetupDone());
-        obj.put("defaultMemberRoleId",server.getDefaultMemberRoleId());
-        obj.put("defaultTempGamerRoleId",server.getDefaultTempGamerRoleId());
-        obj.put("primeRoleId",server.getPrimeRoleId());
-        obj.put("vipRoleId",server.getVipRoleId());
-        obj.put("roleIds",getArrayFromArray(server.getDefaultRoles()));
-        obj.put("autoChannelIds",getArrayFromArray(server.getAutoChannels()));
+        obj.put("serverId", server.getServerID());
+        obj.put("serverYtPlaylist", server.getServerYTPlaylist());
+        obj.put("certificationMessageId", server.getCertificationMessageId());
+        obj.put("certificationChannelId", server.getCertificationChannelId());
+        obj.put("welcomeMessageChannelId", server.getWelcomeMessageChannel());
+        obj.put("welcomeText", server.getWelcomeText());
+        obj.put("memberCountStatsChannelId", server.getMemberCountCategoryId());
+        obj.put("setupDone", server.isSetupDone());
+        obj.put("defaultMemberRoleId", server.getDefaultMemberRoleId());
+        obj.put("defaultTempGamerRoleId", server.getDefaultTempGamerRoleId());
+        obj.put("primeRoleId", server.getPrimeRoleId());
+        obj.put("vipRoleId", server.getVipRoleId());
+        obj.put("roleIds", getArrayFromArray(server.getDefaultRoles()));
+        obj.put("autoChannelIds", getArrayFromArray(server.getAutoChannels()));
         return obj;
     }
 
-    private JSONArray getArrayFromArray(ArrayList<String> ar){
+    public JSONObject userToJson(DiscApplicationUser user) {
+        JSONObject obj = new JSONObject();
+        //    username: { type: String, require: true },
+        //    userID: { type: String, require: true },
+        //    ytplaylist: { type: String, require: true },
+        //    isBotAdmin: { type: Boolean, default: false },
+        //    certLevel: { type: String, require: true },
+        //    lang: { type: String, default: "en" },
+        //    lastWorkTime: { type: Date },
+        //    lastDungeonVisit: { type: Date },
+        //    coins: { type: Number, default: 0 },
+        //    xp: { type: Number, default: 0 },
+        //    level: { type: Number, default: 0 },
+        //    maxMonsters: { type: Number, default: 10 },
+        //    maxItems: { type: Number, default: 40 },
+        //    job: { type: mongoose.Schema.Types.ObjectId }
+        obj.put("username", user.getUserName());
+        obj.put("userID", user.getUserId());
+        obj.put("ytplaylist", user.getYtPlaylist());
+        obj.put("isBotAdmin", user.isAdmin());
+        obj.put("certLevel", user.getDiscCertificationLevel().name().toLowerCase());
+        obj.put("lang", user.getLang());
+        obj.put("coins", user.getCoins());
+        obj.put("xp", user.getXp());
+        obj.put("level", user.getLevel());
+        obj.put("maxMonsters", user.getMaxMonsters());
+        obj.put("maxItems", user.getMaxItems());
+        return obj;
+    }
+
+    private JSONArray getArrayFromArray(ArrayList<String> ar) {
         JSONArray arr = new JSONArray();
-        for (String s:ar) {
+        for (String s : ar) {
             arr.add(s);
         }
         return arr;

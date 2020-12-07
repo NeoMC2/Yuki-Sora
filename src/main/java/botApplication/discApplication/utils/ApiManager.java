@@ -143,6 +143,10 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/server", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getUsers(){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/user", apiToken));
+    }
+
     public JSONObject addAutochannelToServer(String id, String chanId){
         JSONObject dat = new JSONObject();
         JSONObject server = getServerById(id);

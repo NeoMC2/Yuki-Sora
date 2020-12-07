@@ -4,7 +4,10 @@ import botApplication.discApplication.librarys.certification.DiscCertificationLe
 import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
+import core.Engine;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -40,10 +43,26 @@ public class DiscApplicationUser implements Serializable {
 
     private boolean saidHello = false;
 
+    public DiscApplicationUser() {
+    }
+
     public DiscApplicationUser(User user, DiscCertificationLevel discCertificationLevel) {
         this.userName = user.getName();
         this.userId = user.getId();
         this.discCertificationLevel = discCertificationLevel;
+    }
+
+    public void generateFromJSON(JSONObject obj, Engine engine){
+        userName = (String) obj.get("username");
+        userId = (String) obj.get("userID");
+        ytPlaylist = (String) obj.get("ytplaylist");
+        admin = (boolean) obj.get("isBotAdmin");
+        lang = (String) obj.get("lang");
+        coins = (long) obj.get("coins");
+        xp = (int) obj.get("xp");
+        level = (int) obj.get("level");
+        maxMonsters = (int) obj.get("maxMonsters");
+        maxItems = (int) obj.get("maxItems");
     }
 
     public boolean isMonsterInvFull() {
@@ -254,5 +273,9 @@ public class DiscApplicationUser implements Serializable {
         edit = true;
         maxItems = 30;
         items = new ArrayList<>();
+    }
+
+    public boolean isEdit() {
+        return edit;
     }
 }
