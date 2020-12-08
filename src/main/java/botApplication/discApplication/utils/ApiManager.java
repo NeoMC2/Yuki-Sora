@@ -117,15 +117,19 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/server", object.toJSONString(), apiToken));
     }
 
+    public JSONObject createUser(JSONObject user, String certLvl){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", user.toJSONString(), apiToken));
+    }
+
     public JSONObject createServer(Guild guild){
         JSONObject req = new JSONObject();
         req.put("serverName", guild.getName());
         req.put("serverId", guild.getId());
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/server", req.toJSONString(), apiToken));
     }
 
     public JSONObject getJobs(){
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/user", apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/job", apiToken));
     }
 
     public JSONObject getMonsters(){

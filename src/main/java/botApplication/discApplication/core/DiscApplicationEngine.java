@@ -6,13 +6,11 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
 import botApplication.discApplication.librarys.item.monsters.FightHandler;
-import botApplication.discApplication.librarys.transaktion.TransaktionHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.utils.ApiManager;
 import botApplication.discApplication.utils.DiscTextUtils;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
-import net.dv8tion.jda.api.AccountType;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
@@ -33,7 +31,6 @@ public class DiscApplicationEngine {
     private DiscTextUtils textUtils;
     private DiscApplicationFilesHandler filesHandler;
     private DiscUtilityBase utilityBase;
-    private TransaktionHandler transaktionHandler;
     private DiscCertificationHandler certificationHandler;
     private JDABuilder builder;
     private JDA botJDA;
@@ -57,8 +54,6 @@ public class DiscApplicationEngine {
         }
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot start initialized!", false);
         isRunning = true;
-
-        transaktionHandler = new TransaktionHandler(engine);
 
         initPreCmds();
 
@@ -103,7 +98,6 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("rps", new DiscCmdRockPaperScissors());
         commandHandler.createNewCommand("help", new DiscCmdHelp());
         commandHandler.createNewCommand("job", new DiscCmdJob());
-        commandHandler.createNewCommand("admin", new DiscCmdAdmin());
         commandHandler.createNewCommand("wallet", new DiscCmdWallet());
         commandHandler.createNewCommand("monster", new DiscCmdMonster());
         commandHandler.createNewCommand("m", new DiscCmdMusic());
@@ -185,10 +179,6 @@ public class DiscApplicationEngine {
 
     public DiscCmdVote getVoteCmd() {
         return voteCmd;
-    }
-
-    public TransaktionHandler getTransaktionHandler() {
-        return transaktionHandler;
     }
 
     public ArrayList<FightHandler> getFightHandlers() {

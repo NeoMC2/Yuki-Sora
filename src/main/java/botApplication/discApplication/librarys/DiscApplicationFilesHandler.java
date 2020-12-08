@@ -68,9 +68,12 @@ public class DiscApplicationFilesHandler {
     public void loadAllBotFiles() {
         engine.getUtilityBase().printOutput("~load all bot files!", true);
 
+        servers = new HashMap<>();
+        users = new HashMap<>();
+
         for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
             JSONObject ob = engine.getDiscEngine().getApiManager().getServerById(g.getId());
-            if (((Long) ob.get("status")) == 200) {
+            if ((Long) ob.get("status") == 200) {
                 DiscApplicationServer ser = new DiscApplicationServer(g);
                 ser.generateFromJSON(ob);
                 servers.put(g.getId(), ser);

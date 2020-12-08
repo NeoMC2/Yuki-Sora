@@ -37,8 +37,8 @@ public class NetworkManager {
         return req(path, json, apiToken, "DELETE");
     }
 
-    private String req(String path, String json, String apiToken, String methode) {
-        HttpURLConnection connection;
+    private String req(String path, String json, String apiToken, String methode){
+        HttpsURLConnection connection;
         try {
             connection = makeConnection(path);
         } catch (Exception e) {
@@ -124,8 +124,8 @@ public class NetworkManager {
         return responseString;
     }
 
-    private HttpURLConnection makeConnection(String path) throws Exception {
-        HttpURLConnection c = (HttpURLConnection) new URL(path).openConnection();
+    private HttpsURLConnection makeConnection(String path) throws Exception {
+        HttpsURLConnection c = (HttpsURLConnection) new URL(path).openConnection();
         c.setConnectTimeout(3000);
         return c;
     }
