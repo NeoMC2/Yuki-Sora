@@ -2,16 +2,6 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
-import botApplication.discApplication.librarys.item.collectables.metal.Iron;
-import botApplication.discApplication.librarys.item.collectables.metal.Platinum;
-import botApplication.discApplication.librarys.item.collectables.stuff.Cable;
-import botApplication.discApplication.librarys.item.collectables.stuff.Stick;
-import botApplication.discApplication.librarys.item.collectables.stuff.Tape;
-import botApplication.discApplication.librarys.item.collectables.trophy.CraftEmblem;
-import botApplication.discApplication.librarys.item.crafting.CraftItem;
-import botApplication.discApplication.librarys.item.crafting.CraftingRecipe;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -25,30 +15,6 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class DiscCmdItem implements DiscCommand {
-
-    HashMap<String, CraftingRecipe> craftingRecipes = new HashMap<>();
-
-    public DiscCmdItem() {
-        CraftingRecipe em = makeRecipe(new Cable(), new Tape(), new Diamond(), new Iron(), new Platinum());
-        em.result = new CraftEmblem();
-
-        CraftItem iron = new CraftItem(new Iron());
-        iron.amount = 3;
-        CraftingRecipe hammer = makeRecipe(new Stick());
-        hammer.ingredients.add(iron);
-
-        craftingRecipes.put("cemblm", em);
-
-        craftingRecipes.put("hammer", hammer);
-    }
-
-    private CraftingRecipe makeRecipe(Item... i) {
-        CraftingRecipe r = new CraftingRecipe();
-        for (Item it : i) {
-            r.ingredients.add(new CraftItem(it));
-        }
-        return r;
-    }
 
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {

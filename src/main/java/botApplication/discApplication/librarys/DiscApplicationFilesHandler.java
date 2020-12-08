@@ -70,7 +70,7 @@ public class DiscApplicationFilesHandler {
 
         for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
             JSONObject ob = engine.getDiscEngine().getApiManager().getServerById(g.getId());
-            if (((Integer) ob.get("status")) == 200) {
+            if (((Long) ob.get("status")) == 200) {
                 DiscApplicationServer ser = new DiscApplicationServer(g);
                 ser.generateFromJSON(ob);
                 servers.put(g.getId(), ser);
@@ -78,7 +78,7 @@ public class DiscApplicationFilesHandler {
         }
 
         JSONObject ob = engine.getDiscEngine().getApiManager().getUsers();
-        if ((Integer) (ob.get("status")) == 200) {
+        if ((Long) (ob.get("status")) == 200) {
             JSONArray dat = (JSONArray) ob.get("data");
             for (Object o : dat) {
                 JSONObject dato = (JSONObject) o;
@@ -143,19 +143,23 @@ public class DiscApplicationFilesHandler {
 
     public void saveAllBotFiles() {
         engine.getUtilityBase().printOutput("~safe all bot files!", true);
-        Object[] sers = servers.entrySet().toArray();
+        Object[] sers = servers.values().toArray();
         for (Object ss : sers) {
             DiscApplicationServer s = (DiscApplicationServer) ss;
             if (s.isEdit()) {
-                engine.getDiscEngine().getApiManager().patchServer(serverToJson(s), s.getServerID());
+                if((Long) engine.getDiscEngine().getApiManager().patchServer(serverToJson(s), s.getServerID()).get("status") == 400){
+                    engine.getDiscEngine().getApiManager().createServer(serverToJson(s));
+                }
             }
         }
 
-        Object[] usrs = users.entrySet().toArray();
+        Object[] usrs = users.values().toArray();
         for (Object ss : usrs) {
             DiscApplicationUser s = (DiscApplicationUser) ss;
             if (s.isEdit()) {
-                engine.getDiscEngine().getApiManager().patchUser(userToJson(s), s.getUserId());
+                if((Long) engine.getDiscEngine().getApiManager().patchUser(userToJson(s), s.getUserId()).get("status") == 400){
+                    engine.getDiscEngine().getApiManager().createUser(userToJson(s));
+                }
             }
         }
         try {

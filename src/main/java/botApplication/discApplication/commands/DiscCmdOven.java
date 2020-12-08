@@ -2,7 +2,6 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.crafting.Cookable;
 import botApplication.discApplication.librarys.item.crafting.Cooking;
 import core.Engine;
@@ -18,8 +17,6 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class DiscCmdOven implements DiscCommand {
-
-    HashMap<String, Cooking> smelter = new HashMap<>();
 
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {

@@ -50,11 +50,13 @@ public class DiscApplicationServer implements Serializable {
     private boolean moveMemberOnSDeafen = true;
 
     public DiscApplicationServer(Guild guild) {
+        edit = true;
         this.serverName = guild.getName();
         this.serverID = guild.getId();
     }
 
     public void generateFromJSON(JSONObject obj){
+        edit = false;
         serverName = (String) obj.get("serverName");
         serverID = (String) obj.get("serverId");
         serverYTPlaylist = (String) obj.get("serverYtPlaylist");

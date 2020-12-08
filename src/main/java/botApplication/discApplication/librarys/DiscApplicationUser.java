@@ -1,12 +1,10 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
-import botApplication.discApplication.librarys.item.Item;
 import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.api.entities.User;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serializable;
@@ -39,30 +37,32 @@ public class DiscApplicationUser implements Serializable {
     private int maxItems = 30;
 
     private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Item> items = new ArrayList<>();
 
     private boolean saidHello = false;
 
     public DiscApplicationUser() {
+        edit = true;
     }
 
     public DiscApplicationUser(User user, DiscCertificationLevel discCertificationLevel) {
+        edit = true;
         this.userName = user.getName();
         this.userId = user.getId();
         this.discCertificationLevel = discCertificationLevel;
     }
 
     public void generateFromJSON(JSONObject obj, Engine engine){
+        edit = false;
         userName = (String) obj.get("username");
         userId = (String) obj.get("userID");
         ytPlaylist = (String) obj.get("ytplaylist");
         admin = (boolean) obj.get("isBotAdmin");
         lang = (String) obj.get("lang");
         coins = (long) obj.get("coins");
-        xp = (int) obj.get("xp");
-        level = (int) obj.get("level");
-        maxMonsters = (int) obj.get("maxMonsters");
-        maxItems = (int) obj.get("maxItems");
+        xp = Math.toIntExact((long) obj.get("xp"));
+        level = Math.toIntExact((long) obj.get("level"));
+        maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
+        maxItems = Math.toIntExact((long) obj.get("maxItems"));
     }
 
     public boolean isMonsterInvFull() {
@@ -242,16 +242,6 @@ public class DiscApplicationUser implements Serializable {
         this.maxItems = maxItems;
     }
 
-    public ArrayList<Item> getItems() {
-        edit = true;
-        return items;
-    }
-
-    public void setItems(ArrayList<Item> items) {
-        edit = true;
-        this.items = items;
-    }
-
     public Date getLastDungeonVisit() {
         return lastDungeonVisit;
     }
@@ -261,18 +251,9 @@ public class DiscApplicationUser implements Serializable {
         this.lastDungeonVisit = lastDungeonVisit;
     }
 
-    public void addItem(Item item) throws Exception {
-        edit = true;
-        if (items.size() >= maxItems) {
-            throw new Exception("To many Items");
-        }
-        items.add(item);
-    }
-
     public void upgrade() {
         edit = true;
         maxItems = 30;
-        items = new ArrayList<>();
     }
 
     public boolean isEdit() {

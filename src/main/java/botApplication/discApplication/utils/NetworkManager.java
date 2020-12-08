@@ -26,18 +26,18 @@ public class NetworkManager {
     }
 
     public String post(String path, String json, String apiToken) {
-        return req(path,json,apiToken,"POST");
+        return req(path, json, apiToken, "POST");
     }
 
     public String patch(String path, String json, String apiToken) {
-        return req(path,json,apiToken,"PATCH");
+        return req(path, json, apiToken, "PATCH");
     }
 
-    public String delete(String path, String json, String apiToken){
-        return req(path,json,apiToken,"DELETE");
+    public String delete(String path, String json, String apiToken) {
+        return req(path, json, apiToken, "DELETE");
     }
 
-    private String req(String path, String json, String apiToken, String methode){
+    private String req(String path, String json, String apiToken, String methode) {
         HttpURLConnection connection;
         try {
             connection = makeConnection(path);
@@ -53,7 +53,12 @@ public class NetworkManager {
             connection.setRequestProperty("Accept", "application/json");
         }
         try {
-            connection.setRequestMethod(methode);
+            if (methode.equals("PATCH")) {
+                connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
+                //connection.setRequestProperty("X-HTTP-Method", "PATCH");
+                connection.setRequestMethod("POST");
+            } else
+                connection.setRequestMethod(methode);
         } catch (ProtocolException e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -65,7 +70,7 @@ public class NetworkManager {
         try {
             OutputStreamWriter os = new OutputStreamWriter(connection.getOutputStream());
             char[] ar = json.toCharArray();
-            System.out.println("ASHJDKJASHD : " + json);
+            System.out.println("REQ : " + path + " Methode: " + methode + " req: " + json);
             os.write(json);
             os.flush();
             os.close();
@@ -96,19 +101,26 @@ public class NetworkManager {
 
     private String readResponse(HttpURLConnection connection) {
         String responseString = "";
+        BufferedReader br = null;
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+            br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            if (engine.getProperties().debug) {
+                e.printStackTrace();
+            }
+        }
+        
+        try {
             StringBuilder response = new StringBuilder();
             String responseLine = null;
             while ((responseLine = br.readLine()) != null) {
                 response.append(responseLine.trim());
             }
             responseString = response.toString();
-        } catch (IOException e) {
-            if (engine.getProperties().debug) {
-                e.printStackTrace();
-            }
+        } catch (Exception e){
+            
         }
+        System.out.println("Res: " + responseString);
         return responseString;
     }
 

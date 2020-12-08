@@ -62,9 +62,6 @@ public class DiscApplicationEngine {
 
         initPreCmds();
 
-        filesHandler = new DiscApplicationFilesHandler(engine);
-        filesHandler.loadAllBotFiles();
-
         textUtils = new DiscTextUtils(engine);
         utilityBase = new DiscUtilityBase(engine);
         certificationHandler = new DiscCertificationHandler(engine);
@@ -84,9 +81,11 @@ public class DiscApplicationEngine {
             isRunning = false;
             return;
         }
-        updateAllServerStats();
 
         apiManager = new ApiManager(engine);
+        filesHandler = new DiscApplicationFilesHandler(engine);
+        filesHandler.loadAllBotFiles();
+        updateAllServerStats();
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot successfully started!", false);
     }
 

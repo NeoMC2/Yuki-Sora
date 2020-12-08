@@ -2,8 +2,6 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.consumable.food.Food;
 import botApplication.discApplication.librarys.item.monsters.Attack;
 import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.librarys.item.monsters.Monster;

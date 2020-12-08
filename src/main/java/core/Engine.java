@@ -1,11 +1,6 @@
 package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
-import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.collectables.gems.*;
-import botApplication.discApplication.librarys.item.collectables.metal.*;
-import botApplication.discApplication.librarys.item.collectables.stuff.*;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONArray;
@@ -15,7 +10,6 @@ import utils.Properties;
 import utils.UtilityBase;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -44,25 +38,6 @@ public class Engine {
         if (args.length > 0) {
             switch (args[0]) {
                 case "test":
-                    discApplicationEngine.startBotApplication();
-                    Iterator<DiscApplicationUser> t = discApplicationEngine.getFilesHandler().getUsers().values().iterator();
-
-                    DiscApplicationUser us = t.next();
-                    if (us.getItems().size() > 0) {
-                        Diamond diamond;
-                        try {
-                            diamond = (Diamond) us.getItems().get(0);
-                        } catch (Exception e) {
-                            System.out.println("Experiment failed!");
-                            return;
-                        }
-                        us.getItems().remove(diamond);
-                        System.out.println("Expermiment done!");
-                    } else {
-                        Diamond diamond = new Diamond();
-                        us.getItems().add(diamond);
-                        System.out.println("Started experiment");
-                    }
                     break;
 
                 case "reform":
@@ -108,145 +83,8 @@ public class Engine {
                 case "start":
                     discApplicationEngine.startBotApplication();
                     break;
-
-                case "up":
-                    ArrayList<JSONObject> attacks = new ArrayList<>();
-                    ArrayList<JSONObject> mnsters = new ArrayList<>();
-                    JSONObject obj = null;
-                    try {
-                        obj = getFileUtils().loadJsonFile(getFileUtils().home + "/transactions/monsters.json");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    Object[] obb = obj.keySet().toArray();
-
-                    for (Object oS:obb){
-                        String s = (String) oS;
-                        JSONObject newMnster = new JSONObject();
-                        JSONObject mnster = (JSONObject) obj.get(s);
-                        JSONArray atts = (JSONArray) mnster.get("attacks");
-
-                        newMnster.put("name", s);
-                        newMnster.put("imageUrl", mnster.get("img"));
-                        newMnster.put("baseHp", Integer.parseInt((String) mnster.get("hp")));
-                        //do test yk
-                        try {
-                            int evlvl = Integer.parseInt((String) mnster.get("evlvl"));
-                            newMnster.put("evolveLvl", evlvl);
-                        } catch (Exception ignored){
-                        }
-                        try {
-                            String ss = (String) mnster.get("shown");
-                            if (ss != null)
-                                if (ss.equals("false"))
-                                    newMnster.put("shown", false);
-                                else
-                                    newMnster.put("shown", true);
-                        } catch (Exception e) {
-                            newMnster.put("shown", true);
-                        }
-
-                        mnsters.add(newMnster);
-                        for (Object at:atts) {
-                            JSONObject att = (JSONObject) at;
-                            JSONObject newAt = new JSONObject();
-                            newAt.put("baseDmg", Integer.parseInt((String) att.get("dmg")));
-                            newAt.put("attackName", att.get("name"));
-                            newAt.put("level", Integer.parseInt((String) att.get("lvl")));
-                            newAt.put("maxUsage", Integer.parseInt((String)att.get("usage")));
-                            String st = (String) att.get("state");
-                            if(st!=null)
-                            newAt.put("statusEffects", st);
-                            attacks.add(newAt);
-                        }
-                    }
-                    ArrayList<JSONObject> remove = new ArrayList<>();
-                    for (JSONObject attack : attacks) {
-                        for (JSONObject attack1: attacks) {
-                            if (attack.get("attackName").equals(attack1.get("attackName")) && attack != attack1)
-                                remove.add(attack1);
-                        }
-                    }
-
-                    attacks.removeAll(remove);
-
-                    System.out.println("Attacks: \n");
-                    for (JSONObject ao:attacks) {
-                        System.out.println(ao.toJSONString());
-                        //System.out.println(networkManager.post("https://yuki.mindcollaps.de/api/yuki/attack", ao.toJSONString(), apiToken));
-                        System.out.println("\n\n");
-                    }
-                    for (JSONObject ao:mnsters) {
-                        System.out.println(ao.toJSONString());
-                        //System.out.println(networkManager.post("https://yuki.mindcollaps.de/api/yuki/monster", ao.toJSONString(), apiToken));
-                        System.out.println("\n\n");
-                    }
-                    break;
-
-                case "up2":
-                    ArrayList<Item> gems = new ArrayList<>();
-
-                    gems.add(new Diamond());
-                    gems.add(new Emerald());
-                    gems.add(new Ruby());
-                    gems.add(new Sapphire());
-                    ArrayList<Item> metals = new ArrayList<>();
-
-                    metals.add(new AluminiumOre());
-                    metals.add(new CopperOre());
-                    metals.add(new GoldOre());
-                    metals.add(new IronOre());
-                    metals.add(new PlatinumOre());
-                    metals.add(new SilverOre());
-                    ArrayList<Item> stuffs = new ArrayList<>();
-
-                    stuffs.add(new Cable());
-                    stuffs.add(new Cobweb());
-                    stuffs.add(new Feather());
-                    stuffs.add(new Glass());
-                    stuffs.add(new MetalScrew());
-                    stuffs.add(new Stick());
-                    stuffs.add(new Tape());
-
-                    loopStuff(gems);
-                    loopStuff(metals);
-                    loopStuff(stuffs);
-                    break;
             }
         }
-    }
-
-    private void loopStuff(ArrayList<Item> list){
-        for(Item it : list){
-            try {
-                //System.out.println(networkManager.post("https://yuki.mindcollaps.de/api/yuki/item", makeJsonFromItem(it).toJSONString(), apiToken));
-            } catch (Exception e) {
-                System.out.println("Skipping " + it.getItemName());
-            }
-        }
-    }
-
-    private JSONObject makeJsonFromItem(Item it) throws Exception{
-        JSONObject o = new JSONObject();
-        o.put("imageUrl", it.getImgUrl());
-        o.put("itemName", it.getItemName());
-        o.put("itemDescription", it.getDescription());
-        o.put("itemRarity", it.getItemRarity().name().toLowerCase());
-        o.put("isitemCookable", false);
-        o.put("itemCanFound", true);
-        String type = "";
-        if(it instanceof Gem)
-            type = "gem";
-        else if(it instanceof Metal)
-            type = "metal";
-        else if (it instanceof Stuff)
-            type = "stuff";
-        else
-            throw new Exception("not working");
-
-        o.put("itemType", type);
-        return o;
     }
 
     private void convertPropertiesToLangJson() {

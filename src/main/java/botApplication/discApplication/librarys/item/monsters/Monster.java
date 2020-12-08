@@ -1,17 +1,14 @@
 package botApplication.discApplication.librarys.item.monsters;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.consumable.food.Food;
 import core.Engine;
-import net.dv8tion.jda.api.events.guild.GenericGuildEvent;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class Monster extends Item implements Serializable, Cloneable {
+public class Monster implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 42L;
 

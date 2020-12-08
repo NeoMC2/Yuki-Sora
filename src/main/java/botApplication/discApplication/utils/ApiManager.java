@@ -99,12 +99,22 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/coins", req.toJSONString(), apiToken));
     }
 
+    public JSONObject createUser(JSONObject object){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", object.toJSONString(), apiToken));
+
+    }
+
     public JSONObject createUser(User user, String certLvl){
         JSONObject req = new JSONObject();
         req.put("username", user.getName());
         req.put("userID", user.getId());
         req.put("certLevel", certLvl);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", req.toJSONString(), apiToken));
+
+    }
+
+    public JSONObject createServer(JSONObject object){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/server", object.toJSONString(), apiToken));
     }
 
     public JSONObject createServer(Guild guild){
