@@ -3,7 +3,6 @@ package botApplication.discApplication.librarys;
 import botApplication.discApplication.commands.DiscCmdBait;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
-import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
@@ -21,7 +20,6 @@ public class DiscApplicationFilesHandler {
     private HashMap<String, DiscApplicationServer> servers = new HashMap<>();
     private HashMap<String, DiscApplicationUser> users = new HashMap<>();
     private ArrayList<Job> jobs = new ArrayList<>();
-    private ArrayList<Monster> monsters;
     private final HashMap<String, Dungeon> dungeons = new HashMap<>();
     private final ArrayList<DiscCmdBait.Bait> baits = new ArrayList<>();
 
@@ -277,10 +275,6 @@ public class DiscApplicationFilesHandler {
 
     public ArrayList<Job> getJobs() {
         return jobs;
-    }
-
-    public ArrayList<Monster> getMonsters() {
-        return monsters;
     }
 
     public HashMap<String, Dungeon> getDungeons() {

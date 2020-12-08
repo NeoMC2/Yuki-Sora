@@ -5,7 +5,6 @@ import botApplication.discApplication.librarys.DiscApplicationFilesHandler;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.certification.DiscCertificationHandler;
-import botApplication.discApplication.librarys.item.monsters.FightHandler;
 import botApplication.discApplication.listeners.*;
 import botApplication.discApplication.utils.ApiManager;
 import botApplication.discApplication.utils.DiscTextUtils;
@@ -25,7 +24,6 @@ public class DiscApplicationEngine {
     private final Engine engine;
     private final DiscCommandHandler commandHandler = new DiscCommandHandler();
     private final DiscCommandParser commandParser = new DiscCommandParser();
-    private final ArrayList<FightHandler> fightHandlers = new ArrayList<>();
     private boolean isRunning = false;
     private ApiManager apiManager;
     private DiscTextUtils textUtils;
@@ -179,10 +177,6 @@ public class DiscApplicationEngine {
 
     public DiscCmdVote getVoteCmd() {
         return voteCmd;
-    }
-
-    public ArrayList<FightHandler> getFightHandlers() {
-        return fightHandlers;
     }
 
     public JDA getBotJDA() {

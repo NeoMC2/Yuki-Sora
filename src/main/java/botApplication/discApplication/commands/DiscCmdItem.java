@@ -10,9 +10,10 @@ import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
-import java.util.HashMap;
 
 public class DiscCmdItem implements DiscCommand {
 
@@ -50,10 +51,20 @@ public class DiscCmdItem implements DiscCommand {
         if (args.length > 0)
             switch (args[0].toLowerCase()) {
                 case "list":
+                    JSONObject res = engine.getDiscEngine().getApiManager().getUserInventoryById(user.getUserId());
+                    if ((Long) res.get("status") != 200) {
+                        if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendError("No inventory found", pc, false);
+                        else
+                            engine.getDiscEngine().getTextUtils().sendError("No inventory found", tc, false);
+                        return;
+                    }
+
                     String itemList = "";
-                    for (int j = 0; j < user.getItems().size(); j++) {
-                        Item i = user.getItems().get(j);
-                        itemList += "(" + (j + 1) + ") " + i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
+                    JSONArray dat = (JSONArray) res.get("data");
+                    for (Object o : dat) {
+                        JSONObject sto = (JSONObject) o;
+                        itemList += ((String) sto.get("itemName")) + " Amount: " + ((String) sto.get("amount"));
                     }
                     if (pc != null)
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(itemList, pc, "list", Color.BLUE);
@@ -62,16 +73,7 @@ public class DiscCmdItem implements DiscCommand {
                     break;
 
                 case "give":
-                    Item giveItem;
-                    try {
-                        giveItem = user.getItems().get(Integer.parseInt(args[1]) - 1);
-                    } catch (Exception e) {
-                        if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), pc);
-                        else
-                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), tc);
-                        return;
-                    }
+                    String item = args[1];
 
                     Member memberUsr;
                     memberUsr = message.getMentionedMembers().get(0);
@@ -95,9 +97,28 @@ public class DiscCmdItem implements DiscCommand {
                         return;
                     }
 
-                    giveUsr.getItems().add(giveItem);
+                    JSONObject it = getItemByName(item, engine, user);
 
-                    EmbedBuilder builder = new EmbedBuilder().setAuthor(user.getUserName() + " gave " + giveItem.getItemName() + " to " + memberUsr.getNickname(), null, memberUsr.getUser().getAvatarUrl()).setColor(Color.GREEN).setImage(giveItem.getImgUrl());
+                    if (it == null) {
+                        if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendError("Item not found", pc, false);
+                        else
+                            engine.getDiscEngine().getTextUtils().sendError("Item not found", tc, false);
+                        return;
+                    }
+
+                    JSONObject resIt = engine.getDiscEngine().getApiManager().removeItemFromUser((String) it.get("item"), user.getUserId(), 1);
+                    if ((Long) resIt.get("status") == 200) {
+                        //TODO: what if the user you want to give the item doesnt exist?
+                        engine.getDiscEngine().getApiManager().addItemToUser((String) it.get("item"), memberUsr.getId(), 1);
+                    } else {
+                        if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendError("Can't give that item", pc, false);
+                        else
+                            engine.getDiscEngine().getTextUtils().sendError("Can't give that item", tc, false);
+                    }
+
+                    EmbedBuilder builder = new EmbedBuilder().setAuthor(user.getUserName() + " gave " + it.get("itemName") + " to " + memberUsr.getNickname(), null, memberUsr.getUser().getAvatarUrl()).setColor(Color.GREEN).setImage((String) it.get("itemImageURL"));
 
                     if (pc != null)
                         pc.sendMessage(builder.build()).queue();
@@ -107,84 +128,40 @@ public class DiscCmdItem implements DiscCommand {
 
                 case "trash":
                 case "remove":
-                    Item i;
-                    try {
-                        i = user.getItems().get(Integer.parseInt(args[1]) - 1);
-                    } catch (Exception e) {
+                    String removingItem = args[1];
+                    JSONObject itt = getItemByName(removingItem, engine, user);
+                    JSONObject r = engine.getDiscEngine().getApiManager().removeItemFromUser((String) itt.get("_id"), user.getUserId(), 1);
+
+                    if ((Long) r.get("status") != 200) {
                         if (pc != null)
                             engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), pc);
                         else
                             engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), tc);
+
                         return;
                     }
-                    user.getItems().remove(i);
+
                     if (pc != null)
                         engine.getDiscEngine().getTextUtils().sendSucces("Removed!", pc);
                     else
                         engine.getDiscEngine().getTextUtils().sendSucces("Removed!", tc);
                     break;
 
-                case "craft":
-                    CraftingRecipe c = craftingRecipes.get(args[1].toLowerCase());
-                    if (c == null) {
-                        if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendError("Crafting recipe doesn't exist!", pc, false);
-                        else
-                            engine.getDiscEngine().getTextUtils().sendError("Crafting recipe doesn't exist!", tc, false);
-                        return;
-                    }
-                    Item cr = null;
-                    try {
-                        cr = c.craft(user.getItems());
-                    } catch (Exception e) {
-                        if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendError("You don't have enough Items to craft the new Item!", pc, false);
-                        else
-                            engine.getDiscEngine().getTextUtils().sendError("You don't have enough Items to craft the new Item!", tc, false);
-                        return;
-                    }
-                    user.getItems().add(cr);
-                    if (pc != null)
-                        engine.getDiscEngine().getTextUtils().sendSucces("You've got " + cr.getItemName() + " (" + cr.getItemRarity().name() + ")!", pc);
-                    else
-                        engine.getDiscEngine().getTextUtils().sendSucces("You've got " + cr.getItemName() + " (" + cr.getItemRarity().name() + ")!", tc);
-                    break;
-
-                case "craftinfo":
-                    CraftingRecipe craftRec = craftingRecipes.get(args[1]);
-                    if (craftRec == null) {
-                        if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendError("Crafting recipe doesn't exist!", pc, false);
-                        else
-                            engine.getDiscEngine().getTextUtils().sendError("Crafting recipe doesn't exist!", tc, false);
-                        return;
-                    }
-                    String msgI = "For:\n" + craftRec.result.getItemName() + " (" + craftRec.resAmount + ")\n\nYou will need:\n";
-                    for (CraftItem cItem : craftRec.ingredients) {
-                        msgI += cItem.item.getItemName() + " (" + cItem.amount + ")\n";
-                    }
-                    if (pc != null)
-                        engine.getDiscEngine().getTextUtils().sendChannelConsolMessage(msgI, pc);
-                    else
-                        engine.getDiscEngine().getTextUtils().sendChannelConsolMessage(msgI, tc);
-                    break;
-
                 case "info":
-                    Item it;
-                    try {
-                        it = user.getItems().get(Integer.parseInt(args[1]) - 1);
-                    } catch (Exception e) {
+                    JSONObject infoItem = getItemByName(args[1], engine, user);
+                    if (infoItem == null) {
                         if (pc != null)
-                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), pc);
+                            engine.getDiscEngine().getTextUtils().sendError("Item not found", pc, false);
                         else
-                            engine.getDiscEngine().getTextUtils().sendWarining(engine.lang("general.error.invalidItem", user.getLang(), null), tc);
+                            engine.getDiscEngine().getTextUtils().sendError("Item not found", tc, false);
                         return;
                     }
-                    String des = it.getDescription();
+
+                    String des = (String) infoItem.get("itemDescription");
                     if (des == null)
                         des = "no description!";
 
-                    EmbedBuilder bb = new EmbedBuilder().setTitle(it.getItemName()).setColor(Item.rarityToColor(it.getItemRarity())).setDescription("Description:\n`" + des + "`").setImage(it.getImgUrl());
+                    EmbedBuilder bb = new EmbedBuilder().setTitle((String) infoItem.get("itemName")).setColor(rarityToColor((String) infoItem.get("itemRarity"))).setDescription("Description:\n`" + des + "`").setImage((String) infoItem.get("itemImageURL"));
                     if (pc != null)
                         pc.sendMessage(bb.build()).queue();
                     else
@@ -202,5 +179,40 @@ public class DiscCmdItem implements DiscCommand {
             engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), pc, false);
         else
             engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), tc, false);
+    }
+
+    private JSONObject getItemByName(String name, Engine engine, DiscApplicationUser user){
+        JSONObject ress = engine.getDiscEngine().getApiManager().getUserInventoryById(user.getUserId());
+        if ((Long) ress.get("status") != 200) {
+            return null;
+        }
+
+        JSONArray datt = (JSONArray) ress.get("data");
+        JSONObject it = null;
+        for (Object o : datt) {
+            JSONObject sto = (JSONObject) o;
+            if (((String) sto.get("itemName")).equalsIgnoreCase(name)) {
+                it = sto;
+                break;
+            }
+        }
+        return it;
+    }
+
+    public static Color rarityToColor(String rarity){
+        switch (rarity){
+            case "normal":
+                return Color.GRAY;
+
+            case "epic":
+                return Color.BLUE;
+
+            case "legendary":
+                return Color.ORANGE;
+
+            case "mystic":
+                return Color.MAGENTA;
+        }
+        return Color.GRAY;
     }
 }

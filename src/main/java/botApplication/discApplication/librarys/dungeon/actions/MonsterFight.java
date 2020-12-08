@@ -1,8 +1,6 @@
 package botApplication.discApplication.librarys.dungeon.actions;
 
 import botApplication.discApplication.librarys.dungeon.Dungeon;
-import botApplication.discApplication.librarys.item.monsters.FightHandler;
-import botApplication.discApplication.librarys.item.monsters.Monster;
 import core.Engine;
 
 import java.io.Serializable;
@@ -12,7 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 public class MonsterFight implements DungeonAction, Serializable {
 
     private Difficulty dif;
-    private Monster m;
     public Engine engine;
     public Dungeon d;
     private final String msg = "Seems like here is a monster!";
