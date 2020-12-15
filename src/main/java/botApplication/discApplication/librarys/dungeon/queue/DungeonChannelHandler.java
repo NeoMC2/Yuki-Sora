@@ -29,14 +29,8 @@ public class DungeonChannelHandler implements Serializable {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                String m;
-                try {
-                    m = usr.getMonsters().get(Integer.parseInt(respondingEvent.getMessage().getContentRaw()) - 1);
-                } catch (Exception e) {
-                    engine.getDiscEngine().getTextUtils().sendError("This Monster is invalid! Aborting!", respondingEvent.getChannel(), false);
-                    engine.getDiscEngine().getFilesHandler().getServerById(g.getId()).getDungeonQueueHandler().unuseChannel(channelId, respondingEvent.getGuild());
-                    return;
-                }
+                String m = null;
+                //TODO: set monster
                 Dungeon d = new Dungeon(member, g.getTextChannelById(channelId), g, engine, usr, m, engine.getDiscEngine().getFilesHandler().getServerById(g.getId()));
                 engine.getDiscEngine().getFilesHandler().getDungeons().put(member.getId(), d);
                 d.start();

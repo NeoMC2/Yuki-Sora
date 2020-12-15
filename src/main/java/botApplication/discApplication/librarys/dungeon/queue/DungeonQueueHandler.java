@@ -29,12 +29,6 @@ public class DungeonQueueHandler implements Serializable {
 
     public void click(TextChannel textChannel, Engine engine, Guild g, Member member) {
         DiscApplicationUser user = engine.getDiscEngine().getFilesHandler().getUserById(member.getId());
-        if (user.getMaxItems() - user.getItems().size() < 10) {
-            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("You should have more space in you inventory before entering a dungeon!");
-            Message m = textChannel.sendMessage(b.build()).complete();
-            m.delete().queueAfter(8, TimeUnit.SECONDS);
-            return;
-        }
 
         Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
         Date dFourHoursAgo = Date.from(fourHoursAgo);
