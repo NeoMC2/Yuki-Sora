@@ -47,6 +47,29 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getUserMonsters", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getUserMonsterByIds(String uid, String mid){
+        JSONObject req = new JSONObject();
+        req.put("id", uid);
+        req.put("mid", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getUserMonster", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject dmgOnMonster(String uid, String mid, long dmg){
+        JSONObject req = new JSONObject();
+        req.put("id", uid);
+        req.put("mid", mid);
+        req.put("dmg", dmg);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/dmgOnMonster", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject xpOnMonster(String uid, String mid, long xp){
+        JSONObject req = new JSONObject();
+        req.put("id", uid);
+        req.put("mid", mid);
+        req.put("xp", xp);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/xpOnMonster", req.toJSONString(), apiToken));
+    }
+
     public JSONObject addItemToUser(String uidItem, String id, int amount){
         JSONObject req = new JSONObject();
         req.put("id", id);
