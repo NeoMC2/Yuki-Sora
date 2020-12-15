@@ -35,8 +35,6 @@ public class DiscApplicationUser implements Serializable {
     private int maxMonsters = 10;
     private int maxItems = 30;
 
-    private ArrayList<Monster> monsters = new ArrayList<>();
-
     private boolean saidHello = false;
 
     public DiscApplicationUser() {
@@ -62,10 +60,6 @@ public class DiscApplicationUser implements Serializable {
         level = Math.toIntExact((long) obj.get("level"));
         maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
         maxItems = Math.toIntExact((long) obj.get("maxItems"));
-    }
-
-    public boolean isMonsterInvFull() {
-        return monsters.size() >= maxMonsters;
     }
 
     public String getUserName() {
@@ -203,24 +197,6 @@ public class DiscApplicationUser implements Serializable {
 
     public void setSaidHello(boolean saidHello) {
         this.saidHello = saidHello;
-    }
-
-    public ArrayList<Monster> getMonsters() {
-        edit = true;
-        return monsters;
-    }
-
-    public void setMonsters(ArrayList<Monster> monsters) {
-        edit = true;
-        this.monsters = monsters;
-    }
-
-    public void addMonster(Monster m) throws Exception {
-        edit = true;
-        if (monsters.size() >= maxMonsters) {
-            throw new Exception("To many monsters");
-        }
-        monsters.add(m);
     }
 
     public int getMaxMonsters() {
