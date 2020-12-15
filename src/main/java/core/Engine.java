@@ -3,14 +3,11 @@ package core;
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Set;
 
 public class Engine {

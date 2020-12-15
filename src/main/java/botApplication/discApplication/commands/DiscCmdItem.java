@@ -64,7 +64,7 @@ public class DiscCmdItem implements DiscCommand {
                     JSONArray dat = (JSONArray) res.get("data");
                     for (Object o : dat) {
                         JSONObject sto = (JSONObject) o;
-                        itemList += ((String) sto.get("itemName")) + " Amount: " + ((String) sto.get("amount"));
+                        itemList += sto.get("itemName") + " Amount: " + sto.get("amount");
                     }
                     if (pc != null)
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(itemList, pc, "list", Color.BLUE);

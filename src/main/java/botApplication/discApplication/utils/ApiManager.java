@@ -8,8 +8,8 @@ import org.json.simple.JSONObject;
 
 public class ApiManager {
 
-    private String apiToken;
-    private Engine engine;
+    private final String apiToken;
+    private final Engine engine;
     private final String api = "https://yuki.mindcollaps.de/api/yuki";
 
     public ApiManager(Engine engine) {
@@ -189,6 +189,35 @@ public class ApiManager {
             return patchServer(dat, id);
         }
         return getErrorJson();
+    }
+
+    public JSONObject createAiFight(String id){
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/createFight", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject fight(String id, boolean ai1, boolean ai2, String m1, String m2, String attack){
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        if(m1 !=null)
+        req.put("monster1", m1);
+        if(m2 != null)
+        req.put("monster2", m2);
+
+        req.put("ai1", ai1);
+        req.put("ai2", ai2);
+
+        if(attack != null)
+        req.put("attack", attack);
+
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/fight", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject getAttacks(String mid){
+        JSONObject req = new JSONObject();
+        req.put("monster", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/getAttacks", req.toJSONString(), apiToken));
     }
 
     private JSONObject getErrorJson(){

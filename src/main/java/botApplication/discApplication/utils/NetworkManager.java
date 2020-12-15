@@ -1,6 +1,5 @@
 package botApplication.discApplication.utils;
 
-import com.sun.xml.internal.messaging.saaj.util.Base64;
 import core.Engine;
 
 import javax.net.ssl.HttpsURLConnection;
@@ -11,11 +10,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.util.Collections;
-import java.util.List;
 
 public class NetworkManager {
 

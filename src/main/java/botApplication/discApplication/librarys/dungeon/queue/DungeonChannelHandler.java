@@ -29,7 +29,7 @@ public class DungeonChannelHandler implements Serializable {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                Monster m;
+                String m;
                 try {
                     m = usr.getMonsters().get(Integer.parseInt(respondingEvent.getMessage().getContentRaw()) - 1);
                 } catch (Exception e) {

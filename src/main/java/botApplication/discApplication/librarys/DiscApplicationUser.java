@@ -35,7 +35,7 @@ public class DiscApplicationUser implements Serializable {
     private int maxMonsters = 10;
     private int maxItems = 30;
 
-    private ArrayList<Monster> monsters = new ArrayList<>();
+    private ArrayList<String> monsters = new ArrayList<>();
 
     private boolean saidHello = false;
 
@@ -205,17 +205,17 @@ public class DiscApplicationUser implements Serializable {
         this.saidHello = saidHello;
     }
 
-    public ArrayList<Monster> getMonsters() {
+    public ArrayList<String> getMonsters() {
         edit = true;
         return monsters;
     }
 
-    public void setMonsters(ArrayList<Monster> monsters) {
+    public void setMonsters(ArrayList<String> monsters) {
         edit = true;
         this.monsters = monsters;
     }
 
-    public void addMonster(Monster m) throws Exception {
+    public void addMonster(String m) throws Exception {
         edit = true;
         if (monsters.size() >= maxMonsters) {
             throw new Exception("To many monsters");

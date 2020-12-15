@@ -4,7 +4,6 @@ import botApplication.discApplication.librarys.dungeon.Dungeon;
 import core.Engine;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop implements DungeonAction, Serializable {
