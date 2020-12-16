@@ -6,6 +6,7 @@ import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import org.json.simple.JSONObject;
 
 public class DiscCmdMonster implements DiscCommand {
     @Override
@@ -18,6 +19,17 @@ public class DiscCmdMonster implements DiscCommand {
         if (args.length >= 1) {
 
             switch (args[0].toLowerCase()) {
+
+                case "buy":
+                    user.substractCoins(20);
+                    JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
+                    JSONObject mnster = (JSONObject) res.get("data");
+                    String mnsterName = (String) mnster.get("name");
+                    String rar = (String) mnster.get("rarity");
+
+                    engine.getDiscEngine().getTextUtils().sendCustomMessage("You've got " + mnsterName + " " + rar, event.getChannel(), "New Monster", DiscCmdItem.rarityToColor(rar));
+                    break;
+
                 default:
                     engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
                     break;

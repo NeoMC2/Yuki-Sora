@@ -161,6 +161,7 @@ public class ApiManager {
 
     public JSONObject userRandomMonster(String id, String minRarity){
         JSONObject req = new JSONObject();
+        if(minRarity != null)
         req.put("rarity", minRarity);
         req.put("id", id);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/userRandomMonster", req.toJSONString(), apiToken));

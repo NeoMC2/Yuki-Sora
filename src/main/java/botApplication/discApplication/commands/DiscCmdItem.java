@@ -207,7 +207,7 @@ public class DiscCmdItem implements DiscCommand {
     }
 
     public static Color rarityToColor(String rarity){
-        switch (rarity){
+        switch (rarity.toLowerCase()){
             case "normal":
                 return Color.GRAY;
 
