@@ -7,8 +7,11 @@ import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class DungeonChannelHandler implements Serializable {
 
@@ -25,15 +28,38 @@ public class DungeonChannelHandler implements Serializable {
     public void clicked(Engine engine, Guild g, Member member) {
         DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().getUserById(member.getId());
         g.addRoleToMember(member, g.getRoleById(roleId)).queue();
+        JSONObject res = engine.getDiscEngine().getApiManager().getUserMonstersById(member.getId());
+        JSONArray mnsters = (JSONArray) res.get("data");
+        JSONArray roots = (JSONArray) ((JSONObject) engine.getDiscEngine().getApiManager().getMonsters()).get("data");
+        ArrayList<JSONObject> monsters = new ArrayList<>();
+        for (Object o:mnsters) {
+            JSONObject obj = (JSONObject) o;
+            for (Object ob:roots) {
+                JSONObject obj1 = (JSONObject) ob;
+                if(((String) obj.get("rootMonster")).equals((String)obj1.get("_id"))){
+                    monsters.add(obj1);
+                }
+            }
+        }
+        String s = "";
+        for (int i = 0; i < monsters.size(); i++) {
+            s += "[" + i + "] " + ((String) monsters.get(i).get("name") + "\n");
+        }
+
+        engine.getDiscEngine().getTextUtils().sendSucces(s, g.getTextChannelById(channelId));
         engine.getDiscEngine().getTextUtils().sendWarining("Type in the ID of the Monster you want to go into the dungeon!", g.getTextChannelById(channelId));
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                String m = null;
-                //TODO: set monster
-                Dungeon d = new Dungeon(member, g.getTextChannelById(channelId), g, engine, usr, m, engine.getDiscEngine().getFilesHandler().getServerById(g.getId()));
-                engine.getDiscEngine().getFilesHandler().getDungeons().put(member.getId(), d);
-                d.start();
+                int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                try {
+                    String m = (String) monsters.get(id).get("_id");
+                    Dungeon d = new Dungeon(member, g.getTextChannelById(channelId), g, engine, usr, m, engine.getDiscEngine().getFilesHandler().getServerById(g.getId()));
+                    engine.getDiscEngine().getFilesHandler().getDungeons().put(member.getId(), d);
+                    d.start();
+                } catch (Exception e){
+                    engine.getDiscEngine().getTextUtils().sendError("Error while starting dungeon", g.getTextChannelById(channelId), true);
+                }
             }
         };
         r.discGuildId = g.getId();

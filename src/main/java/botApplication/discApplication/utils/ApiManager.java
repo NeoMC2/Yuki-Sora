@@ -243,6 +243,15 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/getAttacks", req.toJSONString(), apiToken));
     }
 
+    public JSONObject giveRandomItem(String id, int amount, String rar){
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        req.put("amount", amount);
+        if(rar != null)
+        req.put("rarity", rar);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/giveRandomItem", req.toJSONString(), apiToken));
+    }
+
     private JSONObject getErrorJson(){
         JSONObject o = new JSONObject();
         o.put("status", 400);

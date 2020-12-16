@@ -109,8 +109,15 @@ public class DiscCmdItem implements DiscCommand {
 
                     JSONObject resIt = engine.getDiscEngine().getApiManager().removeItemFromUser((String) it.get("item"), user.getUserId(), 1);
                     if ((Long) resIt.get("status") == 200) {
-                        //TODO: what if the user you want to give the item doesnt exist?
-                        engine.getDiscEngine().getApiManager().addItemToUser((String) it.get("item"), memberUsr.getId(), 1);
+                        JSONObject resItGi = engine.getDiscEngine().getApiManager().addItemToUser((String) it.get("item"), memberUsr.getId(), 1);
+                        if(((Long) resItGi.get("status")) != 200){
+                            engine.getDiscEngine().getApiManager().addItemToUser((String) it.get("item"),user.getUserId(), 1);
+                            if (pc != null)
+                            engine.getDiscEngine().getTextUtils().sendError("The item can't be given to that user!", pc, false);
+                            else
+                                engine.getDiscEngine().getTextUtils().sendError("The item can't be given to that user!", tc, false);
+                            return;
+                        }
                     } else {
                         if (pc != null)
                             engine.getDiscEngine().getTextUtils().sendError("Can't give that item", pc, false);
