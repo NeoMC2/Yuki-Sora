@@ -8,6 +8,8 @@ import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -23,6 +25,7 @@ public class DiscCmdJob implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length > 0) {
             if (args[0].toLowerCase().equals("list")) {
+                //TODO: make this
                 String msg = "";
                 for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
                     msg += "[" + j.getShortName() + "] " + j.getJobName() + "\n";
@@ -32,6 +35,7 @@ public class DiscCmdJob implements DiscCommand {
             }
             switch (args[0].toLowerCase()) {
                 case "take":
+                    //TODO: make this
                     for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
                         if (j.getShortName().toLowerCase().equals(args[1].toLowerCase())) {
                             UserJob uj = new UserJob();
@@ -44,51 +48,23 @@ public class DiscCmdJob implements DiscCommand {
                     break;
 
                 case "work":
-                    if (user.getUserJob() == null) {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
+                    JSONObject workRes = engine.getDiscEngine().getApiManager().work(user.getUserId());
+                    if(((Long) workRes.get("status")) == 200){
+                        engine.getDiscEngine().getTextUtils().sendSucces("You got " + ((Long) workRes.get("data")), event.getChannel());
                     } else {
-                        if (user.getLastWorkTime() != null) {
-                            Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
-                            Date dFourHoursAgo = Date.from(fourHoursAgo);
-
-                            if (user.getLastWorkTime().after(dFourHoursAgo)) {
-                                String diff = engine.getUtilityBase().convertTimeToString(user.getLastWorkTime().getTime() - dFourHoursAgo.getTime());
-                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.job.error.workedAlready", user.getLang(), new String[]{diff}), event.getChannel(), false);
-                                return;
-                            }
-                        }
-                        int earned = 0;
-                        try {
-                            earned = user.getUserJob().work();
-                        } catch (Exception e) {
-                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
-                            return;
-                        }
-                        user.setLastWorkTime(new Date());
-                        user.addCoins(earned);
-                        String msg = engine.lang("cmd.work.info.worked", user.getLang(), new String[]{user.getUserJob().getDoing(), String.valueOf(earned)});
-                        msg = evolved(msg, user, engine);
-                        engine.getDiscEngine().getTextUtils().sendSucces(msg, event.getChannel());
+                        engine.getDiscEngine().getTextUtils().sendError((String) workRes.get("message"), event.getChannel(), true);
                     }
                     break;
 
                 case "info":
-                    if (user.getUserJob() == null) {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.work.error.noWork", user.getLang(), null), event.getChannel(), false);
-                    } else {
-                        int earn = 0;
-
-                        if (user.getUserJob().getJobRank() == UserJob.JobRank.Trainee) {
-                            earn = user.getUserJob().getEarningTrainee();
-                        } else if (user.getUserJob().getJobRank() == UserJob.JobRank.CoWorker) {
-                            earn = user.getUserJob().getEarningCoWorker();
-                        } else if (user.getUserJob().getJobRank() == UserJob.JobRank.HeadOfDepartment) {
-                            earn = user.getUserJob().getEarningHeadOfDepartment();
-                        } else if (user.getUserJob().getJobRank() == UserJob.JobRank.Manager) {
-                            earn = user.getUserJob().getEarningManager();
-                        }
-                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.work.info.info", user.getLang(), new String[]{user.getUserJob().getDoing(), user.getUserJob().jobRankToString(user.getUserJob().getJobRank()), user.getUserJob().getJobName(), String.valueOf(earn), String.valueOf(user.getUserJob().getJobXp()), String.valueOf(user.getUserJob().getJobLevel())}), event.getChannel());
+                    JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
+                    JSONArray jbss = (JSONArray) jbs.get("data");
+                    String jbS = "";
+                    for (Object o:jbss) {
+                        JSONObject ob = (JSONObject) o;
+                        jbS += "Work as" + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
                     }
+                    engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
                     break;
 
                 case "quit":

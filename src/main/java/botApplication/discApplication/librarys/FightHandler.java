@@ -80,7 +80,7 @@ public class FightHandler {
             for (Object o : mnsters) {
                 JSONObject mnster = (JSONObject) o;
                 if (((String) mnster.get("_id")).equals(m2)) {
-                    m1Json = mnster;
+                    m2Json = mnster;
                     break;
                 }
             }

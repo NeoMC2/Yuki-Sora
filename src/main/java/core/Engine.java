@@ -27,6 +27,7 @@ public class Engine {
         loadProperties();
         handleArgs(args);
         new Thread(new SaveThread(this)).start();
+        new Thread(new ApiUpdateThread(this)).start();
         loadPics();
         new ConsoleCommandHandler(this);
     }

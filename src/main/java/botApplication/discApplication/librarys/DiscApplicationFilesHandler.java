@@ -71,15 +71,6 @@ public class DiscApplicationFilesHandler {
         servers = new HashMap<>();
         users = new HashMap<>();
 
-        for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
-            JSONObject ob = engine.getDiscEngine().getApiManager().getServerById(g.getId());
-            if ((Long) ob.get("status") == 200) {
-                DiscApplicationServer ser = new DiscApplicationServer(g);
-                ser.generateFromJSON(ob);
-                servers.put(g.getId(), ser);
-            }
-        }
-
         JSONObject ob = engine.getDiscEngine().getApiManager().getUsers();
         if ((Long) (ob.get("status")) == 200) {
             JSONArray dat = (JSONArray) ob.get("data");
@@ -144,8 +135,7 @@ public class DiscApplicationFilesHandler {
         engine.getUtilityBase().printOutput("~finished loading bot files", true);
     }
 
-    public void saveAllBotFiles() {
-        engine.getUtilityBase().printOutput("~safe all bot files!", true);
+    public void updateApiData(){
         Object[] sers = servers.values().toArray();
         for (Object ss : sers) {
             DiscApplicationServer s = (DiscApplicationServer) ss;
@@ -153,6 +143,17 @@ public class DiscApplicationFilesHandler {
                 if((Long) engine.getDiscEngine().getApiManager().patchServer(serverToJson(s), s.getServerID()).get("status") == 400){
                     engine.getDiscEngine().getApiManager().createServer(serverToJson(s));
                 }
+            }
+            s.setEdit(false);
+        }
+
+        JSONObject edUsers = engine.getDiscEngine().getApiManager().getUpdatedUsers();
+        JSONArray edUs = (JSONArray) edUsers.get("data");
+        for (Object o:edUs) {
+            JSONObject obj = (JSONObject) o;
+            DiscApplicationUser us = users.get((String) obj.get("userID"));
+            if(us != null){
+                us.update(obj);
             }
         }
 
@@ -164,7 +165,11 @@ public class DiscApplicationFilesHandler {
                     engine.getDiscEngine().getApiManager().createUser(userToJson(s));
                 }
             }
+            s.setEdit(false);
         }
+    }
+
+    public void saveBotData(){
         try {
             engine.getFileUtils().saveObject(engine.getFileUtils().home + "/vote/votes.dat", engine.getDiscEngine().getVoteCmd().getPolls());
         } catch (Exception e) {
@@ -173,6 +178,13 @@ public class DiscApplicationFilesHandler {
             }
             engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - Votes", false);
         }
+    }
+
+    public void saveAllBotFiles() {
+        engine.getUtilityBase().printOutput("~safe all bot files!", true);
+        updateApiData();
+        saveBotData();
+
 
         /*
         try {

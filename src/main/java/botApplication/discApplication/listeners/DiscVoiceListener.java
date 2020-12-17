@@ -101,13 +101,13 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         for (String vc : server.getAutoChannels()) {
             if (vc.equals(event.getChannel().getId())) {
-                server.getAutoChannels().remove(vc);
+                server.removeAutoChannel(vc);
             }
         }
 
         for (VoiceChannel vc : active) {
             if (vc.getId().equals(event.getChannel().getId())) {
-                server.getAutoChannels().remove(vc);
+                server.removeAutoChannel(vc.getId());
             }
         }
     }

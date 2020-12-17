@@ -65,13 +65,16 @@ public class DiscApplicationServer implements Serializable {
         welcomeMessageChannel = (String) obj.get("welcomeMessageChannelId");
         welcomeText = (String) obj.get("welcomeText");
         memberCountCategoryId = (String) obj.get("memberCountStatsChannelId");
-        setupDone = (boolean) obj.get("setupDone");
         defaultMemberRoleId  = (String) obj.get("defaultMemberRoleId");
         defaultTempGamerRoleId = (String) obj.get("defaultTempGamerRoleId");
         primeRoleId = (String) obj.get("primeRoleId");
         vipRoleId = (String) obj.get("vipRoleId");
         defaultRoles = jsonArrayToArray((JSONArray) obj.get("roleIds"));
         autoChannels = jsonArrayToArray((JSONArray) obj.get("autoChannelIds"));
+    }
+
+    public void update(JSONObject obj){
+
     }
 
     private ArrayList<String> jsonArrayToArray(JSONArray a){
@@ -173,8 +176,18 @@ public class DiscApplicationServer implements Serializable {
         this.certificationMessageId = certificationMessageId;
     }
 
-    public ArrayList<String> getAutoChannels() {
+    public ArrayList<String> getAutoChannels(){
         return autoChannels;
+    }
+
+    public void addAutoChannel(String id){
+        edit = true;
+        autoChannels.add(id);
+    }
+
+    public void removeAutoChannel(String id){
+        edit = true;
+        autoChannels.remove(id);
     }
 
     public void setAutoChannels(ArrayList<String> autoChannels) {
@@ -327,5 +340,9 @@ public class DiscApplicationServer implements Serializable {
 
     public boolean isEdit() {
         return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
     }
 }

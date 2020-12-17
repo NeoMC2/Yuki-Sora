@@ -62,6 +62,14 @@ public class DiscApplicationUser implements Serializable {
         maxItems = Math.toIntExact((long) obj.get("maxItems"));
     }
 
+    public void update(JSONObject obj){
+        coins = (long) obj.get("coins");
+        xp = Math.toIntExact((long) obj.get("xp"));
+        level = Math.toIntExact((long) obj.get("level"));
+        maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
+        maxItems = Math.toIntExact((long) obj.get("maxItems"));
+    }
+
     public String getUserName() {
         return userName;
     }
@@ -148,11 +156,6 @@ public class DiscApplicationUser implements Serializable {
         return coins;
     }
 
-    public void setCoins(long coins) {
-        edit = true;
-        this.coins = coins;
-    }
-
     public UserJob getUserJob() {
         edit = true;
         return userJob;
@@ -167,28 +170,8 @@ public class DiscApplicationUser implements Serializable {
         return xp;
     }
 
-    public void setXp(int xp) {
-        edit = true;
-        this.xp = xp;
-    }
-
     public int getLevel() {
         return level;
-    }
-
-    public void setLevel(int level) {
-        edit = true;
-        this.level = level;
-    }
-
-    public void addCoins(int coins) {
-        edit = true;
-        this.coins += coins;
-    }
-
-    public void substractCoins(int coins) {
-        edit = true;
-        this.coins -= coins;
     }
 
     public boolean isSaidHello() {
@@ -233,5 +216,19 @@ public class DiscApplicationUser implements Serializable {
 
     public boolean isEdit() {
         return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
+
+    public void substractCoins(int coins, Engine engine){
+        coins-= coins;
+        engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
+    }
+
+    public void addCoins(int coins, Engine engine){
+        coins+= coins;
+        engine.getDiscEngine().getApiManager().giveCoinsToUser(userId, coins);
     }
 }

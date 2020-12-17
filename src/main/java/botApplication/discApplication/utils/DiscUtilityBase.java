@@ -63,6 +63,16 @@ public class DiscUtilityBase {
         }
 
         if (server == null) {
+            JSONObject req = engine.getDiscEngine().getApiManager().getServerById(guild.getId());
+            if(((Long) req.get("status")) == 200){
+                DiscApplicationServer ser = new DiscApplicationServer(guild);
+                ser.generateFromJSON((JSONObject) req.get("data"));
+                ser.setEdit(false);
+                engine.getDiscEngine().getFilesHandler().getServers().put(ser.getServerID(), ser);
+                server = ser;
+            }
+
+            if(server == null)
             try {
                 server = engine.getDiscEngine().getFilesHandler().createNewServer(guild);
             } catch (Exception e) {

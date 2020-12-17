@@ -27,7 +27,7 @@ public class DiscCmdMonster implements DiscCommand {
             switch (args[0].toLowerCase()) {
 
                 case "buy":
-                    user.substractCoins(20);
+                    user.substractCoins(20, engine);
                     JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
                     JSONObject mnster = (JSONObject) res.get("data");
                     String mnsterName = (String) mnster.get("name");
@@ -62,21 +62,21 @@ public class DiscCmdMonster implements DiscCommand {
                     JSONArray mn1 = (JSONArray) m1Req.get("data");
                     String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
                     engine.getDiscEngine().getTextUtils().sendSucces(event.getAuthor().getName() + " Monsterlist:\n\n" + m1S, event.getChannel());
-                    FightBuilder fBuilder = new FightBuilder(fi.getId(), event.getAuthor().getId());
 
-                    Response r = firstRes(fBuilder, mn1, engine, event.getChannel());
+                    JSONObject m2Req = engine.getDiscEngine().getApiManager().getUserMonstersById(fi.getId());
+                    JSONArray mn2 = (JSONArray) m2Req.get("data");
+                    String m2S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn2);
+                    engine.getDiscEngine().getTextUtils().sendSucces(fi.getEffectiveName() + " Monsterlist:\n\n" + m2S, event.getChannel());
+
+                    FightBuilder fBuilder = new FightBuilder(event.getAuthor().getId(), fi.getId(), mn1, mn2);
+
+                    Response r = firstRes(fBuilder, engine, event.getChannel());
                     r.discGuildId = event.getGuild().getId();
                     r.discChannelId = event.getChannel().getId();
                     r.discUserId = event.getAuthor().getId();
                     engine.getResponseHandler().makeResponse(r);
 
-
-                    JSONObject m2Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
-                    JSONArray mn2 = (JSONArray) m2Req.get("data");
-                    String m2S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn2);
-                    engine.getDiscEngine().getTextUtils().sendSucces(fi.getEffectiveName() + " Monsterlist:\n\n" + m2S, event.getChannel());
-
-                    Response rr = firstRes(fBuilder, mn2, engine, event.getChannel());
+                    Response rr = firstRes(fBuilder, engine, event.getChannel());
                     rr.discGuildId = event.getGuild().getId();
                     rr.discChannelId = event.getChannel().getId();
                     rr.discUserId = fi.getId();
@@ -110,15 +110,15 @@ public class DiscCmdMonster implements DiscCommand {
 
     }
 
-    private Response firstRes(FightBuilder fightBuilder, JSONArray mnsters, Engine engine, TextChannel textChannel) {
+    private Response firstRes(FightBuilder fightBuilder, Engine engine, TextChannel textChannel) {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
                 int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                 try {
-                    String m = (String) ((JSONObject) mnsters.get(id)).get("_id");
-                    fightBuilder.choose(respondingEvent.getAuthor().getId(), m);
-                    engine.getDiscEngine().getTextUtils().sendSucces("You've chosen " + (String) ((JSONObject) mnsters.get(id)).get("name"), textChannel);
+
+                    fightBuilder.choose(respondingEvent.getAuthor().getId(), id);
+                    //engine.getDiscEngine().getTextUtils().sendSucces("You've chosen " + (String) ((JSONObject) mnsters.get(id)).get("name"), textChannel);
                     if (fightBuilder.allChoose()) {
                         FightHandler h = new FightHandler(fightBuilder.m1, fightBuilder.m2, fightBuilder.m1M, fightBuilder.m2M, engine);
                         createResponse(engine, h.nextPlayer(), respondingEvent.getChannel().getId(), respondingEvent.getGuild().getId(), h);
@@ -159,21 +159,26 @@ public class DiscCmdMonster implements DiscCommand {
         public String m1M;
         public String m2M;
 
-        public FightBuilder(String m1, String m2) {
+        public JSONArray m1Mns;
+        public JSONArray m2Mns;
+
+        public FightBuilder(String m1, String m2, JSONArray m1Mns, JSONArray m2Mns) {
             this.m1 = m1;
             this.m2 = m2;
+            this.m1Mns = m1Mns;
+            this.m2Mns = m2Mns;
         }
 
-        public void choose(String id, String monster) {
+        public void choose(String id, int monster) {
             if (id.equals(m1)) {
                 m1Choose = true;
-                m1M = monster;
+                m1M = (String) ((JSONObject) m1Mns.get(monster)).get("_id");
             }
 
 
             if (id.equals(m2)) {
                 m2Choose = true;
-                m2M = monster;
+                m2M = (String) ((JSONObject) m2Mns.get(monster)).get("_id");
             }
         }
 

@@ -32,7 +32,9 @@ public class NetworkManager {
         return req(path, json, apiToken, "DELETE");
     }
 
-    private String req(String path, String json, String apiToken, String methode){
+    private String req(String path, String json, String apiToken, String methode) {
+        if (engine.getProperties().debug)
+            System.out.println("REQ : " + path + " Methode: " + methode + " req: " + json);
         HttpsURLConnection connection;
         try {
             connection = makeConnection(path);
@@ -65,7 +67,6 @@ public class NetworkManager {
         try {
             OutputStreamWriter os = new OutputStreamWriter(connection.getOutputStream());
             char[] ar = json.toCharArray();
-            System.out.println("REQ : " + path + " Methode: " + methode + " req: " + json);
             os.write(json);
             os.flush();
             os.close();
@@ -79,6 +80,8 @@ public class NetworkManager {
     }
 
     public String get(String path, String apiToken) {
+        if (engine.getProperties().debug)
+            System.out.println("REQ : " + path + " Methode: " + "GET");
         try {
             HttpURLConnection c = makeConnection(path);
             if (apiToken != null) {
@@ -104,7 +107,7 @@ public class NetworkManager {
                 e.printStackTrace();
             }
         }
-        
+
         try {
             StringBuilder response = new StringBuilder();
             String responseLine = null;
@@ -112,10 +115,11 @@ public class NetworkManager {
                 response.append(responseLine.trim());
             }
             responseString = response.toString();
-        } catch (Exception e){
-            
+        } catch (Exception e) {
+
         }
-        System.out.println("Res: " + responseString);
+        if (engine.getProperties().debug)
+            System.out.println("Res: " + responseString);
         return responseString;
     }
 

@@ -248,6 +248,10 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/giveRandomItem", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getUpdatedUsers(){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/getUser", apiToken));
+    }
+
     private JSONObject getErrorJson(){
         JSONObject o = new JSONObject();
         o.put("status", 400);
