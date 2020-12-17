@@ -9,16 +9,14 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+
+import java.util.ArrayList;
 
 public class DiscUtilityBase {
 
-    Engine engine;
-
-    public DiscUtilityBase(Engine engine) {
-        this.engine = engine;
-    }
-
-    public boolean userHasGuildAdminPermission(Member member, Guild guild, TextChannel textChannel) {
+    public static boolean userHasGuildAdminPermission(Member member, Guild guild, TextChannel textChannel, Engine engine) {
         boolean hasPermission = false;
         for (int i = 0; member.getRoles().size() > i; i++) {
             for (int a = 0; member.getRoles().get(i).getPermissions().toArray().length > a; a++) {
@@ -36,7 +34,7 @@ public class DiscUtilityBase {
         }
     }
 
-    public DiscApplicationUser lookForUserById(User discuser) {
+    public static DiscApplicationUser lookForUserById(User discuser, Engine engine) {
         DiscApplicationUser user = null;
 
         try {
@@ -55,7 +53,7 @@ public class DiscUtilityBase {
         return user;
     }
 
-    public DiscApplicationServer lookForServer(Guild guild) {
+    public static DiscApplicationServer lookForServer(Guild guild, Engine engine) {
         DiscApplicationServer server = null;
 
         try {
@@ -72,5 +70,24 @@ public class DiscUtilityBase {
             }
         }
         return server;
+    }
+
+    public static String getMonsterListFromUserMonsters(Engine engine, JSONArray mnsters){
+        JSONArray roots = (JSONArray) ((JSONObject) engine.getDiscEngine().getApiManager().getMonsters()).get("data");
+        ArrayList<JSONObject> monsters = new ArrayList<>();
+        for (Object o:mnsters) {
+            JSONObject obj = (JSONObject) o;
+            for (Object ob:roots) {
+                JSONObject obj1 = (JSONObject) ob;
+                if(((String) obj.get("rootMonster")).equals((String)obj1.get("_id"))){
+                    monsters.add(obj1);
+                }
+            }
+        }
+        String s = "";
+        for (int i = 0; i < monsters.size(); i++) {
+            s += "[" + i + "] " + ((String) monsters.get(i).get("name") + "\n");
+        }
+        return s;
     }
 }

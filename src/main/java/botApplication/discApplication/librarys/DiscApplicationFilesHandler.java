@@ -50,6 +50,7 @@ public class DiscApplicationFilesHandler {
         }
         DiscApplicationServer server = new DiscApplicationServer(guild);
         servers.put(guild.getId(), server);
+        engine.getDiscEngine().getApiManager().createServer(serverToJson(server));
         return server;
     }
 
@@ -60,6 +61,7 @@ public class DiscApplicationFilesHandler {
         }
         DiscApplicationUser botUser = new DiscApplicationUser(user, discCertificationLevel);
         users.put(user.getId(), botUser);
+        engine.getDiscEngine().getApiManager().createUser(userToJson(botUser));
         return botUser;
     }
 
@@ -247,7 +249,6 @@ public class DiscApplicationFilesHandler {
         obj.put("userID", user.getUserId());
         obj.put("ytplaylist", user.getYtPlaylist());
         obj.put("isBotAdmin", user.isAdmin());
-        obj.put("certLevel", user.getDiscCertificationLevel().name().toLowerCase());
         obj.put("lang", user.getLang());
         obj.put("coins", user.getCoins());
         obj.put("xp", user.getXp());

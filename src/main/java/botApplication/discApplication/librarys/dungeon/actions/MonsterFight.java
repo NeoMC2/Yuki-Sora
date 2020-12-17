@@ -11,7 +11,6 @@ import java.io.Serializable;
 public class MonsterFight implements DungeonAction, Serializable {
 
     public Engine engine;
-    public Dungeon d;
     private final String msg = "Seems like here is a monster!";
     private FightHandler fightHandler;
 
@@ -21,7 +20,8 @@ public class MonsterFight implements DungeonAction, Serializable {
 
     @Override
     public void action(Dungeon dungeon) {
-        fightHandler = new FightHandler(d.getUser().getUserId(), null, d.getM(), null, engine);
+        fightHandler = new FightHandler(dungeon.getUser().getUserId(), null, dungeon.getM(), null, engine);
+        dungeon.getTextChannel().sendMessage(fightHandler.round("help")).queue();
         createResponse(engine, dungeon.getUser().getUserId(), dungeon.getTextChannel().getId(), dungeon.getTextChannel().getGuild().getId());
     }
 

@@ -122,11 +122,6 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/coins", req.toJSONString(), apiToken));
     }
 
-    public JSONObject createUser(JSONObject object){
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", object.toJSONString(), apiToken));
-
-    }
-
     public JSONObject createUser(User user, String certLvl){
         JSONObject req = new JSONObject();
         req.put("username", user.getName());
@@ -140,7 +135,7 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/server", object.toJSONString(), apiToken));
     }
 
-    public JSONObject createUser(JSONObject user, String certLvl){
+    public JSONObject createUser(JSONObject user){
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/user", user.toJSONString(), apiToken));
     }
 
@@ -218,7 +213,7 @@ public class ApiManager {
     public JSONObject createAiFight(String id){
         JSONObject req = new JSONObject();
         req.put("id", id);
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/createFight", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/createFight", req.toJSONString(), apiToken));
     }
 
     public JSONObject fight(String id, boolean ai1, boolean ai2, String m1, String m2, String attack){
@@ -235,13 +230,13 @@ public class ApiManager {
         if(attack != null)
         req.put("attack", attack);
 
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/fight", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/fight", req.toJSONString(), apiToken));
     }
 
     public JSONObject getAttacks(String mid){
         JSONObject req = new JSONObject();
         req.put("monster", mid);
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/getAttacks", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getAttacks", req.toJSONString(), apiToken));
     }
 
     public JSONObject giveRandomItem(String id, int amount, String rar){
@@ -250,7 +245,7 @@ public class ApiManager {
         req.put("amount", amount);
         if(rar != null)
         req.put("rarity", rar);
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().patch(api + "/giveRandomItem", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/giveRandomItem", req.toJSONString(), apiToken));
     }
 
     private JSONObject getErrorJson(){

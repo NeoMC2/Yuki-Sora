@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys.dungeon.queue;
 
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
@@ -30,21 +31,7 @@ public class DungeonChannelHandler implements Serializable {
         g.addRoleToMember(member, g.getRoleById(roleId)).queue();
         JSONObject res = engine.getDiscEngine().getApiManager().getUserMonstersById(member.getId());
         JSONArray mnsters = (JSONArray) res.get("data");
-        JSONArray roots = (JSONArray) ((JSONObject) engine.getDiscEngine().getApiManager().getMonsters()).get("data");
-        ArrayList<JSONObject> monsters = new ArrayList<>();
-        for (Object o:mnsters) {
-            JSONObject obj = (JSONObject) o;
-            for (Object ob:roots) {
-                JSONObject obj1 = (JSONObject) ob;
-                if(((String) obj.get("rootMonster")).equals((String)obj1.get("_id"))){
-                    monsters.add(obj1);
-                }
-            }
-        }
-        String s = "";
-        for (int i = 0; i < monsters.size(); i++) {
-            s += "[" + i + "] " + ((String) monsters.get(i).get("name") + "\n");
-        }
+        String s = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mnsters);
 
         engine.getDiscEngine().getTextUtils().sendSucces(s, g.getTextChannelById(channelId));
         engine.getDiscEngine().getTextUtils().sendWarining("Type in the ID of the Monster you want to go into the dungeon!", g.getTextChannelById(channelId));
@@ -53,7 +40,7 @@ public class DungeonChannelHandler implements Serializable {
             public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
                 int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                 try {
-                    String m = (String) monsters.get(id).get("_id");
+                    String m = (String)((JSONObject) mnsters.get(id)).get("_id");
                     Dungeon d = new Dungeon(member, g.getTextChannelById(channelId), g, engine, usr, m, engine.getDiscEngine().getFilesHandler().getServerById(g.getId()));
                     engine.getDiscEngine().getFilesHandler().getDungeons().put(member.getId(), d);
                     d.start();

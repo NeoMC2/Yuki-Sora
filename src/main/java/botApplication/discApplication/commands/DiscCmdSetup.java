@@ -5,6 +5,7 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.DiscRole;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonChannelHandler;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -27,7 +28,7 @@ public class DiscCmdSetup implements DiscCommand {
 
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        return engine.getDiscEngine().getUtilityBase().userHasGuildAdminPermission(event.getMember(), event.getGuild(), event.getChannel());
+        return DiscUtilityBase.userHasGuildAdminPermission(event.getMember(), event.getGuild(), event.getChannel(), engine);
     }
 
     @Override
@@ -118,6 +119,7 @@ public class DiscCmdSetup implements DiscCommand {
                                         }
                                         DungeonChannelHandler ch = new DungeonChannelHandler(ttc.getId(), r.getId());
                                         server.getDungeonQueueHandler().getChannels().add(ch);
+                                        engine.getDiscEngine().getTextUtils().sendSucces("Added!", event.getChannel());
                                         break;
                                 }
                                 break;

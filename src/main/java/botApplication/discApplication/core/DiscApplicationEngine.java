@@ -28,7 +28,6 @@ public class DiscApplicationEngine {
     private ApiManager apiManager;
     private DiscTextUtils textUtils;
     private DiscApplicationFilesHandler filesHandler;
-    private DiscUtilityBase utilityBase;
     private DiscCertificationHandler certificationHandler;
     private JDABuilder builder;
     private JDA botJDA;
@@ -56,7 +55,6 @@ public class DiscApplicationEngine {
         initPreCmds();
 
         textUtils = new DiscTextUtils(engine);
-        utilityBase = new DiscUtilityBase(engine);
         certificationHandler = new DiscCertificationHandler(engine);
 
         builder = JDABuilder.createDefault(engine.getProperties().discBotApplicationToken);
@@ -140,10 +138,6 @@ public class DiscApplicationEngine {
 
     public DiscApplicationFilesHandler getFilesHandler() {
         return filesHandler;
-    }
-
-    public DiscUtilityBase getUtilityBase() {
-        return utilityBase;
     }
 
     public DiscCommandHandler getCommandHandler() {

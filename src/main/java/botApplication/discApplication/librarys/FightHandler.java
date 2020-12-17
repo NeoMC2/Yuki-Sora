@@ -32,6 +32,10 @@ public class FightHandler {
 
     public boolean fightDone;
 
+
+    private boolean sameUser = false;
+
+
     public FightHandler(String user1, String user2, String m1, String m2, Engine engine) {
         if (user1 != null) {
             this.user1 = user1;
@@ -49,29 +53,33 @@ public class FightHandler {
 
         this.engine = engine;
 
-
         if (m1Ai) {
             JSONObject res = engine.getDiscEngine().getApiManager().createAiFight(user2);
             m1Json = (JSONObject) res.get("data");
-        } else if (m2Ai) {
+        }
+        if (m2Ai) {
             JSONObject res = engine.getDiscEngine().getApiManager().createAiFight(user1);
             m2Json = (JSONObject) res.get("data");
-        } else if (!m1Ai) {
+        }
+
+        if (!m1Ai) {
             JSONObject res = engine.getDiscEngine().getApiManager().getUserMonstersById(user1);
             JSONArray mnsters = (JSONArray) res.get("data");
             for (Object o : mnsters) {
                 JSONObject mnster = (JSONObject) o;
-                if (mnster.get("_id").equals(m1)) {
+                if (((String) mnster.get("_id")).equals(m1)) {
                     m1Json = mnster;
                     break;
                 }
             }
-        } else if (!m2Ai) {
+        }
+
+        if (!m2Ai) {
             JSONObject res = engine.getDiscEngine().getApiManager().getUserMonstersById(user2);
             JSONArray mnsters = (JSONArray) res.get("data");
             for (Object o : mnsters) {
                 JSONObject mnster = (JSONObject) o;
-                if (mnster.get("_id").equals(m2)) {
+                if (((String) mnster.get("_id")).equals(m2)) {
                     m1Json = mnster;
                     break;
                 }
@@ -82,18 +90,40 @@ public class FightHandler {
         JSONArray mnsters = (JSONArray) res.get("data");
         for (Object o : mnsters) {
             JSONObject mnster = (JSONObject) o;
-            if (mnster.get("_id").equals(m1Json.get("rootMonster"))) {
+            if (((String) mnster.get("_id")).equals((String) m1Json.get("rootMonster"))) {
                 m1JsonRoot = mnster;
             }
 
-            if (mnster.get("_id").equals(m2Json.get("rootMonster"))) {
+            if (((String) mnster.get("_id")).equals((String) m2Json.get("rootMonster"))) {
                 m2JsonRoot = mnster;
             }
         }
     }
 
+    public String currentPlayer() {
+        if (round)
+            return user1;
+        else
+            return user2;
+    }
+
+    public String nextPlayer() {
+        if (sameUser)
+            return currentPlayer();
+
+        if (!round)
+            return user1;
+        else
+            return user2;
+    }
+
     public String round(String w) {
-        round = !round;
+        if (!sameUser)
+            round = !round;
+
+        if (sameUser)
+            sameUser = false;
+
         if (round) {
             if (m1Ai) {
                 JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m2, null);
@@ -104,7 +134,7 @@ public class FightHandler {
             }
         } else {
             if (m2Ai) {
-                JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m2, null);
+                JSONObject res = engine.getDiscEngine().getApiManager().fight(user1, true, false, null, m1, null);
                 m1Json = (JSONObject) res.get("monster1");
                 m2Json = (JSONObject) res.get("monster2");
                 lastDmg = (Long) res.get("dmg");
@@ -148,12 +178,17 @@ public class FightHandler {
                     break;
 
                 case "info":
-                    break;
+                    String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
+                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + "hp";
+                    sameUser = true;
+                    return m1 + " against " + m2;
 
                 case "help":
-                    break;
+                    sameUser = true;
+                    return "help";
 
                 default:
+                    sameUser = true;
                     return "invalid";
             }
         } catch (Exception e) {
