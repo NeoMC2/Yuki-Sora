@@ -35,9 +35,9 @@ public class NetworkManager {
     private String req(String path, String json, String apiToken, String methode) {
         if (engine.getProperties().debug)
             System.out.println("REQ : " + path + " Methode: " + methode + " req: " + json);
-        HttpsURLConnection connection;
+        HttpURLConnection connection;
         try {
-            connection = makeConnection(path);
+            connection = (HttpURLConnection) makeConnection(path);
         } catch (Exception e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -83,7 +83,7 @@ public class NetworkManager {
         if (engine.getProperties().debug)
             System.out.println("REQ : " + path + " Methode: " + "GET");
         try {
-            HttpURLConnection c = makeConnection(path);
+            HttpURLConnection c = (HttpURLConnection) makeConnection(path);
             if (apiToken != null) {
                 addApiToken(apiToken, c);
                 c.setRequestProperty("Accept", "application/json");
@@ -123,9 +123,12 @@ public class NetworkManager {
         return responseString;
     }
 
-    private HttpsURLConnection makeConnection(String path) throws Exception {
-        HttpsURLConnection c = (HttpsURLConnection) new URL(path).openConnection();
-        c.setConnectTimeout(3000);
+    private Object makeConnection(String path) throws Exception {
+        Object c;
+        if (path.startsWith("https"))
+            c = (HttpsURLConnection) new URL(path).openConnection();
+        else
+            c = (HttpURLConnection) new URL(path).openConnection();
         return c;
     }
 
