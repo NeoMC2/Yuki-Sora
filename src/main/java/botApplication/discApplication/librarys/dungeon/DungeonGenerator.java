@@ -137,10 +137,10 @@ public class DungeonGenerator {
             }
         }
         Cave c = new Cave();
-        BosFight b = new BosFight(engine);
-        b.generate();
+        //BosFight b = new BosFight(engine);
+        //b.generate();
 
-        c.setAction(b);
+        //c.setAction(b);
         c.setD(d);
         c.setRightDirection(true);
         statistics.bos++;
@@ -225,10 +225,10 @@ public class DungeonGenerator {
         statistics.dungeonCaves++;
         DungeonAction ac = null;
         switch (t) {
-            case BosFight:
-                statistics.bos++;
-                ac = new BosFight(engine);
-                break;
+            //case BosFight:
+            //    statistics.bos++;
+            //    ac = new BosFight(engine);
+           //     break;
             case Default:
                 statistics.defaults++;
                 ac = new Default(engine);

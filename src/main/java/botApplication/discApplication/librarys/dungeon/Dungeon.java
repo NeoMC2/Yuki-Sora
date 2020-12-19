@@ -3,19 +3,15 @@ package botApplication.discApplication.librarys.dungeon;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.dungeon.parts.Cave;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.PrivateChannel;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 
 import java.awt.*;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -41,18 +37,17 @@ public class Dungeon {
                     "╝▒▒▒▒║\n" +
                     "╗▒▒▒▒║\n" +
                     "╚════╝";
+    private Cave currentCave;
     private final Member member;
     private final TextChannel textChannel;
     private final Guild g;
     private final Engine engine;
     private final DiscApplicationUser user;
+    private String m;
     private final DiscApplicationServer server;
     private final DungeonGenerator dungeonGenerator;
-    private final ArrayList<Item> foundItems = new ArrayList<>();
-    private Cave currentCave;
-    private Monster m;
 
-    public Dungeon(Member member, TextChannel textChannel, Guild g, Engine engine, DiscApplicationUser user, Monster m, DiscApplicationServer server) {
+    public Dungeon(Member member, TextChannel textChannel, Guild g, Engine engine, DiscApplicationUser user, String m, DiscApplicationServer server) {
         this.member = member;
         this.textChannel = textChannel;
         this.g = g;
@@ -83,26 +78,13 @@ public class Dungeon {
     public void caveActionFinished(boolean returnToHome) {
         if (returnToHome) {
             String coll = "";
-            for (Item i : foundItems) {
-                coll += i.getItemName() + " (" + i.getItemRarity().name() + ")\n";
-            }
-            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!\n\n**List of found Items:**\n" + coll, textChannel);
+            engine.getDiscEngine().getTextUtils().sendSucces("You are done with this Dungeon, congrats!", textChannel);
             new Timer().schedule(new TimerTask() {
                 @Override
                 public void run() {
                     server.getDungeonQueueHandler().unuseChannel(textChannel.getId(), g);
                 }
             }, 10000);
-
-            if (user.getMaxItems() - user.getItems().size() < 1) {
-                PrivateChannel c;
-                try {
-                    c = engine.getDiscEngine().getBotJDA().openPrivateChannelById(member.getUser().getId()).complete();
-                } catch (Exception e) {
-                    return;
-                }
-                engine.getDiscEngine().getTextUtils().sendError("It seems like, you don't have much inventory space left!", c, false);
-            }
             return;
         }
         if (currentCave.junctions() == 0) {
@@ -158,11 +140,6 @@ public class Dungeon {
         engine.getResponseHandler().makeResponse(r);
     }
 
-    public void foundItem(Item item) {
-        foundItems.add(item);
-        user.getItems().add(item);
-    }
-
     public Member getMember() {
         return member;
     }
@@ -188,11 +165,11 @@ public class Dungeon {
         currentCave.enter(null);
     }
 
-    public Monster getM() {
+    public String getM() {
         return m;
     }
 
-    public void setM(Monster m) {
+    public void setM(String m) {
         this.m = m;
     }
 }

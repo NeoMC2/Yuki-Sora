@@ -23,4 +23,5 @@ public class Properties implements Serializable {
     public boolean showTime = true;
     public int saveSpeed = 10;
     public ArrayList<String> botSlaves;
+    public String api;
 }

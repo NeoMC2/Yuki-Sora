@@ -10,7 +10,10 @@ import net.dv8tion.jda.api.entities.TextChannel;
 
 import java.awt.*;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
@@ -26,11 +29,16 @@ public class DungeonQueueHandler implements Serializable {
 
     public void click(TextChannel textChannel, Engine engine, Guild g, Member member) {
         DiscApplicationUser user = engine.getDiscEngine().getFilesHandler().getUserById(member.getId());
-        if (user.getMaxItems() - user.getItems().size() < 10) {
-            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("You should have more space in you inventory before entering a dungeon!");
+
+        Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
+        Date dFourHoursAgo = Date.from(fourHoursAgo);
+
+        if(user.getLastDungeonVisit() != null)
+        if (user.getLastDungeonVisit().after(dFourHoursAgo)) {
+            String diff = engine.getUtilityBase().convertTimeToString(user.getLastDungeonVisit().getTime() - dFourHoursAgo.getTime());
+            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("You can visit the dungeon in " + diff + " hours again!");
             Message m = textChannel.sendMessage(b.build()).complete();
             m.delete().queueAfter(8, TimeUnit.SECONDS);
-            return;
         }
 
         if (usedChannels == null)
@@ -51,6 +59,7 @@ public class DungeonQueueHandler implements Serializable {
             channelHandler.clicked(engine, g, member);
             UsedDungeonChannel chanel = new UsedDungeonChannel(channelHandler, member, g);
             usedChannels.put(channelHandler.getChannelId(), chanel);
+            user.setLastDungeonVisit(new Date());
         }
     }
 

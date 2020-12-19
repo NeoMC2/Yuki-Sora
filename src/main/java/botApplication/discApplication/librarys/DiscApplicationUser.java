@@ -1,10 +1,10 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.monsters.Monster;
 import botApplication.discApplication.librarys.job.UserJob;
+import core.Engine;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,6 +13,8 @@ import java.util.Date;
 public class DiscApplicationUser implements Serializable {
 
     private static final long serialVersionUID = 42L;
+
+    private boolean edit = false;
 
     private String userName;
     private String ytPlaylist;
@@ -24,6 +26,7 @@ public class DiscApplicationUser implements Serializable {
     private String lang = "en";
 
     private Date lastWorkTime;
+    private Date lastDungeonVisit;
     private long coins = 20;
     private UserJob userJob;
     private int xp;
@@ -32,19 +35,39 @@ public class DiscApplicationUser implements Serializable {
     private int maxMonsters = 10;
     private int maxItems = 30;
 
-    private ArrayList<Monster> monsters = new ArrayList<>();
-    private ArrayList<Item> items = new ArrayList<>();
-
     private boolean saidHello = false;
 
+    public DiscApplicationUser() {
+        edit = true;
+    }
+
     public DiscApplicationUser(User user, DiscCertificationLevel discCertificationLevel) {
+        edit = true;
         this.userName = user.getName();
         this.userId = user.getId();
         this.discCertificationLevel = discCertificationLevel;
     }
 
-    public boolean isMonsterInvFull() {
-        return monsters.size() >= maxMonsters;
+    public void generateFromJSON(JSONObject obj, Engine engine){
+        edit = false;
+        userName = (String) obj.get("username");
+        userId = (String) obj.get("userID");
+        ytPlaylist = (String) obj.get("ytplaylist");
+        admin = (boolean) obj.get("isBotAdmin");
+        lang = (String) obj.get("lang");
+        coins = (long) obj.get("coins");
+        xp = Math.toIntExact((long) obj.get("xp"));
+        level = Math.toIntExact((long) obj.get("level"));
+        maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
+        maxItems = Math.toIntExact((long) obj.get("maxItems"));
+    }
+
+    public void update(JSONObject obj){
+        coins = (long) obj.get("coins");
+        xp = Math.toIntExact((long) obj.get("xp"));
+        level = Math.toIntExact((long) obj.get("level"));
+        maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
+        maxItems = Math.toIntExact((long) obj.get("maxItems"));
     }
 
     public String getUserName() {
@@ -53,6 +76,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setUserName(String userName) {
         this.userName = userName;
+        edit = true;
     }
 
     public String getYtPlaylist() {
@@ -61,6 +85,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setYtPlaylist(String ytPlaylist) {
         this.ytPlaylist = ytPlaylist;
+        edit = true;
     }
 
     public String getUserId() {
@@ -69,6 +94,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setUserId(String userId) {
         this.userId = userId;
+        edit = true;
     }
 
     public boolean isAdmin() {
@@ -77,6 +103,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setAdmin(boolean admin) {
         this.admin = admin;
+        edit = true;
     }
 
     public long getTelegramId() {
@@ -85,6 +112,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void setTelegramId(long telegramId) {
         this.telegramId = telegramId;
+        edit = true;
     }
 
     public DiscCertificationLevel getDiscCertificationLevel() {
@@ -93,13 +121,16 @@ public class DiscApplicationUser implements Serializable {
 
     public void setDiscCertificationLevel(DiscCertificationLevel discCertificationLevel) {
         this.discCertificationLevel = discCertificationLevel;
+        edit = true;
     }
 
     public ArrayList<String> getServers() {
+        edit = true;
         return servers;
     }
 
     public void setServers(ArrayList<String> servers) {
+        edit = true;
         this.servers = servers;
     }
 
@@ -108,6 +139,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setLang(String lang) {
+        edit = true;
         this.lang = lang;
     }
 
@@ -116,6 +148,7 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setLastWorkTime(Date lastWorkTime) {
+        edit = true;
         this.lastWorkTime = lastWorkTime;
     }
 
@@ -123,15 +156,13 @@ public class DiscApplicationUser implements Serializable {
         return coins;
     }
 
-    public void setCoins(long coins) {
-        this.coins = coins;
-    }
-
     public UserJob getUserJob() {
+        edit = true;
         return userJob;
     }
 
     public void setUserJob(UserJob userJob) {
+        edit = true;
         this.userJob = userJob;
     }
 
@@ -139,24 +170,8 @@ public class DiscApplicationUser implements Serializable {
         return xp;
     }
 
-    public void setXp(int xp) {
-        this.xp = xp;
-    }
-
     public int getLevel() {
         return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
-
-    public void addCoins(int coins) {
-        this.coins += coins;
-    }
-
-    public void substractCoins(int coins) {
-        this.coins -= coins;
     }
 
     public boolean isSaidHello() {
@@ -167,26 +182,12 @@ public class DiscApplicationUser implements Serializable {
         this.saidHello = saidHello;
     }
 
-    public ArrayList<Monster> getMonsters() {
-        return monsters;
-    }
-
-    public void setMonsters(ArrayList<Monster> monsters) {
-        this.monsters = monsters;
-    }
-
-    public void addMonster(Monster m) throws Exception {
-        if (monsters.size() >= maxMonsters) {
-            throw new Exception("To many monsters");
-        }
-        monsters.add(m);
-    }
-
     public int getMaxMonsters() {
         return maxMonsters;
     }
 
     public void setMaxMonsters(int maxMonsters) {
+        edit = true;
         this.maxMonsters = maxMonsters;
     }
 
@@ -195,26 +196,39 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void setMaxItems(int maxItems) {
+        edit = true;
         this.maxItems = maxItems;
     }
 
-    public ArrayList<Item> getItems() {
-        return items;
+    public Date getLastDungeonVisit() {
+        return lastDungeonVisit;
     }
 
-    public void setItems(ArrayList<Item> items) {
-        this.items = items;
-    }
-
-    public void addItem(Item item) throws Exception {
-        if (items.size() >= maxItems) {
-            throw new Exception("To many Items");
-        }
-        items.add(item);
+    public void setLastDungeonVisit(Date lastDungeonVisit) {
+        edit = true;
+        this.lastDungeonVisit = lastDungeonVisit;
     }
 
     public void upgrade() {
+        edit = true;
         maxItems = 30;
-        items = new ArrayList<>();
+    }
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
+    }
+
+    public void substractCoins(int coins, Engine engine){
+        coins-= coins;
+        engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
+    }
+
+    public void addCoins(int coins, Engine engine){
+        coins+= coins;
+        engine.getDiscEngine().getApiManager().giveCoinsToUser(userId, coins);
     }
 }

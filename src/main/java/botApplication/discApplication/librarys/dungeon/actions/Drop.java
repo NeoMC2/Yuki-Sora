@@ -1,20 +1,20 @@
 package botApplication.discApplication.librarys.dungeon.actions;
 
 import botApplication.discApplication.librarys.dungeon.Dungeon;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.ItemStorage;
 import core.Engine;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Drop implements DungeonAction, Serializable {
 
     private final Engine engine;
 
-    private final ArrayList<Item> drops = new ArrayList<>();
     private final String dropText = "";
+
+    private int quantity;
 
     public Drop(Engine engine) {
         this.engine = engine;
@@ -22,14 +22,18 @@ public class Drop implements DungeonAction, Serializable {
 
     @Override
     public void action(Dungeon dungeon) {
-        String msg = dropText;
-        msg += "Wait, there is a chest in the middle of this room\n\n**You've got**\n\n";
-
-        for (Item item : drops) {
-            msg += item.getItemName() + " (" + Item.rarityToString(item.getItemRarity()) + ")\n";
+        JSONObject req = engine.getDiscEngine().getApiManager().giveRandomItem(dungeon.getUser().getUserId(), ThreadLocalRandom.current().nextInt(1, 10), null);
+        JSONArray its = (JSONArray) req.get("data");
+        String s = "";
+        for (Object o:its) {
+            JSONObject ob = (JSONObject) o;
+            s+= ((String) ob.get("itemName")) + " [" + ((String) ob.get("itemRarity")) + "]\n";
         }
-        dungeon.getTextChannel().sendMessage(msg).queue();
-        drops.forEach(e -> dungeon.foundItem(e));
+
+        String msg = dropText;
+        msg += "Wait, there is a chest in the middle of this room\n\n**You've got**\n\n" + s;
+        engine.getDiscEngine().getTextUtils().sendSucces(msg, dungeon.getTextChannel());
+
         dungeon.caveActionFinished(false);
     }
 
@@ -47,23 +51,6 @@ public class Drop implements DungeonAction, Serializable {
         } else {
             quantity = ThreadLocalRandom.current().nextInt(1, 2);
         }
-
-        for (int i = 0; i < quantity; i++) {
-            Item item = null;
-            int t = ThreadLocalRandom.current().nextInt(0, 100);
-
-            if (t > 80) {
-                item = ItemStorage.getRandomGem();
-            } else if (t > 70) {
-                item = ItemStorage.getRandomMetal();
-            } else if (t > 60) {
-                item = ItemStorage.getRandomFood();
-            } else {
-                item = ItemStorage.getRandomStuff();
-            }
-
-            if (item != null)
-                drops.add(item);
-        }
+        this.quantity = quantity;
     }
 }

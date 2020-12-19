@@ -2,18 +2,17 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.Item;
-import botApplication.discApplication.librarys.item.consumable.food.Food;
-import botApplication.discApplication.librarys.item.monsters.Attack;
-import botApplication.discApplication.librarys.item.monsters.FightHandler;
-import botApplication.discApplication.librarys.item.monsters.Monster;
+import botApplication.discApplication.librarys.FightHandler;
+import botApplication.discApplication.utils.DiscUtilityBase;
+import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
-
-import java.util.ArrayList;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 public class DiscCmdMonster implements DiscCommand {
     @Override
@@ -24,178 +23,64 @@ public class DiscCmdMonster implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length >= 1) {
-            Monster mn = null;
-            if (args.length >= 2)
-                try {
-                    mn = user.getMonsters().get(Integer.parseInt(args[1]) - 1);
-                } catch (Exception e) {
-                }
-            switch (args[0].toLowerCase()) {
-                case "fight":
-                    if (args.length > 1)
-                        if (args[1].equals("accept")) {
-                            for (FightHandler h : engine.getDiscEngine().getFightHandlers()) {
-                                if (h.getTextChannel().getId().equals(event.getChannel().getId())) {
-                                    if (h.getM2() != null || h.getM1().getUser().getId().equals(event.getAuthor().getId())) {
-                                        return;
-                                    }
-                                    h.setM2(event.getMember());
-                                    h.begin();
-                                    return;
-                                }
-                            }
-                        }
-                    for (FightHandler h : engine.getDiscEngine().getFightHandlers()) {
-                        if (h.getTextChannel().getId().equals(event.getChannel().getId())) {
-                            if (h.getM2() != null)
-                                engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.pokemon.error.fightInProgress", user.getLang(), null), event.getChannel(), false);
-                            else
-                                engine.getDiscEngine().getFightHandlers().remove(h);
-                            return;
-                        }
-                    }
-                    FightHandler h = new FightHandler(engine, event.getChannel(), event.getGuild());
-                    engine.getDiscEngine().getFightHandlers().add(h);
-                    h.setM1(event.getMember());
-                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.info.startedFight", user.getLang(), new String[]{event.getAuthor().getName()}), event.getChannel());
-                    break;
 
-                case "heal":
-                    if (mn == null) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
-                        return;
-                    }
-                    for (FightHandler ha : engine.getDiscEngine().getFightHandlers()) {
-                        if (ha.getTextChannel().getId().equals(event.getChannel().getId())) {
-                            return;
-                        }
-                    }
-                    mn.setHp(mn.getMaxHp());
-                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.healed", user.getLang(), null), event.getChannel());
-                    break;
+            switch (args[0].toLowerCase()) {
 
                 case "buy":
-                    if (user.getCoins() >= 20) {
-                        user.substractCoins(20);
-                        Monster monster = engine.getDiscEngine().getTransaktionHandler().getRandomMonster(Item.Rarity.Normal);
-                        if (monster == null) {
-                            engine.getDiscEngine().getTextUtils().sendError("An error showed up, you'll get your coins back. Try again soon!", event.getChannel(), false);
-                            return;
-                        }
-                        EmbedBuilder mb = new EmbedBuilder()
-                                .setDescription(engine.lang("cmd.pokemon.success.buy", user.getLang(), new String[]{monster.getItemName(), Item.rarityToString(monster.getItemRarity())}))
-                                .setAuthor("Got " + monster.getItemName(), monster.getImgUrl())
-                                .setColor(Item.rarityToColor(monster.getItemRarity()))
-                                .setThumbnail(monster.getImgUrl());
-                        event.getChannel().sendMessage(mb.build()).queue();
-                        try {
-                            user.addMonster(monster);
-                        } catch (Exception e) {
-                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.pokemon.error.toManyPokemons", user.getLang(), null), event.getChannel(), false);
-                        }
-                    } else {
-                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), false);
-                    }
-                    break;
+                    user.substractCoins(20, engine);
+                    JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
+                    JSONObject mnster = (JSONObject) res.get("data");
+                    String mnsterName = (String) mnster.get("name");
+                    String rar = (String) mnster.get("rarity");
+                    String imgUrl = (String) mnster.get("imageUrl");
 
-                case "list":
-                case "info":
-                case "show":
-                case "monsters":
-                    String msg = "Monsters\n\n";
-                    if (args.length > 1) {
-                        int i = Integer.parseInt(args[1]);
-                        try {
-                            msg = "[" + i + "]\n" + user.getMonsters().get(i - 1).toString();
-                        } catch (Exception e) {
-                            engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
-                            if (engine.getProperties().debug)
-                                e.printStackTrace();
-                            return;
-                        }
-                    } else {
-                        for (int i = 0; i < user.getMonsters().size(); i++) {
-                            msg += "[" + (i + 1) + "] " + user.getMonsters().get(i).getItemName() + "\n";
-                        }
-                    }
-                    engine.getDiscEngine().getTextUtils().sendWarining(msg, event.getChannel());
-                    break;
-
-                case "ai":
-                case "attackinfo":
-                    if (mn == null) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid", event.getChannel(), false);
-                        return;
-                    }
-                    String msgg = "";
-                    ArrayList<Attack> attacks = mn.getAllowedAttacks();
-                    for (int i = 0; i < attacks.size(); i++) {
-                        Attack c = attacks.get(i);
-                        msgg += "[" + (i + 1) + "] " + c.toString() + "\n\n";
-                    }
-                    engine.getDiscEngine().getTextUtils().sendWarining(msgg, event.getChannel());
-                    break;
-
-                case "attackselect":
-                case "selectattack":
-                case "as":
-                case "sa":
-                    if (mn == null) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
-                        return;
-                    }
-                    ArrayList<Attack> attackss = mn.getAllowedAttacks();
-                    Attack accs = attackss.get(Integer.parseInt(args[2]) - 1);
-                    switch (args[3].toLowerCase()) {
-                        case "a1":
-                            mn.setA1(accs);
-                            break;
-                        case "a2":
-                            mn.setA2(accs);
-                            break;
-                        case "a3":
-                            mn.setA3(accs);
-                            break;
-                        case "a4":
-                            mn.setA4(accs);
-                            break;
-                    }
-                    engine.getDiscEngine().getTextUtils().sendSucces("Selected!", event.getChannel());
-                    break;
-
-                case "delete":
-                case "del":
-                case "trash":
-                    if (mn == null) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
-                        return;
-                    }
-                    user.getMonsters().remove(mn);
-                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.pokemon.success.deleted", user.getLang(), null), event.getChannel());
-                    break;
-
-                case "sell":
-                    if (mn == null) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid Monster", event.getChannel(), false);
-                        return;
-                    }
-                    user.getMonsters().remove(mn);
-                    user.addCoins(Monster.rarityToMarketValue(mn.getItemRarity()));
-                    engine.getDiscEngine().getTextUtils().sendSucces("You've got " + Monster.rarityToMarketValue(mn.getItemRarity()) + " for your monster", event.getChannel());
-                    break;
-
-                case "feed":
-                    Food f;
-                    try {
-                        f = (Food) user.getItems().get(Integer.parseInt(args[2]) - 1);
-                    } catch (Exception e) {
-                        engine.getDiscEngine().getTextUtils().sendError("Invalid Food!", event.getChannel(), false);
-                        return;
-                    }
-                    user.getItems().remove(f);
-                    mn.feed(f);
-                    EmbedBuilder b = new EmbedBuilder().setAuthor("Feed " + mn.getItemName(), null, f.getImgUrl()).setDescription(engine.lang("cmd.pokemon.success.feed", user.getLang(), null));
+                    EmbedBuilder b = new EmbedBuilder().setThumbnail(imgUrl).setColor(DiscCmdItem.rarityToColor(rar)).setAuthor("You've got " + mnsterName);
                     event.getChannel().sendMessage(b.build()).queue();
+                    break;
+
+                case "fight":
+                    Member fi = null;
+                    try {
+                        fi = event.getMessage().getMentionedMembers().get(0);
+                    } catch (Exception ignored) {
+                    }
+
+                    if (fi == null) {
+                        if (args.length > 1)
+                            fi = event.getGuild().getMemberById(args[1]);
+                        else {
+                            engine.getDiscEngine().getTextUtils().sendError("No user found!", event.getChannel(), false);
+                            return;
+                        }
+                    }
+
+                    if (fi == null) {
+                        engine.getDiscEngine().getTextUtils().sendError("No user found!", event.getChannel(), false);
+                        return;
+                    }
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces(event.getAuthor().getName() + " Monsterlist:\n\n" + m1S, event.getChannel());
+
+                    JSONObject m2Req = engine.getDiscEngine().getApiManager().getUserMonstersById(fi.getId());
+                    JSONArray mn2 = (JSONArray) m2Req.get("data");
+                    String m2S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn2);
+                    engine.getDiscEngine().getTextUtils().sendSucces(fi.getEffectiveName() + " Monsterlist:\n\n" + m2S, event.getChannel());
+
+                    FightBuilder fBuilder = new FightBuilder(event.getAuthor().getId(), fi.getId(), mn1, mn2);
+
+                    Response r = firstRes(fBuilder, engine, event.getChannel());
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    r.discUserId = event.getAuthor().getId();
+                    engine.getResponseHandler().makeResponse(r);
+
+                    Response rr = firstRes(fBuilder, engine, event.getChannel());
+                    rr.discGuildId = event.getGuild().getId();
+                    rr.discChannelId = event.getChannel().getId();
+                    rr.discUserId = fi.getId();
+                    engine.getResponseHandler().makeResponse(rr);
                     break;
 
                 default:
@@ -223,5 +108,82 @@ public class DiscCmdMonster implements DiscCommand {
     @Override
     public void actionTelegram(Member member, Engine engine, DiscApplicationUser user, String[] args) {
 
+    }
+
+    private Response firstRes(FightBuilder fightBuilder, Engine engine, TextChannel textChannel) {
+        Response r = new Response(Response.ResponseTyp.Discord) {
+            @Override
+            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                try {
+
+                    fightBuilder.choose(respondingEvent.getAuthor().getId(), id);
+                    //engine.getDiscEngine().getTextUtils().sendSucces("You've chosen " + (String) ((JSONObject) mnsters.get(id)).get("name"), textChannel);
+                    if (fightBuilder.allChoose()) {
+                        FightHandler h = new FightHandler(fightBuilder.m1, fightBuilder.m2, fightBuilder.m1M, fightBuilder.m2M, engine);
+                        createResponse(engine, h.nextPlayer(), respondingEvent.getChannel().getId(), respondingEvent.getGuild().getId(), h);
+                    }
+                } catch (Exception e) {
+                    if (engine.getProperties().debug)
+                        e.printStackTrace();
+                    engine.getDiscEngine().getTextUtils().sendError("Error while starting fight", textChannel, true);
+                }
+            }
+        };
+        return r;
+    }
+
+    private void createResponse(Engine engine, String userId, String chanId, String guildId, FightHandler fightHandler) {
+        Response r = new Response(Response.ResponseTyp.Discord) {
+            @Override
+            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                respondingEvent.getChannel().sendMessage(fightHandler.round(respondingEvent.getMessage().getContentRaw())).queue();
+                if (!fightHandler.fightDone) {
+                    createResponse(engine, fightHandler.nextPlayer(), chanId, guildId, fightHandler);
+                }
+            }
+        };
+        r.discUserId = userId;
+        r.discChannelId = chanId;
+        r.discGuildId = guildId;
+        engine.getResponseHandler().makeResponse(r);
+    }
+
+    private class FightBuilder {
+        public boolean m1Choose = false;
+        public boolean m2Choose = false;
+
+        public String m1;
+        public String m2;
+
+        public String m1M;
+        public String m2M;
+
+        public JSONArray m1Mns;
+        public JSONArray m2Mns;
+
+        public FightBuilder(String m1, String m2, JSONArray m1Mns, JSONArray m2Mns) {
+            this.m1 = m1;
+            this.m2 = m2;
+            this.m1Mns = m1Mns;
+            this.m2Mns = m2Mns;
+        }
+
+        public void choose(String id, int monster) {
+            if (id.equals(m1)) {
+                m1Choose = true;
+                m1M = (String) ((JSONObject) m1Mns.get(monster)).get("_id");
+            }
+
+
+            if (id.equals(m2)) {
+                m2Choose = true;
+                m2M = (String) ((JSONObject) m2Mns.get(monster)).get("_id");
+            }
+        }
+
+        public boolean allChoose() {
+            return m1Choose && m2Choose;
+        }
     }
 }

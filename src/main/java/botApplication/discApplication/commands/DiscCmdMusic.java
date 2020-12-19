@@ -55,7 +55,7 @@ public class DiscCmdMusic implements DiscCommand {
                     Object[] array = channelMusicBots.keySet().toArray();
                     for (Object ob : array) {
                         String s = channelMusicBots.get(ob);
-                        String res = engine.getNetworkManager().post(s + "/state", o.toJSONString());
+                        String res = engine.getNetworkManager().post(s + "/state", o.toJSONString(), null);
                         JSONObject obj = engine.getFileUtils().convertStringToJson(res);
                         String ev = (String) obj.get("response");
                         if (ev.equals("true")) {
@@ -90,7 +90,7 @@ public class DiscCmdMusic implements DiscCommand {
         r.put("data", data);
         if (g != null && m != null && vcId != null && botUrl != null)
             channelMusicBots.put(vcId, botUrl);
-        JSONObject req = engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(botUrl + "/api", r.toJSONString()));
+        JSONObject req = engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(botUrl + "/api", r.toJSONString(), null));
         if (g != null && m != null && vcId != null && botUrl != null)
             if (req == null) {
                 responseChannel.sendMessage(new EmbedBuilder().setDescription("The Music Bot slave throws an error").setColor(Color.RED).build()).queue();
