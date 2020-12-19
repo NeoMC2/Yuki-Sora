@@ -17,10 +17,10 @@ public class Engine {
     private final UtilityBase utilityBase = new UtilityBase(this);
     private final DiscApplicationEngine discApplicationEngine = new DiscApplicationEngine(this);
     private final ResponseHandler responseHandler = new ResponseHandler(this);
+    private final NetworkManager networkManager = new NetworkManager(this);
     public JSONObject lang;
     public JSONObject pics;
     private Properties properties;
-    private final NetworkManager networkManager = new NetworkManager(this);
 
     public void boot(String[] args) {
         loadLanguage();
@@ -48,26 +48,26 @@ public class Engine {
 
                     Object[] ob = o.keySet().toArray();
 
-                    for (Object oS:ob){
+                    for (Object oS : ob) {
                         String s = (String) oS;
                         JSONObject mnster = (JSONObject) o.get(s);
 
-                        for (Object oSS:ob){
+                        for (Object oSS : ob) {
                             String ss = (String) oSS;
                             JSONObject mnsterr = (JSONObject) o.get(ss);
 
                             String ev = (String) mnsterr.get("ev");
-                            if(ev!=null){
+                            if (ev != null) {
                                 String[] evos = ev.split(",");
-                                if(evos.length>1) {
-                                    for (String evosS:evos){
-                                        if(s.equals(evosS)){
+                                if (evos.length > 1) {
+                                    for (String evosS : evos) {
+                                        if (s.equals(evosS)) {
                                             mnster.put("shown", "false");
                                             System.out.println(s);
                                         }
                                     }
                                 } else {
-                                    if(ev.equals(s)){
+                                    if (ev.equals(s)) {
                                         mnster.put("shown", "false");
                                         System.out.println(s);
                                     }
@@ -76,7 +76,7 @@ public class Engine {
                         }
                     }
 
-                    getFileUtils().saveJsonFile(getFileUtils().home +"/transactions/monsters.json", o);
+                    getFileUtils().saveJsonFile(getFileUtils().home + "/transactions/monsters.json", o);
                     break;
                 case "start":
                     discApplicationEngine.startBotApplication();

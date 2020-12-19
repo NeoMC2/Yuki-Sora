@@ -54,7 +54,7 @@ public class DiscCmdSetup implements DiscCommand {
 
                                 try {
                                     voiceChannel = event.getGuild().getVoiceChannelById(args[2]);
-                                } catch (Exception e){
+                                } catch (Exception e) {
                                 }
 
                                 if (voiceChannel == null) {
