@@ -3,6 +3,8 @@ package botApplication.discApplication.librarys;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,6 +12,8 @@ import java.util.ArrayList;
 public class DiscApplicationServer implements Serializable {
 
     private static final long serialVersionUID = 42L;
+
+    private boolean edit = false;
 
     private String serverName;
     private String serverID;
@@ -22,6 +26,9 @@ public class DiscApplicationServer implements Serializable {
 
     private String workChannelId;
     private String shopChannelId;
+
+    private String vipRoleId;
+    private String primeRoleId;
 
     private boolean setupMode = false;
     private boolean setupDone = false;
@@ -40,9 +47,43 @@ public class DiscApplicationServer implements Serializable {
 
     private String baitChannel;
 
+    private boolean moveMemberOnSDeafen = true;
+
     public DiscApplicationServer(Guild guild) {
+        edit = true;
         this.serverName = guild.getName();
         this.serverID = guild.getId();
+    }
+
+    public void generateFromJSON(JSONObject obj){
+        edit = false;
+        serverName = (String) obj.get("serverName");
+        serverID = (String) obj.get("serverId");
+        serverYTPlaylist = (String) obj.get("serverYtPlaylist");
+        certificationMessageId = (String) obj.get("certificationMessageId");
+        certificationChannelId = (String) obj.get("certificationChannelId");
+        welcomeMessageChannel = (String) obj.get("welcomeMessageChannelId");
+        welcomeText = (String) obj.get("welcomeText");
+        memberCountCategoryId = (String) obj.get("memberCountStatsChannelId");
+        defaultMemberRoleId  = (String) obj.get("defaultMemberRoleId");
+        defaultTempGamerRoleId = (String) obj.get("defaultTempGamerRoleId");
+        primeRoleId = (String) obj.get("primeRoleId");
+        vipRoleId = (String) obj.get("vipRoleId");
+        defaultRoles = jsonArrayToArray((JSONArray) obj.get("roleIds"));
+        autoChannels = jsonArrayToArray((JSONArray) obj.get("autoChannelIds"));
+    }
+
+    public void update(JSONObject obj){
+
+    }
+
+    private ArrayList<String> jsonArrayToArray(JSONArray a){
+        ArrayList<String> s = new ArrayList<>();
+        for (Object o:a) {
+            String st = (String) o;
+            s.add(st);
+        }
+        return s;
     }
 
     public void updateServerStats(Engine engine) {
@@ -59,6 +100,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setServerName(String serverName) {
+        edit = true;
         this.serverName = serverName;
     }
 
@@ -67,6 +109,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setServerID(String serverID) {
+        edit = true;
         this.serverID = serverID;
     }
 
@@ -75,6 +118,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setServerYTPlaylist(String serverYTPlaylist) {
+        edit = true;
         this.serverYTPlaylist = serverYTPlaylist;
     }
 
@@ -83,6 +127,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setListenerEnabled(boolean listenerEnabled) {
+        edit = true;
         this.listenerEnabled = listenerEnabled;
     }
 
@@ -91,6 +136,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setMusicListenerEnabled(boolean musicListenerEnabled) {
+        edit = true;
         this.musicListenerEnabled = musicListenerEnabled;
     }
 
@@ -99,6 +145,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setMusicListenerName(String musicListenerName) {
+        edit = true;
         this.musicListenerName = musicListenerName;
     }
 
@@ -107,6 +154,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setSetupDone(boolean setupDone) {
+        edit = true;
         this.setupDone = setupDone;
     }
 
@@ -115,6 +163,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setCertificationChannelId(String certificationChannelId) {
+        edit = true;
         this.certificationChannelId = certificationChannelId;
     }
 
@@ -123,14 +172,26 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setCertificationMessageId(String certificationMessageId) {
+        edit = true;
         this.certificationMessageId = certificationMessageId;
     }
 
-    public ArrayList<String> getAutoChannels() {
+    public ArrayList<String> getAutoChannels(){
         return autoChannels;
     }
 
+    public void addAutoChannel(String id){
+        edit = true;
+        autoChannels.add(id);
+    }
+
+    public void removeAutoChannel(String id){
+        edit = true;
+        autoChannels.remove(id);
+    }
+
     public void setAutoChannels(ArrayList<String> autoChannels) {
+        edit = true;
         this.autoChannels = autoChannels;
     }
 
@@ -139,6 +200,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setDefaultMemberRoleId(String defaultMemberRoleId) {
+        edit = true;
         this.defaultMemberRoleId = defaultMemberRoleId;
     }
 
@@ -147,6 +209,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setDefaultTempGamerRoleId(String defaultTempGamerRoleId) {
+        edit = true;
         this.defaultTempGamerRoleId = defaultTempGamerRoleId;
     }
 
@@ -155,10 +218,12 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setRoles(ArrayList<DiscRole> roles) {
+        edit = true;
         this.roles = roles;
     }
 
     public void addRole(DiscRole role) {
+        edit = true;
         for (DiscRole r : roles) {
             if (r.getId().equals(role.getId())) {
                 roles.remove(r);
@@ -172,6 +237,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setSetupMode(boolean setupMode) {
+        edit = true;
         this.setupMode = setupMode;
     }
 
@@ -180,6 +246,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setWelcomeText(String welcomeText) {
+        edit = true;
         this.welcomeText = welcomeText;
     }
 
@@ -191,6 +258,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setDefaultRoles(ArrayList<String> defaultRoles) {
+        edit = true;
         this.defaultRoles = defaultRoles;
     }
 
@@ -199,6 +267,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setWorkChannelId(String workChannelId) {
+        edit = true;
         this.workChannelId = workChannelId;
     }
 
@@ -207,6 +276,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setShopChannelId(String shopChannelId) {
+        edit = true;
         this.shopChannelId = shopChannelId;
     }
 
@@ -215,6 +285,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setWelcomeMessageChannel(String welcomeMessageChannel) {
+        edit = true;
         this.welcomeMessageChannel = welcomeMessageChannel;
     }
 
@@ -223,6 +294,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setMemberCountCategoryId(String memberCountCategoryId) {
+        edit = true;
         this.memberCountCategoryId = memberCountCategoryId;
     }
 
@@ -240,5 +312,37 @@ public class DiscApplicationServer implements Serializable {
 
     public void setBaitChannel(String baitChannel) {
         this.baitChannel = baitChannel;
+    }
+
+    public boolean isMoveMemberOnSDeafen() {
+        return moveMemberOnSDeafen;
+    }
+
+    public void setMoveMemberOnSDeafen(boolean moveMemberOnSDeafen) {
+        this.moveMemberOnSDeafen = moveMemberOnSDeafen;
+    }
+
+    public String getVipRoleId() {
+        return vipRoleId;
+    }
+
+    public void setVipRoleId(String vipRoleId) {
+        this.vipRoleId = vipRoleId;
+    }
+
+    public String getPrimeRoleId() {
+        return primeRoleId;
+    }
+
+    public void setPrimeRoleId(String primeRoleId) {
+        this.primeRoleId = primeRoleId;
+    }
+
+    public boolean isEdit() {
+        return edit;
+    }
+
+    public void setEdit(boolean edit) {
+        this.edit = edit;
     }
 }

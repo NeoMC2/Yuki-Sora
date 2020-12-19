@@ -1,11 +1,11 @@
 package core;
 
-public class SaveThread implements Runnable {
+public class ApiUpdateThread implements Runnable{
 
-    private final Engine engine;
-    boolean stop = false;
+    private Engine engine;
+    private boolean stop = false;
 
-    public SaveThread(Engine engine) {
+    public ApiUpdateThread(Engine engine) {
         this.engine = engine;
     }
 
@@ -16,7 +16,7 @@ public class SaveThread implements Runnable {
                 break;
             }
             try {
-                Thread.sleep(600000 * engine.getProperties().saveSpeed);
+                Thread.sleep(6000 * engine.getProperties().saveSpeed);
             } catch (InterruptedException e) {
                 if (engine.getProperties().debug) {
                     e.printStackTrace();
@@ -27,7 +27,7 @@ public class SaveThread implements Runnable {
             }
             engine.saveProperties();
             if (engine.getDiscEngine().isRunning()) {
-                engine.getDiscEngine().getFilesHandler().saveBotData();
+                engine.getDiscEngine().getFilesHandler().updateApiData();
             }
         }
     }

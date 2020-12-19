@@ -26,11 +26,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         }
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
-        if (s != null) {
-            if (!s.isSetupDone()) {
-                return;
-            }
-        } else {
+        if (s == null) {
             return;
         }
 
@@ -77,11 +73,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
         }
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
-        if (s != null) {
-            if (!s.isSetupDone()) {
-                return;
-            }
-        } else {
+        if (s == null) {
             return;
         }
 

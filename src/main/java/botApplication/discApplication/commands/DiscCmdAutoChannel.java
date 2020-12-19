@@ -2,6 +2,7 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -13,7 +14,7 @@ import java.awt.*;
 public class DiscCmdAutoChannel implements DiscCommand {
     @Override
     public boolean calledServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
-        return engine.getDiscEngine().getUtilityBase().userHasGuildAdminPermission(event.getMember(), event.getGuild(), event.getChannel());
+        return DiscUtilityBase.userHasGuildAdminPermission(event.getMember(), event.getGuild(), event.getChannel(), engine);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
                         if (newAutoChannel != null) {
-                            server.getAutoChannels().add(newAutoChannel.getId());
+                            server.addAutoChannel(newAutoChannel.getId());
                             engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.created", user.getLang(), null), event.getChannel());
                         } else {
                             engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);
@@ -41,7 +42,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
                             newAutoChannel.getManager().setTopic("").complete();
                             for (String vc : server.getAutoChannels()) {
                                 if (vc.equals(newAutoChannel.getId())) {
-                                    server.getAutoChannels().remove(vc);
+                                    server.removeAutoChannel(vc);
                                     break;
                                 }
                             }

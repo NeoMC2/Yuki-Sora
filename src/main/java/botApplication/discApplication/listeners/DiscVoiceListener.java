@@ -2,6 +2,7 @@ package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.commands.DiscCmdBait;
 import botApplication.discApplication.librarys.DiscApplicationServer;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -11,6 +12,7 @@ import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
@@ -26,7 +28,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
@@ -60,7 +62,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-        DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
@@ -91,7 +93,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onVoiceChannelDelete(VoiceChannelDeleteEvent event) {
-        DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
@@ -99,13 +101,24 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         for (String vc : server.getAutoChannels()) {
             if (vc.equals(event.getChannel().getId())) {
-                server.getAutoChannels().remove(vc);
+                server.removeAutoChannel(vc);
             }
         }
 
         for (VoiceChannel vc : active) {
             if (vc.getId().equals(event.getChannel().getId())) {
-                server.getAutoChannels().remove(vc);
+                server.removeAutoChannel(vc.getId());
+            }
+        }
+    }
+
+    @Override
+    public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
+        if(server.isMoveMemberOnSDeafen()){
+            VoiceChannel afk = event.getGuild().getAfkChannel();
+            if(afk != null){
+                event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
             }
         }
     }

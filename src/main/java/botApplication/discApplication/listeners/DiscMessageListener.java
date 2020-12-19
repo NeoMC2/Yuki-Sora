@@ -2,6 +2,7 @@ package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
@@ -138,8 +139,8 @@ public class DiscMessageListener extends ListenerAdapter {
 
     private void sendGuildCommand(GuildMessageReceivedEvent event) {
         engine.getUtilityBase().printOutput("Called bot command: " + event.getMessage().getContentRaw() + " from: " + event.getGuild().getName() + " from: " + event.getAuthor().getName(), true);
-        DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
-        DiscApplicationServer server = engine.getDiscEngine().getUtilityBase().lookForServer(event.getGuild());
+        DiscApplicationUser user = DiscUtilityBase.lookForUserById(event.getAuthor(), engine);
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         try {
             engine.getDiscEngine().getCommandHandler().handleServerCommand(engine.getDiscEngine().getCommandParser().parseServerMessage(event.getMessage().getContentRaw(), event, server, user, engine));
         } catch (Exception e) {
@@ -150,7 +151,7 @@ public class DiscMessageListener extends ListenerAdapter {
     }
 
     private void sendPrivateCommand(PrivateMessageReceivedEvent event) {
-        DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
+        DiscApplicationUser user = DiscUtilityBase.lookForUserById(event.getAuthor(), engine);
 
         try {
             engine.getDiscEngine().getCommandHandler().handlePrivateCommand(engine.getDiscEngine().getCommandParser().parseClientMessage(event.getMessage().getContentRaw(), event, user, engine));
@@ -162,7 +163,7 @@ public class DiscMessageListener extends ListenerAdapter {
     }
 
     private void pictureSelect(GuildMessageReceivedEvent event) {
-        DiscApplicationUser user = engine.getDiscEngine().getUtilityBase().lookForUserById(event.getAuthor());
+        DiscApplicationUser user = DiscUtilityBase.lookForUserById(event.getAuthor(), engine);
         String c = event.getMessage().getContentDisplay();
         c = c.substring(1);
         String[] ca = c.split(" ");

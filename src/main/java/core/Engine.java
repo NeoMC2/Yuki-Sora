@@ -1,8 +1,6 @@
 package core;
 
 import botApplication.discApplication.core.DiscApplicationEngine;
-import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.item.collectables.gems.Diamond;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.json.simple.JSONObject;
@@ -10,7 +8,6 @@ import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
-import java.util.Iterator;
 import java.util.Set;
 
 public class Engine {
@@ -30,6 +27,7 @@ public class Engine {
         loadProperties();
         handleArgs(args);
         new Thread(new SaveThread(this)).start();
+        new Thread(new ApiUpdateThread(this)).start();
         loadPics();
         new ConsoleCommandHandler(this);
     }
@@ -38,25 +36,6 @@ public class Engine {
         if (args.length > 0) {
             switch (args[0]) {
                 case "test":
-                    discApplicationEngine.startBotApplication();
-                    Iterator<DiscApplicationUser> t = discApplicationEngine.getFilesHandler().getUsers().values().iterator();
-
-                    DiscApplicationUser us = t.next();
-                    if (us.getItems().size() > 0) {
-                        Diamond diamond;
-                        try {
-                            diamond = (Diamond) us.getItems().get(0);
-                        } catch (Exception e) {
-                            System.out.println("Experiment failed!");
-                            return;
-                        }
-                        us.getItems().remove(diamond);
-                        System.out.println("Expermiment done!");
-                    } else {
-                        Diamond diamond = new Diamond();
-                        us.getItems().add(diamond);
-                        System.out.println("Started experiment");
-                    }
                     break;
 
                 case "reform":
@@ -255,4 +234,3 @@ public class Engine {
         return networkManager;
     }
 }
-
