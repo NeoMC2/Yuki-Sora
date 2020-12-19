@@ -30,6 +30,10 @@ public class ConsoleCommandHandler {
                 }
                 break;
 
+            case "api":
+                engine.getProperties().api = command.split(" ")[1];
+                break;
+
             case "load":
                 engine.loadProperties();
                 engine.loadLanguage();

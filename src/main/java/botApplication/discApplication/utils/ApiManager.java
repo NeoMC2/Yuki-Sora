@@ -10,7 +10,7 @@ public class ApiManager {
 
     private final String apiToken;
     private final Engine engine;
-    private final String api = "https://yuki.mindcollaps.de/api/yuki";
+    private String api;
 
     public ApiManager(Engine engine) {
         JSONObject se = null;
@@ -21,6 +21,11 @@ public class ApiManager {
         }
         apiToken = (String) se.get("secret");
         this.engine = engine;
+
+        if(engine.getProperties().api != null)
+            this.api = engine.getProperties().api;
+        else
+            api = "https://yuki.mindcollaps.de/api/yuki";
     }
 
     public JSONObject getServerById(String id){
@@ -93,10 +98,11 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/work", req.toJSONString(), apiToken));
     }
 
-    public JSONObject giveUserAJob(String id, String uidJob){
+    public JSONObject giveUserAJob(String id, String uidJob, String jobPos){
         JSONObject req = new JSONObject();
         req.put("id", id);
         req.put("job", uidJob);
+        req.put("jPos", jobPos);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/userJob", req.toJSONString(), apiToken));
 
     }
@@ -148,6 +154,12 @@ public class ApiManager {
 
     public JSONObject getJobs(){
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/job", apiToken));
+    }
+
+    public JSONObject getUserJobAndJobFromUser(String id){
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getUserJob", req.toJSONString(), apiToken));
     }
 
     public JSONObject getMonsters(){

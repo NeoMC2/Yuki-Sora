@@ -2,8 +2,7 @@ package botApplication.discApplication.commands;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
-import botApplication.discApplication.librarys.job.Job;
-import botApplication.discApplication.librarys.job.UserJob;
+import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -11,9 +10,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.time.Duration;
-import java.time.Instant;
-import java.util.Date;
+import java.awt.*;
 
 public class DiscCmdJob implements DiscCommand {
     @Override
@@ -25,50 +22,86 @@ public class DiscCmdJob implements DiscCommand {
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length > 0) {
             if (args[0].toLowerCase().equals("list")) {
-                //TODO: make this
-                String msg = "";
-                for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
-                    msg += "[" + j.getShortName() + "] " + j.getJobName() + "\n";
+                JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
+                JSONArray jbss = (JSONArray) jbs.get("data");
+                String jbS = "";
+                for (Object o : jbss) {
+                    JSONObject ob = (JSONObject) o;
+                    jbS += "Work as" + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
                 }
-                engine.getDiscEngine().getTextUtils().sendSucces(msg, event.getChannel());
+                engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
                 return;
             }
             switch (args[0].toLowerCase()) {
                 case "take":
-                    //TODO: make this
-                    for (Job j : engine.getDiscEngine().getFilesHandler().getJobs()) {
-                        if (j.getShortName().toLowerCase().equals(args[1].toLowerCase())) {
-                            UserJob uj = new UserJob();
-                            uj.setJob(j);
-                            user.setUserJob(uj);
-                            user.getUserJob().setJobRank(UserJob.JobRank.Trainee);
-                            engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.work.success.take", user.getLang(), new String[]{uj.getJobName(), uj.getDoing()}), event.getChannel());
-                        }
+                    JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
+                    JSONArray jbss = (JSONArray) jbs.get("data");
+                    String jbS = "Select one of the following jobs\n\n";
+                    for (int i = 0; i < jbss.size(); i++) {
+                        JSONObject ob = (JSONObject) jbss.get(i);
+                        jbS += "[" + i + "] Work as " + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
                     }
+                    engine.getDiscEngine().getTextUtils().sendCustomMessage(jbS, event.getChannel(), "Jobs", Color.blue);
+
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject o = (JSONObject) jbss.get(id);
+                            String idd = (String) o.get("_id");
+                            engine.getDiscEngine().getApiManager().giveUserAJob(respondingEvent.getAuthor().getId(), idd, "trainee");
+                            engine.getDiscEngine().getTextUtils().sendSucces("You work as " + (String) o.get("doing") + " at " + (String) o.get("jobName"), respondingEvent.getChannel());
+                        }
+                    };
+                    r.discChannelId = event.getChannel().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discUserId = event.getAuthor().getId();
+                    engine.getResponseHandler().makeResponse(r);
                     break;
 
                 case "work":
                     JSONObject workRes = engine.getDiscEngine().getApiManager().work(user.getUserId());
-                    if(((Long) workRes.get("status")) == 200){
-                        engine.getDiscEngine().getTextUtils().sendSucces("You got " + ((Long) workRes.get("data")), event.getChannel());
+                    if (((Long) workRes.get("status")) == 200) {
+                        engine.getDiscEngine().getTextUtils().sendSucces("You've got " + ((Long) workRes.get("data") + " weboos"), event.getChannel());
                     } else {
                         engine.getDiscEngine().getTextUtils().sendError((String) workRes.get("message"), event.getChannel(), true);
                     }
                     break;
 
                 case "info":
-                    JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
-                    JSONArray jbss = (JSONArray) jbs.get("data");
-                    String jbS = "";
-                    for (Object o:jbss) {
-                        JSONObject ob = (JSONObject) o;
-                        jbS += "Work as" + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
+                    JSONObject infRes = engine.getDiscEngine().getApiManager().getUserJobAndJobFromUser(event.getAuthor().getId());
+                    if (((Long) infRes.get("info")) == 200) {
+                        JSONObject o = (JSONObject) infRes.get("job");
+                        JSONObject ujb = (JSONObject) infRes.get("uJob");
+
+                        int earning = 0;
+                        String pos = (String) ujb.get("jobPosition");
+                        switch (pos.toLowerCase()) {
+                            case "trainee":
+                                earning = Math.toIntExact((Long) o.get("earningTrainee"));
+                                break;
+
+                            case "coworker":
+                                earning = Math.toIntExact((Long) o.get("earningCoworker"));
+                                break;
+
+                            case "headofdepartment":
+                                earning = Math.toIntExact((Long) o.get("earningHeadOfDepartment"));
+                                break;
+
+                            case "manager":
+                                earning = Math.toIntExact((Long) o.get("earningManager"));
+                                break;
+                        }
+
+                        engine.getDiscEngine().getTextUtils().sendSucces("You work as" + (String) o.get("doing") + " at " + (String) o.get("jobName") + "[" + (String) o.get("shortName") + "]. You are " + ((String) ujb.get("jobPosition")) + " and earn " + earning + ". You have " + ((String) ujb.get("jobXP")) + " xp and " + ((String) ujb.get("jobLevel")) + " level! You are at " + ((String) ujb.get("jobStreak")) , event.getChannel());
+                    } else {
+
                     }
-                    engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
                     break;
 
                 case "quit":
-                    user.setUserJob(null);
+                    engine.getDiscEngine().getApiManager().removeUserAJob(user.getUserId());
                     engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.work.success.quitJob", user.getLang(), null), event.getChannel());
                     break;
 
