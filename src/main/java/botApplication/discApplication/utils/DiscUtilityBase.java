@@ -179,7 +179,7 @@ public class DiscUtilityBase {
         String attss = getAttacksListFromAttackList(engine, (JSONArray) engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) mon.get("_id")).get("data"));
 
 
-        s = root.get("name") + " xp " + mon.get("xp") + " level " + mon.get("level") + " hp " + mon.get("hp") + " [" + mon.get("maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Selected Attacks**\n" + attss);
+        s = root.get("name") + ", xp: " + mon.get("xp") + ", level: " + mon.get("level") + ", hp: " + mon.get("hp") + " [" + mon.get("maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Selected Attacks**\n" + attss);
         return s;
     }
 

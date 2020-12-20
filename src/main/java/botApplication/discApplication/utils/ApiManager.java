@@ -281,7 +281,7 @@ public class ApiManager {
         req.put("monster", mid);
         req.put("slot", slot);
         req.put("attack", attackId);
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getAttacksByUserMonster", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/selectAttack", req.toJSONString(), apiToken));
     }
 
     public JSONObject removeUserMonster(String mid){
