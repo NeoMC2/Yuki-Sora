@@ -136,10 +136,10 @@ public class DiscCmdMonster implements DiscCommand {
                                 public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
                                     int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                                     JSONObject sAttack = (JSONObject) attacks.get(id);
+                                    engine.getDiscEngine().getTextUtils().sendSucces("Set attack to one of your attack slots(a1,a2,a3,a4)", respondingEvent.getChannel());
                                     Response rrr = new Response(ResponseTyp.Discord) {
                                         @Override
                                         public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
-                                            engine.getDiscEngine().getTextUtils().sendSucces("Set attack to one of your attack slots(a1,a2,a3,a4)", respondingEvent.getChannel());
                                             switch (respondingEvent.getMessage().getContentRaw().toLowerCase()) {
                                                 case "a1":
                                                     engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a1", (String) sAttack.get("_id"));
