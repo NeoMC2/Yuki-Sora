@@ -296,6 +296,12 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().delete(api + "/feedMonster", req.toJSONString(), apiToken));
     }
 
+    public JSONObject healMonster(String mid){
+        JSONObject req = new JSONObject();
+        req.put("mid", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().delete(api + "/healMonster", req.toJSONString(), apiToken));
+    }
+
     private JSONObject getErrorJson(){
         JSONObject o = new JSONObject();
         o.put("status", 400);
