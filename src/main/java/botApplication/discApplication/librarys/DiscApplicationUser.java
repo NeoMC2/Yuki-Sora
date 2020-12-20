@@ -229,7 +229,7 @@ public class DiscApplicationUser implements Serializable {
             throw new Exception("not enough coins!");
         }
         JSONObject o = engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
-        if (((Long) o.get("status") != null)) {
+        if (((Long) o.get("status") != 200)) {
             this.coins += coins;
             throw new Exception("not enough coins!");
         }
