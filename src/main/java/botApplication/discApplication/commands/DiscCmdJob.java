@@ -27,7 +27,7 @@ public class DiscCmdJob implements DiscCommand {
                 String jbS = "";
                 for (Object o : jbss) {
                     JSONObject ob = (JSONObject) o;
-                    jbS += "Work as" + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
+                    jbS += "Work as " + (String) ob.get("doing") + " at " + (String) ob.get("jobName") + "[" + (String) ob.get("shortName") + "]\n";
                 }
                 engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
                 return;
