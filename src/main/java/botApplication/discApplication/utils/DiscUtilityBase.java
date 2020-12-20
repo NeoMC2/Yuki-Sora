@@ -105,7 +105,7 @@ public class DiscUtilityBase {
         String s = "";
         for (int i = 0; i < attacks.size(); i++) {
             JSONObject at = (JSONObject) attacks.get(i);
-            s += at.get("[" + i + "] " + ((String) at.get("attackName")) + " dmg: " + ((Long) at.get("baseDmg")) + " type: " + ((String) at.get("attackType")) + " status effect: " + ((String) at.get("statusEffect")) + "\n");
+            s += "[" + i + "] " + ((String) at.get("attackName")) + " dmg: " + ((Long) at.get("baseDmg")) + " type: " + ((String) at.get("attackType")) + " status effect: " + ((String) at.get("statusEffect")) + "\n";
         }
         return s;
     }
