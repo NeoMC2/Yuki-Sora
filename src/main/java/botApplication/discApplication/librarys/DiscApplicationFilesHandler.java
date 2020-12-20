@@ -243,11 +243,11 @@ public class DiscApplicationFilesHandler {
         if(server.getDungeonQueueHandler() != null){
             obj.put("dungeonQueueMessage", server.getDungeonQueueHandler().getMsgId());
             obj.put("dungeonEmoji", server.getDungeonQueueHandler().getEmoji());
-            String[] channelIds = new String[server.getDungeonQueueHandler().getChannels().size()];
-            String[] roleIds = new String[server.getDungeonQueueHandler().getChannels().size()];
+            JSONArray channelIds = new JSONArray();
+            JSONArray roleIds = new JSONArray();
             for (int i = 0; i < server.getDungeonQueueHandler().getChannels().size(); i++) {
-                channelIds[i] = server.getDungeonQueueHandler().getChannels().get(i).getChannelId();
-                roleIds[i] = server.getDungeonQueueHandler().getChannels().get(i).getRoleId();
+                channelIds.add(server.getDungeonQueueHandler().getChannels().get(i).getChannelId());
+                roleIds.add(server.getDungeonQueueHandler().getChannels().get(i).getRoleId());
             }
             obj.put("dungeonChan", channelIds);
             obj.put("dungeonChanRoles", roleIds);
