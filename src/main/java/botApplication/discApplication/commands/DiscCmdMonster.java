@@ -26,6 +26,53 @@ public class DiscCmdMonster implements DiscCommand {
 
             switch (args[0].toLowerCase()) {
 
+                case "feed": {
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject monster = (JSONObject) mn1.get(id);
+                            JSONObject res = engine.getDiscEngine().getApiManager().removeCoinsFromUser(respondingEvent.getAuthor().getId(), 5);
+                            if(((Long) res.get("status") == 200)){
+                                engine.getDiscEngine().getApiManager().feedMonster((String) monster.get("_id"));
+                                engine.getDiscEngine().getTextUtils().sendSucces("Successfully fed monster", respondingEvent.getChannel());
+                            }else {
+                                engine.getDiscEngine().getTextUtils().sendError("Can't feed monster", respondingEvent.getChannel(), false);
+                            }
+                        }
+                    };
+                    r.discUserId = event.getAuthor().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    engine.getResponseHandler().makeResponse(r);
+                }
+                break;
+
+                case "delete": {
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject monster = (JSONObject) mn1.get(id);
+                            engine.getDiscEngine().getApiManager().removeUserMonster((String) monster.get("_id"));
+                            engine.getDiscEngine().getTextUtils().sendSucces("Deleted Monster from your inventory!", respondingEvent.getChannel());
+                        }
+                    };
+                    r.discUserId = event.getAuthor().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    engine.getResponseHandler().makeResponse(r);
+                }
+                break;
+
                 case "buy":
                     user.substractCoins(20, engine);
                     JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
@@ -37,6 +84,89 @@ public class DiscCmdMonster implements DiscCommand {
                     EmbedBuilder b = new EmbedBuilder().setThumbnail(imgUrl).setColor(DiscCmdItem.rarityToColor(rar)).setAuthor("You've got " + mnsterName);
                     event.getChannel().sendMessage(b.build()).queue();
                     break;
+
+                case "list": {
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Monsterlist:\n\n" + m1S, event.getChannel());
+                }
+                break;
+
+                case "attackinfo": {
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject monster = (JSONObject) mn1.get(id);
+                            JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
+                            JSONArray attacks = (JSONArray) at.get("data");
+                            String s = "Available attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
+                            engine.getDiscEngine().getTextUtils().sendSucces(s, respondingEvent.getChannel());
+                        }
+                    };
+                    r.discUserId = event.getAuthor().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    engine.getResponseHandler().makeResponse(r);
+                }
+                break;
+
+                case "selectattack": {
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject monster = (JSONObject) mn1.get(id);
+                            JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
+                            JSONArray attacks = (JSONArray) at.get("data");
+                            String s = "Set attack to one of your attack slots(a1,a2,a3,a4)\n\nAvailable attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
+                            engine.getDiscEngine().getTextUtils().sendSucces(s, respondingEvent.getChannel());
+
+                            Response rr = new Response(ResponseTyp.Discord) {
+                                @Override
+                                public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                                    int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                                    JSONObject sAttack = (JSONObject) attacks.get(id);
+                                    switch (respondingEvent.getMessage().getContentRaw().toLowerCase()) {
+                                        case "a1":
+                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a1", (String) sAttack.get("_id"));
+                                            break;
+
+                                        case "a2":
+                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a2", (String) sAttack.get("_id"));
+                                            break;
+
+                                        case "a3":
+                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a3", (String) sAttack.get("_id"));
+                                            break;
+
+                                        case "a4":
+                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a4", (String) sAttack.get("_id"));
+                                            break;
+                                    }
+                                }
+                            };
+                            rr.discUserId = event.getAuthor().getId();
+                            rr.discGuildId = event.getGuild().getId();
+                            rr.discChannelId = event.getChannel().getId();
+                            engine.getResponseHandler().makeResponse(rr);
+                        }
+                    };
+                    r.discUserId = event.getAuthor().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    engine.getResponseHandler().makeResponse(r);
+                }
+                break;
 
                 case "fight":
                     Member fi = null;

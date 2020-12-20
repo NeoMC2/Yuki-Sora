@@ -100,4 +100,13 @@ public class DiscUtilityBase {
         }
         return s;
     }
+
+    public static String getAttacksListFromUserMonster(Engine engine, JSONArray attacks){
+        String s = "";
+        for (int i = 0; i < attacks.size(); i++) {
+            JSONObject at = (JSONObject) attacks.get(i);
+            s += at.get("[" + i + "] " + at.get("attackName") + " dmg: " + at.get("baseDmg") + " type: " + at.get("attackType") + " status effect: " + at.get("statusEffect") + "\n");
+        }
+        return s;
+    }
 }

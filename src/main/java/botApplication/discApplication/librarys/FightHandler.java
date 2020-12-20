@@ -28,6 +28,8 @@ public class FightHandler {
 
     private String sAttack;
 
+    private String slot;
+
     private long lastDmg;
 
     public boolean fightDone;
@@ -125,56 +127,18 @@ public class FightHandler {
             sameUser = false;
 
         if (round) {
-            if (m1Ai) {
-                JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m2, null);
-                m1Json = (JSONObject) res.get("monster1");
-                m2Json = (JSONObject) res.get("monster2");
-                lastDmg = (Long) res.get("dmg");
-                return fightInfo();
-            }
+            if (testAi(m1Ai, user2, m2)) return fightInfo();
         } else {
-            if (m2Ai) {
-                JSONObject res = engine.getDiscEngine().getApiManager().fight(user1, true, false, null, m1, null);
-                m1Json = (JSONObject) res.get("monster1");
-                m2Json = (JSONObject) res.get("monster2");
-                lastDmg = (Long) res.get("dmg");
-                return fightInfo();
-            }
+            if (testAi(m2Ai, user1, m1)) return fightInfo();
         }
 
         try {
-
             switch (w.toLowerCase()) {
                 case "a1":
-                    if (round) {
-                        sAttack = (String) m1Json.get("a1");
-                    } else {
-                        sAttack = (String) m2Json.get("a1");
-                    }
-                    break;
-
-                case "a2":
-                    if (round) {
-                        sAttack = (String) m1Json.get("a2");
-                    } else {
-                        sAttack = (String) m2Json.get("a2");
-                    }
-                    break;
-
-                case "a3":
-                    if (round) {
-                        sAttack = (String) m1Json.get("a3");
-                    } else {
-                        sAttack = (String) m2Json.get("a3");
-                    }
-                    break;
-
                 case "a4":
-                    if (round) {
-                        sAttack = (String) m1Json.get("a4");
-                    } else {
-                        sAttack = (String) m2Json.get("a4");
-                    }
+                case "a3":
+                case "a2":
+                    slot = w;
                     break;
 
                 case "info":
@@ -191,15 +155,43 @@ public class FightHandler {
                     sameUser = true;
                     return "invalid";
             }
-        } catch (Exception e) {
+
+            JSONObject res;
+            if (round) {
+                res = engine.getDiscEngine().getApiManager().fight(user2, false, m1Ai, m2, m1, null, slot);
+            } else {
+                res = engine.getDiscEngine().getApiManager().fight(user1, false, m2Ai, m1, m2, null, slot);
+            }
+            if (((Long) res.get("status")) == 200) {
+                m1Json = (JSONObject) res.get("monster1");
+                m2Json = (JSONObject) res.get("monster2");
+                lastDmg = (Long) res.get("dmg");
+                return fightInfo();
+            } else {
+                sameUser = true;
+                return (String) res.get("message");
+            }
+
+        } catch (Exception ignored) {
 
         }
         return fightInfo();
     }
 
+    private boolean testAi(boolean m1Ai, String user2, String m22) {
+        if (m1Ai) {
+            JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m22, null, null);
+            m1Json = (JSONObject) res.get("monster1");
+            m2Json = (JSONObject) res.get("monster2");
+            lastDmg = (Long) res.get("dmg");
+            return true;
+        }
+        return false;
+    }
+
     private String fightInfo() {
         String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
-        String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + "hp";
+        String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
 
         if (round) {
             return m1 + " attacked " + m2 + " and made " + lastDmg + " damage";

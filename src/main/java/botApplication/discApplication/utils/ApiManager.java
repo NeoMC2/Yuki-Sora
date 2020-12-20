@@ -228,13 +228,15 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/createFight", req.toJSONString(), apiToken));
     }
 
-    public JSONObject fight(String id, boolean ai1, boolean ai2, String m1, String m2, String attack){
+    public JSONObject fight(String id, boolean ai1, boolean ai2, String m1, String m2, String attack, String slot){
         JSONObject req = new JSONObject();
         req.put("id", id);
         if(m1 !=null)
         req.put("monster1", m1);
         if(m2 != null)
         req.put("monster2", m2);
+        if(slot != null)
+            req.put("slot", slot);
 
         req.put("ai1", ai1);
         req.put("ai2", ai2);
@@ -260,8 +262,34 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/giveRandomItem", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getAttacksByUserMonster(String mid){
+        JSONObject req = new JSONObject();
+        req.put("monster", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getAttacksByUserMonster", req.toJSONString(), apiToken));
+    }
+
     public JSONObject getUpdatedUsers(){
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/getUser", apiToken));
+    }
+
+    public JSONObject giveMonsterAttack(String mid, String slot, String attackId){
+        JSONObject req = new JSONObject();
+        req.put("monster", mid);
+        req.put("slot", slot);
+        req.put("attack", attackId);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getAttacksByUserMonster", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject removeUserMonster(String mid){
+        JSONObject req = new JSONObject();
+        req.put("mid", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().delete(api + "/userMonster", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject feedMonster(String mid){
+        JSONObject req = new JSONObject();
+        req.put("mid", mid);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().delete(api + "/feedMonster", req.toJSONString(), apiToken));
     }
 
     private JSONObject getErrorJson(){
