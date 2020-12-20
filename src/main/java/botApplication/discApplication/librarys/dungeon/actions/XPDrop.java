@@ -18,7 +18,7 @@ public class XPDrop implements DungeonAction, Serializable {
     public void action(Dungeon dungeon) {
         int xp = ThreadLocalRandom.current().nextInt(5, 60);
         dungeon.getTextChannel().sendMessage("You found a stone of wisdom! Your Monster got " + xp + " xp!").queue();
-        engine.getDiscEngine().getApiManager().xpOnMonster(dungeon.getMember().getId(), dungeon.getM(), xp);
+        engine.getDiscEngine().getApiManager().xpOnMonster(dungeon.getM(), xp);
         dungeon.caveActionFinished(false);
     }
 

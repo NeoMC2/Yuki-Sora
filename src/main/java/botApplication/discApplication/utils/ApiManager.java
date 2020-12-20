@@ -67,9 +67,8 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/dmgOnMonster", req.toJSONString(), apiToken));
     }
 
-    public JSONObject xpOnMonster(String uid, String mid, long xp){
+    public JSONObject xpOnMonster(String mid, long xp){
         JSONObject req = new JSONObject();
-        req.put("id", uid);
         req.put("mid", mid);
         req.put("xp", xp);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/xpOnMonster", req.toJSONString(), apiToken));

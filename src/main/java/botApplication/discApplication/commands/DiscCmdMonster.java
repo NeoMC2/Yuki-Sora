@@ -124,7 +124,7 @@ public class DiscCmdMonster implements DiscCommand {
 
                 case "buy":
                     try {
-                        user.substractCoins(20, engine);
+                        user.substractCoins(50, engine);
                     } catch (Exception e) {
                         engine.getDiscEngine().getTextUtils().sendError("You don't have enough coins!", event.getChannel(), false);
                         return;
