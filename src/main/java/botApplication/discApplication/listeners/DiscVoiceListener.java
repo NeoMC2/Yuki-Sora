@@ -129,6 +129,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             VoiceChannel v = deafens.get(event.getMember().getId());
             if(v != null){
                 event.getGuild().moveVoiceMember(event.getMember(), v).queue();
+                deafens.remove(event.getMember());
             }
         }
     }
