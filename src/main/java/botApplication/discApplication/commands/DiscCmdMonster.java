@@ -74,7 +74,12 @@ public class DiscCmdMonster implements DiscCommand {
                 break;
 
                 case "buy":
-                    user.substractCoins(20, engine);
+                    try {
+                        user.substractCoins(20, engine);
+                    } catch (Exception e) {
+                        engine.getDiscEngine().getTextUtils().sendError("You don't have enough coins!", event.getChannel(), false);
+                        return;
+                    }
                     JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
                     JSONObject mnster = (JSONObject) res.get("data");
                     String mnsterName = (String) mnster.get("name");

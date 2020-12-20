@@ -48,7 +48,7 @@ public class DiscApplicationUser implements Serializable {
         this.discCertificationLevel = discCertificationLevel;
     }
 
-    public void generateFromJSON(JSONObject obj, Engine engine){
+    public void generateFromJSON(JSONObject obj, Engine engine) {
         edit = false;
         userName = (String) obj.get("username");
         userId = (String) obj.get("userID");
@@ -62,7 +62,7 @@ public class DiscApplicationUser implements Serializable {
         maxItems = Math.toIntExact((long) obj.get("maxItems"));
     }
 
-    public void update(JSONObject obj){
+    public void update(JSONObject obj) {
         coins = (long) obj.get("coins");
         xp = Math.toIntExact((long) obj.get("xp"));
         level = Math.toIntExact((long) obj.get("level"));
@@ -223,18 +223,20 @@ public class DiscApplicationUser implements Serializable {
     }
 
     public void substractCoins(int coins, Engine engine) throws Exception {
-        coins-= coins;
-        if(coins <0){
-            coins += coins;
+        this.coins -= coins;
+        if (coins < 0) {
+            this.coins += coins;
             throw new Exception("not enough coins!");
         }
         JSONObject o = engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
-        if(((Long) o.get("status") != null))
+        if (((Long) o.get("status") != null)) {
+            this.coins += coins;
             throw new Exception("not enough coins!");
+        }
     }
 
-    public void addCoins(int coins, Engine engine){
-        coins+= coins;
+    public void addCoins(int coins, Engine engine) {
+        this.coins += coins;
         engine.getDiscEngine().getApiManager().giveCoinsToUser(userId, coins);
     }
 }

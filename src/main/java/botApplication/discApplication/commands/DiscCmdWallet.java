@@ -53,7 +53,12 @@ public class DiscCmdWallet implements DiscCommand {
                             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.wallet.error.notEnoughMoney", user.getLang(), null), event.getChannel(), "Error", Color.RED);
                             return;
                         }
-                        user.substractCoins(c, engine);
+                        try {
+                            user.substractCoins(c, engine);
+                        } catch (Exception e) {
+                            engine.getDiscEngine().getTextUtils().sendError("You don't have enough coins!", event.getChannel(), false);
+                            return;
+                        }
                         usr.addCoins(c, engine);
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.wallet.success.gaveMoney", user.getLang(), new String[]{String.valueOf(c), m.getUser().getName()}), event.getChannel(), "Success", Color.GREEN);
                     } else {
