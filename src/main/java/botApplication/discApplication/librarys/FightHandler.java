@@ -206,7 +206,7 @@ public class FightHandler {
     }
 
     private boolean calcFightDone(){
-        return (Double) m1Json.get("hp") <= 0 || (Double) m2Json.get("hp") <= 0;
+        return ((Long) m1Json.get("hp")) <= 0 || ((Long) m2Json.get("hp")) <= 0;
     }
 
     public String getWinner(){
