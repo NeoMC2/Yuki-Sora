@@ -222,9 +222,15 @@ public class DiscApplicationUser implements Serializable {
         this.edit = edit;
     }
 
-    public void substractCoins(int coins, Engine engine){
+    public void substractCoins(int coins, Engine engine) throws Exception {
         coins-= coins;
-        engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
+        if(coins <0){
+            coins += coins;
+            throw new Exception("not enough coins!");
+        }
+        JSONObject o = engine.getDiscEngine().getApiManager().removeCoinsFromUser(userId, coins);
+        if(((Long) o.get("status") != null))
+            throw new Exception("not enough coins!");
     }
 
     public void addCoins(int coins, Engine engine){

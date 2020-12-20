@@ -122,9 +122,9 @@ public class ApiManager {
 
     public JSONObject removeCoinsFromUser(String id, int coins){
         JSONObject req = new JSONObject();
-        coins = coins * -1;
+        int c = coins * -1;
         req.put("id", id);
-        req.put("coins", coins);
+        req.put("coins", c);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/coins", req.toJSONString(), apiToken));
     }
 
