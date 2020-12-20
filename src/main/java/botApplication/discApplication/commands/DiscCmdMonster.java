@@ -163,7 +163,7 @@ public class DiscCmdMonster implements DiscCommand {
                                     rrr.discUserId = event.getAuthor().getId();
                                     rrr.discGuildId = event.getGuild().getId();
                                     rrr.discChannelId = event.getChannel().getId();
-                                    engine.getResponseHandler().makeResponse(rr);
+                                    engine.getResponseHandler().makeResponse(rrr);
 
 
                                 }
