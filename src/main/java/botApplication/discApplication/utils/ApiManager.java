@@ -292,7 +292,7 @@ public class ApiManager {
     public JSONObject feedMonster(String mid){
         JSONObject req = new JSONObject();
         req.put("mid", mid);
-        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().delete(api + "/feedMonster", req.toJSONString(), apiToken));
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/feedMonster", req.toJSONString(), apiToken));
     }
 
     public JSONObject healMonster(String mid){
