@@ -40,6 +40,8 @@ public class MonsterFight implements DungeonAction, Serializable {
                 if(!fightHandler.fightDone){
                     createResponse(engine, userId, chanId, guildId);
                 } else {
+                    if(fightHandler.getWinner() !=null)
+                        engine.getDiscEngine().getApiManager().xpOnMonster(d.getM(), 20);
                     d.caveActionFinished(fightHandler.getWinner() == null);
                 }
             }

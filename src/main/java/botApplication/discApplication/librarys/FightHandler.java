@@ -186,7 +186,7 @@ public class FightHandler {
             JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m22, null, null);
             m1Json = (JSONObject) res.get("monster1");
             m2Json = (JSONObject) res.get("monster2");
-            lastDmg = (Long) res.get("dmg");
+            lastDmg = getNumber(res, "dmg");
             return true;
         }
         return false;
