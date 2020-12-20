@@ -136,8 +136,16 @@ public class ConsoleCommandHandler {
             case "removebotslave":
                 if (engine.getProperties().botSlaves == null)
                     engine.getProperties().botSlaves = new ArrayList<>();
-                engine.getProperties().botSlaves.remove(command.split(" ")[1]);
+                engine.getProperties().botSlaves.removeIf(e-> command.split(" ")[1].equals(e));
                 System.out.println("removed");
+                break;
+
+            case "botslaves":
+                final String[] s = {""};
+                engine.getProperties().botSlaves.forEach(e -> {
+                    s[0] += e + "\n";
+                });
+                System.out.println(s[0]);
                 break;
 
             case "help":
