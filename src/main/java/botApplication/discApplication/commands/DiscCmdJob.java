@@ -94,7 +94,7 @@ public class DiscCmdJob implements DiscCommand {
                                 break;
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendSucces("You work as" + (String) o.get("doing") + " at " + (String) o.get("jobName") + "[" + (String) o.get("shortName") + "]. You are " + ((String) ujb.get("jobPosition")) + " and earn " + earning + ". You have " + ((String) ujb.get("jobXP")) + " xp and " + ((String) ujb.get("jobLevel")) + " level! You are at " + ((String) ujb.get("jobStreak") + ":fire:") , event.getChannel());
+                        engine.getDiscEngine().getTextUtils().sendSucces("You work as" + (String) o.get("doing") + " at " + (String) o.get("jobName") + "[" + (String) o.get("shortName") + "]. You are " + ((String) ujb.get("jobPosition")) + " and earn " + earning + ". You have " + ((Long) ujb.get("jobXP")) + " xp and " + ((Long) ujb.get("jobLevel")) + " level! You are at " + ((Long) ujb.get("jobStreak") + ":fire:") , event.getChannel());
                     } else {
 
                     }
