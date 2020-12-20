@@ -25,7 +25,7 @@ public class DiscCmdMonster implements DiscCommand {
         if (args.length >= 1) {
 
             switch (args[0].toLowerCase()) {
-
+                //TODO make info command, analyze and refactor all
                 case "feed": {
                     JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
                     JSONArray mn1 = (JSONArray) m1Req.get("data");
@@ -37,10 +37,10 @@ public class DiscCmdMonster implements DiscCommand {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject res = engine.getDiscEngine().getApiManager().removeCoinsFromUser(respondingEvent.getAuthor().getId(), 5);
-                            if(((Long) res.get("status") == 200)){
+                            if (((Long) res.get("status") == 200)) {
                                 engine.getDiscEngine().getApiManager().feedMonster((String) monster.get("_id"));
                                 engine.getDiscEngine().getTextUtils().sendSucces("Successfully fed monster", respondingEvent.getChannel());
-                            }else {
+                            } else {
                                 engine.getDiscEngine().getTextUtils().sendError("Can't feed monster", respondingEvent.getChannel(), false);
                             }
                         }
