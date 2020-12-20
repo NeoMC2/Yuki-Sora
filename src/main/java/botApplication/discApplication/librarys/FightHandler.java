@@ -1,6 +1,5 @@
 package botApplication.discApplication.librarys;
 
-import botApplication.discApplication.librarys.dungeon.Dungeon;
 import core.Engine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -205,15 +204,23 @@ public class FightHandler {
         }
     }
 
-    private boolean calcFightDone(){
-        return ((Long) m1Json.get("hp")) <= 0 || ((Long) m2Json.get("hp")) <= 0;
+    private boolean calcFightDone() {
+        return getNumber(m1Json, "hp") <= 0 || getNumber(m2Json, "hp") <= 0;
     }
 
-    public String getWinner(){
-        if(fightDone){
-            if((Long) m1Json.get("hp") <= 0)
+    private int getNumber(JSONObject o, String r) {
+        try {
+            return Math.toIntExact((Long) o.get(r));
+        } catch (Exception e) {
+            return Math.toIntExact(Math.round((Double) o.get(r)));
+        }
+    }
+
+    public String getWinner() {
+        if (fightDone) {
+            if ((Long) m1Json.get("hp") <= 0)
                 return user2;
-            if((Long) m2Json.get("hp") <= 0)
+            if ((Long) m2Json.get("hp") <= 0)
                 return user1;
         }
         return null;
