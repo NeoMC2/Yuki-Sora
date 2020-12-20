@@ -2,7 +2,7 @@ package core;
 
 public class ApiUpdateThread implements Runnable{
 
-    private Engine engine;
+    private final Engine engine;
     private boolean stop = false;
 
     public ApiUpdateThread(Engine engine) {

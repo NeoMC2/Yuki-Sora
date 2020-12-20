@@ -69,7 +69,7 @@ public class FightHandler {
             JSONArray mnsters = (JSONArray) res.get("data");
             for (Object o : mnsters) {
                 JSONObject mnster = (JSONObject) o;
-                if (((String) mnster.get("_id")).equals(m1)) {
+                if (mnster.get("_id").equals(m1)) {
                     m1Json = mnster;
                     break;
                 }
@@ -81,7 +81,7 @@ public class FightHandler {
             JSONArray mnsters = (JSONArray) res.get("data");
             for (Object o : mnsters) {
                 JSONObject mnster = (JSONObject) o;
-                if (((String) mnster.get("_id")).equals(m2)) {
+                if (mnster.get("_id").equals(m2)) {
                     m2Json = mnster;
                     break;
                 }
@@ -92,11 +92,11 @@ public class FightHandler {
         JSONArray mnsters = (JSONArray) res.get("data");
         for (Object o : mnsters) {
             JSONObject mnster = (JSONObject) o;
-            if (((String) mnster.get("_id")).equals((String) m1Json.get("rootMonster"))) {
+            if (mnster.get("_id").equals(m1Json.get("rootMonster"))) {
                 m1JsonRoot = mnster;
             }
 
-            if (((String) mnster.get("_id")).equals((String) m2Json.get("rootMonster"))) {
+            if (mnster.get("_id").equals(m2Json.get("rootMonster"))) {
                 m2JsonRoot = mnster;
             }
         }

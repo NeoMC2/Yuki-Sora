@@ -151,7 +151,7 @@ public class DiscApplicationFilesHandler {
         JSONArray edUs = (JSONArray) edUsers.get("data");
         for (Object o:edUs) {
             JSONObject obj = (JSONObject) o;
-            DiscApplicationUser us = users.get((String) obj.get("userID"));
+            DiscApplicationUser us = users.get(obj.get("userID"));
             if(us != null){
                 us.update(obj);
             }

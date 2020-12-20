@@ -27,7 +27,7 @@ public class Drop implements DungeonAction, Serializable {
         String s = "";
         for (Object o:its) {
             JSONObject ob = (JSONObject) o;
-            s+= ((String) ob.get("itemName")) + " [" + ((String) ob.get("itemRarity")) + "]\n";
+            s+= ob.get("itemName") + " [" + ob.get("itemRarity") + "]\n";
         }
 
         String msg = dropText;

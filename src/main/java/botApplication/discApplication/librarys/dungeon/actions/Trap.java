@@ -33,7 +33,7 @@ public class Trap implements DungeonAction {
             rhp = 1;
         mns.put("hp", rhp - dmg);
         JSONObject r = engine.getDiscEngine().getApiManager().dmgOnMonster(dungeon.getMember().getId(), dungeon.getM(), dmg);
-        dungeon.getTextChannel().sendMessage("Seems like this is a trap! Your monster got " + dmg + " damage and has " + ((Long) r.get("hp")) + " hp left!").queue();
+        dungeon.getTextChannel().sendMessage("Seems like this is a trap! Your monster got " + dmg + " damage and has " + r.get("hp") + " hp left!").queue();
         dungeon.caveActionFinished(false);
     }
 

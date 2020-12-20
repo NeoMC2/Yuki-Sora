@@ -127,9 +127,9 @@ public class NetworkManager {
     private Object makeConnection(String path) throws Exception {
         Object c;
         if (path.startsWith("https"))
-            c = (HttpsURLConnection) new URL(path).openConnection();
+            c = new URL(path).openConnection();
         else
-            c = (HttpURLConnection) new URL(path).openConnection();
+            c = new URL(path).openConnection();
         return c;
     }
 

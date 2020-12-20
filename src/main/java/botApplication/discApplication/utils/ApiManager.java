@@ -10,7 +10,7 @@ public class ApiManager {
 
     private final String apiToken;
     private final Engine engine;
-    private String api;
+    private final String api;
 
     public ApiManager(Engine engine) {
         JSONObject se = null;
@@ -251,6 +251,10 @@ public class ApiManager {
         JSONObject req = new JSONObject();
         req.put("monster", mid);
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getAttacks", req.toJSONString(), apiToken));
+    }
+
+    public JSONObject getAttacks(){
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().get(api + "/attack", apiToken));
     }
 
     public JSONObject giveRandomItem(String id, int amount, String rar){

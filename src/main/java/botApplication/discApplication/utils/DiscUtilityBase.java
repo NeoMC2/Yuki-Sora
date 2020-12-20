@@ -83,30 +83,112 @@ public class DiscUtilityBase {
     }
 
     public static String getMonsterListFromUserMonsters(Engine engine, JSONArray mnsters){
-        JSONArray roots = (JSONArray) ((JSONObject) engine.getDiscEngine().getApiManager().getMonsters()).get("data");
+        JSONArray roots = (JSONArray) engine.getDiscEngine().getApiManager().getMonsters().get("data");
         ArrayList<JSONObject> monsters = new ArrayList<>();
         for (Object o:mnsters) {
             JSONObject obj = (JSONObject) o;
             for (Object ob:roots) {
                 JSONObject obj1 = (JSONObject) ob;
-                if(((String) obj.get("rootMonster")).equals((String)obj1.get("_id"))){
+                if(obj.get("rootMonster").equals(obj1.get("_id"))){
                     monsters.add(obj1);
                 }
             }
         }
         String s = "";
         for (int i = 0; i < monsters.size(); i++) {
-            s += "[" + i + "] " + ((String) monsters.get(i).get("name") + "\n");
+            s += "[" + i + "] " + (monsters.get(i).get("name") + "\n");
         }
         return s;
     }
 
-    public static String getAttacksListFromUserMonster(Engine engine, JSONArray attacks){
+    public static String getAttacksListFromAttackList(Engine engine, JSONArray attacks){
         String s = "";
         for (int i = 0; i < attacks.size(); i++) {
             JSONObject at = (JSONObject) attacks.get(i);
-            s += "[" + i + "] " + ((String) at.get("attackName")) + " dmg: " + ((Long) at.get("baseDmg")) + " type: " + ((String) at.get("attackType")) + " status effect: " + ((String) at.get("statusEffect")) + "\n";
+            s += "[" + i + "] " + getAttackInfo(at)+ "\n";
         }
         return s;
+    }
+
+    public static String getAttackInfo(JSONObject at){
+        return at.get("attackName") + " dmg: " + at.get("baseDmg") + " type: " + at.get("attackType") + " status effect: " + at.get("statusEffect");
+    }
+
+    public static String getMonsterInfo(Engine engine, JSONObject mon){
+        String s = "";
+        JSONObject atts = engine.getDiscEngine().getApiManager().getAttacks();
+        JSONObject root = null;
+        JSONArray roots = (JSONArray) engine.getDiscEngine().getApiManager().getMonsters().get("data");
+        for (Object ob:roots) {
+            JSONObject obj1 = (JSONObject) ob;
+            if(mon.get("rootMonster").equals(obj1.get("_id"))){
+                root = obj1;
+            }
+        }
+
+        JSONArray attacks = (JSONArray) atts.get("data");
+
+        JSONObject a1 = null;
+        JSONObject a2 = null;
+        JSONObject a3 = null;
+        JSONObject a4 = null;
+
+        String a1S = (String) mon.get("a1");
+        String a2S = (String) mon.get("a2");
+        String a3S = (String) mon.get("a3");
+        String a4S = (String) mon.get("a4");
+
+        String a1T = "Not selected";
+        String a2T = "Not selected";
+        String a3T = "Not selected";
+        String a4T = "Not selected";
+
+
+        if(a1S != null){
+            a1 = findAttack(a1S, attacks);
+        }
+
+        if(a2S != null){
+            a2 = findAttack(a2S, attacks);
+        }
+
+        if(a3S != null){
+            a3 = findAttack(a3S, attacks);
+        }
+
+        if(a4S != null){
+            a4 = findAttack(a4S, attacks);
+        }
+
+        if(a1 != null){
+            a1T = getAttackInfo(a1);
+        }
+
+        if(a2 != null){
+            a2T = getAttackInfo(a2);
+        }
+
+        if(a3 != null){
+            a3T = getAttackInfo(a3);
+        }
+
+        if(a4 != null){
+            a4T = getAttackInfo(a4);
+        }
+
+        String attss = getAttacksListFromAttackList(engine, (JSONArray) engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) mon.get("_id")).get("data"));
+
+
+        s = root.get("name") + " xp " + mon.get("xp") + " level " + mon.get("level") + " hp " + mon.get("hp") + " [" + mon.get("maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Selected Attacks**\n" + attss);
+        return s;
+    }
+
+    public static JSONObject findAttack(String id, JSONArray atts){
+        for (Object o:atts) {
+            JSONObject a = (JSONObject) o;
+            if(id.equals(a.get("_id")))
+                return a;
+        }
+        return null;
     }
 }

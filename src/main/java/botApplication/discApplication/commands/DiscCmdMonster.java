@@ -25,7 +25,35 @@ public class DiscCmdMonster implements DiscCommand {
         if (args.length >= 1) {
 
             switch (args[0].toLowerCase()) {
-                //TODO make info command, analyze and refactor all
+                case "info":{
+                    JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
+                    JSONArray mn1 = (JSONArray) m1Req.get("data");
+                    String m1S = DiscUtilityBase.getMonsterListFromUserMonsters(engine, mn1);
+                    engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
+                    Response r = new Response(Response.ResponseTyp.Discord) {
+                        @Override
+                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
+                            JSONObject monster = (JSONObject) mn1.get(id);
+                            JSONObject root = null;
+                            JSONArray roots = (JSONArray) engine.getDiscEngine().getApiManager().getMonsters().get("data");
+                            for (Object ob:roots) {
+                                JSONObject obj1 = (JSONObject) ob;
+                                if(monster.get("rootMonster").equals(obj1.get("_id"))){
+                                    root = obj1;
+                                }
+                            }
+                            EmbedBuilder b = new EmbedBuilder().setDescription(DiscUtilityBase.getMonsterInfo(engine, monster)).setAuthor((String) root.get("name")).setColor(DiscCmdItem.rarityToColor((String) root.get("rarity"))).setThumbnail((String) root.get("imageUrl"));
+                            respondingEvent.getChannel().sendMessage(b.build()).queue();
+                        }
+                    };
+                    r.discUserId = event.getAuthor().getId();
+                    r.discGuildId = event.getGuild().getId();
+                    r.discChannelId = event.getChannel().getId();
+                    engine.getResponseHandler().makeResponse(r);
+                }
+                break;
+
                 case "feed": {
                     JSONObject m1Req = engine.getDiscEngine().getApiManager().getUserMonstersById(event.getAuthor().getId());
                     JSONArray mn1 = (JSONArray) m1Req.get("data");
@@ -110,7 +138,7 @@ public class DiscCmdMonster implements DiscCommand {
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
                             JSONArray attacks = (JSONArray) at.get("data");
-                            String s = "Available attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
+                            String s = "Available attacks:\n" + DiscUtilityBase.getAttacksListFromAttackList(engine, attacks);
                             engine.getDiscEngine().getTextUtils().sendSucces(s, respondingEvent.getChannel());
                         }
                     };
@@ -133,7 +161,7 @@ public class DiscCmdMonster implements DiscCommand {
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
                             JSONArray attacks = (JSONArray) at.get("data");
-                            String s = "Select one of the available attacks\n\nAvailable attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
+                            String s = "Select one of the available attacks\n\nAvailable attacks:\n" + DiscUtilityBase.getAttacksListFromAttackList(engine, attacks);
                             engine.getDiscEngine().getTextUtils().sendSucces(s, respondingEvent.getChannel());
 
                             Response rr = new Response(ResponseTyp.Discord) {
