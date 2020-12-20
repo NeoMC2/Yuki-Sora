@@ -316,6 +316,9 @@ public class DiscCmdMonster implements DiscCommand {
                 respondingEvent.getChannel().sendMessage(fightHandler.round(respondingEvent.getMessage().getContentRaw())).queue();
                 if (!fightHandler.fightDone) {
                     createResponse(engine, fightHandler.nextPlayer(), chanId, guildId, fightHandler);
+                } else {
+                    JSONObject winner = (JSONObject) engine.getDiscEngine().getApiManager().getUserBy(fightHandler.getWinner()).get("data");
+                    engine.getDiscEngine().getTextUtils().sendSucces(winner.get("username") + " won the match!", respondingEvent.getChannel());
                 }
             }
         };

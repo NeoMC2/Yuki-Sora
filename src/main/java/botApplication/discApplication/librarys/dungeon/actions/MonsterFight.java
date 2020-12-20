@@ -13,6 +13,7 @@ public class MonsterFight implements DungeonAction, Serializable {
     public Engine engine;
     private final String msg = "Seems like here is a monster!";
     private FightHandler fightHandler;
+    private Dungeon d;
 
     public MonsterFight(Engine engine) {
         this.engine = engine;
@@ -20,6 +21,7 @@ public class MonsterFight implements DungeonAction, Serializable {
 
     @Override
     public void action(Dungeon dungeon) {
+        d = dungeon;
         fightHandler = new FightHandler(dungeon.getUser().getUserId(), null, dungeon.getM(), null, engine);
         dungeon.getTextChannel().sendMessage(fightHandler.round("help")).queue();
         createResponse(engine, dungeon.getUser().getUserId(), dungeon.getTextChannel().getId(), dungeon.getTextChannel().getGuild().getId());
@@ -37,6 +39,8 @@ public class MonsterFight implements DungeonAction, Serializable {
                 respondingEvent.getChannel().sendMessage(fightHandler.round(respondingEvent.getMessage().getContentRaw())).queue();
                 if(!fightHandler.fightDone){
                     createResponse(engine, userId, chanId, guildId);
+                } else {
+                    d.caveActionFinished(fightHandler.getWinner() == null);
                 }
             }
         };

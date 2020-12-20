@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys;
 
+import botApplication.discApplication.librarys.dungeon.Dungeon;
 import core.Engine;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -22,7 +23,7 @@ public class FightHandler {
     private boolean m2Ai;
 
     //false = 2 true = 1
-    private boolean round = true;
+    private boolean round = false;
 
     private final Engine engine;
 
@@ -143,7 +144,7 @@ public class FightHandler {
 
                 case "info":
                     String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
-                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + "hp";
+                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
                     sameUser = true;
                     return m1 + " against " + m2;
 
@@ -158,9 +159,9 @@ public class FightHandler {
 
             JSONObject res;
             if (round) {
-                res = engine.getDiscEngine().getApiManager().fight(user2, false, m1Ai, m2, m1, null, slot);
+                res = engine.getDiscEngine().getApiManager().fight(user1, false, m1Ai, m1, m2, null, slot);
             } else {
-                res = engine.getDiscEngine().getApiManager().fight(user1, false, m2Ai, m1, m2, null, slot);
+                res = engine.getDiscEngine().getApiManager().fight(user2, false, m2Ai, m2, m1, null, slot);
             }
             if (((Long) res.get("status")) == 200) {
                 m1Json = (JSONObject) res.get("monster1");
@@ -190,6 +191,7 @@ public class FightHandler {
     }
 
     private String fightInfo() {
+        fightDone = calcFightDone();
         String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
         String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
 
@@ -198,5 +200,19 @@ public class FightHandler {
         } else {
             return m2 + " attacked " + m1 + " and made " + lastDmg + " damage";
         }
+    }
+
+    private boolean calcFightDone(){
+        return (Long) m1Json.get("hp") <= 0 || (Long) m2Json.get("hp") <= 0;
+    }
+
+    public String getWinner(){
+        if(fightDone){
+            if((Long) m1Json.get("hp") <= 0)
+                return user2;
+            if((Long) m2Json.get("hp") <= 0)
+                return user1;
+        }
+        return null;
     }
 }
