@@ -142,15 +142,18 @@ public class FightHandler {
                     slot = w;
                     break;
 
-                case "info":
+                case "info": {
                     String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
                     String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
                     sameUser = true;
                     return m1 + " against " + m2;
+                }
 
                 case "help":
+                    String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
+                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
                     sameUser = true;
-                    return "help";
+                    return "You are in a fight!\n\n" + m1 + " against " + m2 + "\n\nType info to see the info again and a1, a2, a3, a4 to use one of your attackslots";
 
                 default:
                     sameUser = true;
@@ -159,9 +162,9 @@ public class FightHandler {
 
             JSONObject res;
             if (round) {
-                res = engine.getDiscEngine().getApiManager().fight(user1, false, m1Ai, m1, m2, null, slot);
+                res = engine.getDiscEngine().getApiManager().fight(user1, false, m2Ai, m1, m2, null, slot);
             } else {
-                res = engine.getDiscEngine().getApiManager().fight(user2, false, m2Ai, m2, m1, null, slot);
+                res = engine.getDiscEngine().getApiManager().fight(user2, false, m1Ai, m2, m1, null, slot);
             }
             if (((Long) res.get("status")) == 200) {
                 m1Json = (JSONObject) res.get("monster1");

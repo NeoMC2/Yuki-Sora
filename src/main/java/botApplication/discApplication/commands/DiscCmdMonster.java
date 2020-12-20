@@ -130,13 +130,17 @@ public class DiscCmdMonster implements DiscCommand {
                         return;
                     }
                     JSONObject res = engine.getDiscEngine().getApiManager().userRandomMonster(user.getUserId(), "normal");
-                    JSONObject mnster = (JSONObject) res.get("data");
-                    String mnsterName = (String) mnster.get("name");
-                    String rar = (String) mnster.get("rarity");
-                    String imgUrl = (String) mnster.get("imageUrl");
+                    if((Long) res.get("status") == 200){
+                        JSONObject mnster = (JSONObject) res.get("data");
+                        String mnsterName = (String) mnster.get("name");
+                        String rar = (String) mnster.get("rarity");
+                        String imgUrl = (String) mnster.get("imageUrl");
 
-                    EmbedBuilder b = new EmbedBuilder().setThumbnail(imgUrl).setColor(DiscCmdItem.rarityToColor(rar)).setAuthor("You've got " + mnsterName);
-                    event.getChannel().sendMessage(b.build()).queue();
+                        EmbedBuilder b = new EmbedBuilder().setThumbnail(imgUrl).setColor(DiscCmdItem.rarityToColor(rar)).setAuthor("You've got " + mnsterName);
+                        event.getChannel().sendMessage(b.build()).queue();
+                    } else {
+                        engine.getDiscEngine().getTextUtils().sendError("You can't have more monsters, delete some to get new ones!", event.getChannel(), false);
+                    }
                     break;
 
                 case "list": {

@@ -39,6 +39,7 @@ public class DungeonQueueHandler implements Serializable {
             EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("You can visit the dungeon in " + diff + " hours again!");
             Message m = textChannel.sendMessage(b.build()).complete();
             m.delete().queueAfter(8, TimeUnit.SECONDS);
+            return;
         }
 
         if (usedChannels == null)
