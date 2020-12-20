@@ -168,7 +168,7 @@ public class FightHandler {
             if (((Long) res.get("status")) == 200) {
                 m1Json = (JSONObject) res.get("monster1");
                 m2Json = (JSONObject) res.get("monster2");
-                lastDmg = (Long) res.get("dmg");
+                lastDmg = getNumber(res, "dmg");
                 return fightInfo();
             } else {
                 sameUser = true;
@@ -218,9 +218,9 @@ public class FightHandler {
 
     public String getWinner() {
         if (fightDone) {
-            if ((Long) m1Json.get("hp") <= 0)
+            if (getNumber(m1Json, "hp") <= 0)
                 return user2;
-            if ((Long) m2Json.get("hp") <= 0)
+            if (getNumber(m2Json, "hp") <= 0)
                 return user1;
         }
         return null;
