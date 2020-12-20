@@ -128,7 +128,7 @@ public class DiscCmdMonster implements DiscCommand {
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
                             JSONArray attacks = (JSONArray) at.get("data");
-                            String s = "Set attack to one of your attack slots(a1,a2,a3,a4)\n\nAvailable attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
+                            String s = "Select one of the available attacks\n\nAvailable attacks:\n" + DiscUtilityBase.getAttacksListFromUserMonster(engine, attacks);
                             engine.getDiscEngine().getTextUtils().sendSucces(s, respondingEvent.getChannel());
 
                             Response rr = new Response(ResponseTyp.Discord) {
@@ -136,23 +136,36 @@ public class DiscCmdMonster implements DiscCommand {
                                 public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
                                     int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                                     JSONObject sAttack = (JSONObject) attacks.get(id);
-                                    switch (respondingEvent.getMessage().getContentRaw().toLowerCase()) {
-                                        case "a1":
-                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a1", (String) sAttack.get("_id"));
-                                            break;
+                                    Response rrr = new Response(ResponseTyp.Discord) {
+                                        @Override
+                                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                                            engine.getDiscEngine().getTextUtils().sendSucces("Set attack to one of your attack slots(a1,a2,a3,a4)", respondingEvent.getChannel());
+                                            switch (respondingEvent.getMessage().getContentRaw().toLowerCase()) {
+                                                case "a1":
+                                                    engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a1", (String) sAttack.get("_id"));
+                                                    break;
 
-                                        case "a2":
-                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a2", (String) sAttack.get("_id"));
-                                            break;
+                                                case "a2":
+                                                    engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a2", (String) sAttack.get("_id"));
+                                                    break;
 
-                                        case "a3":
-                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a3", (String) sAttack.get("_id"));
-                                            break;
+                                                case "a3":
+                                                    engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a3", (String) sAttack.get("_id"));
+                                                    break;
 
-                                        case "a4":
-                                            engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a4", (String) sAttack.get("_id"));
-                                            break;
-                                    }
+                                                case "a4":
+                                                    engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a4", (String) sAttack.get("_id"));
+                                                    break;
+                                            }
+                                            engine.getDiscEngine().getTextUtils().sendSucces("Set attack!", respondingEvent.getChannel());
+                                        }
+                                    };
+                                    rrr.discUserId = event.getAuthor().getId();
+                                    rrr.discGuildId = event.getGuild().getId();
+                                    rrr.discChannelId = event.getChannel().getId();
+                                    engine.getResponseHandler().makeResponse(rr);
+
+
                                 }
                             };
                             rr.discUserId = event.getAuthor().getId();
