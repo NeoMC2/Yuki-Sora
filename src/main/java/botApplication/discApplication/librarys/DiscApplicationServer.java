@@ -323,6 +323,7 @@ public class DiscApplicationServer implements Serializable {
     }
 
     public void setDungeonQueueHandler(DungeonQueueHandler dungeonQueueHandler) {
+        edit = true;
         this.dungeonQueueHandler = dungeonQueueHandler;
     }
 

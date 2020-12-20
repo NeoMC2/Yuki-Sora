@@ -252,11 +252,6 @@ public class DiscApplicationFilesHandler {
             obj.put("dungeonChan", channelIds);
             obj.put("dungeonChanRoles", roleIds);
         }
-
-        String dungeonMessage = (String) obj.get("dungeonQueueMessage");
-        String dungeonEmoji = (String) obj.get("dungeonEmoji");
-        JSONArray dungeonChans = (JSONArray) obj.get("dungeonChan");
-        JSONArray dungeonRoles = (JSONArray) obj.get("dungeonChanRoles");
         return obj;
     }
 
