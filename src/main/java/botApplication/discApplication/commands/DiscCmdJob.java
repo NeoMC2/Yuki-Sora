@@ -70,7 +70,7 @@ public class DiscCmdJob implements DiscCommand {
 
                 case "info":
                     JSONObject infRes = engine.getDiscEngine().getApiManager().getUserJobAndJobFromUser(event.getAuthor().getId());
-                    if (((Long) infRes.get("info")) == 200) {
+                    if (((Long) infRes.get("status")) == 200) {
                         JSONObject o = (JSONObject) infRes.get("job");
                         JSONObject ujb = (JSONObject) infRes.get("uJob");
 
@@ -94,7 +94,7 @@ public class DiscCmdJob implements DiscCommand {
                                 break;
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendSucces("You work as" + (String) o.get("doing") + " at " + (String) o.get("jobName") + "[" + (String) o.get("shortName") + "]. You are " + ((String) ujb.get("jobPosition")) + " and earn " + earning + ". You have " + ((String) ujb.get("jobXP")) + " xp and " + ((String) ujb.get("jobLevel")) + " level! You are at " + ((String) ujb.get("jobStreak")) , event.getChannel());
+                        engine.getDiscEngine().getTextUtils().sendSucces("You work as" + (String) o.get("doing") + " at " + (String) o.get("jobName") + "[" + (String) o.get("shortName") + "]. You are " + ((String) ujb.get("jobPosition")) + " and earn " + earning + ". You have " + ((String) ujb.get("jobXP")) + " xp and " + ((String) ujb.get("jobLevel")) + " level! You are at " + ((String) ujb.get("jobStreak") + ":fire:") , event.getChannel());
                     } else {
 
                     }
