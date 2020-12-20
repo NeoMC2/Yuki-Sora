@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys;
 
+import botApplication.discApplication.librarys.dungeon.queue.DungeonChannelHandler;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
@@ -71,6 +72,25 @@ public class DiscApplicationServer implements Serializable {
         vipRoleId = (String) obj.get("vipRoleId");
         defaultRoles = jsonArrayToArray((JSONArray) obj.get("roleIds"));
         autoChannels = jsonArrayToArray((JSONArray) obj.get("autoChannelIds"));
+
+        String dungeonMessage = (String) obj.get("dungeonQueueMessage");
+        String dungeonEmoji = (String) obj.get("dungeonEmoji");
+        JSONArray dungeonChans = (JSONArray) obj.get("dungeonChan");
+        JSONArray dungeonRoles = (JSONArray) obj.get("dungeonChanRoles");
+
+        if(dungeonEmoji != null && dungeonMessage != null && dungeonChans != null && dungeonRoles !=null){
+            dungeonQueueHandler = new DungeonQueueHandler();
+            dungeonQueueHandler.setMsgId(dungeonMessage);
+            dungeonQueueHandler.setEmoji(dungeonEmoji);
+
+            for (int i = 0; i < dungeonChans.size(); i++) {
+                String chanId = (String) dungeonChans.get(i);
+                String roleId = (String) dungeonRoles.get(i);
+                DungeonChannelHandler c = new DungeonChannelHandler(chanId, roleId);
+                dungeonQueueHandler.getChannels().add(c);
+            }
+        }
+
     }
 
     public void update(JSONObject obj){

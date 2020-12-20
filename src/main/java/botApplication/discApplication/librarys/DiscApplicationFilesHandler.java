@@ -3,6 +3,7 @@ package botApplication.discApplication.librarys;
 import botApplication.discApplication.commands.DiscCmdBait;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import botApplication.discApplication.librarys.dungeon.Dungeon;
+import botApplication.discApplication.librarys.dungeon.queue.DungeonChannelHandler;
 import botApplication.discApplication.librarys.job.Job;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
@@ -238,6 +239,24 @@ public class DiscApplicationFilesHandler {
         obj.put("vipRoleId", server.getVipRoleId());
         obj.put("roleIds", getArrayFromArray(server.getDefaultRoles()));
         obj.put("autoChannelIds", getArrayFromArray(server.getAutoChannels()));
+
+        if(server.getDungeonQueueHandler() != null){
+            obj.put("dungeonQueueMessage", server.getDungeonQueueHandler().getMsgId());
+            obj.put("dungeonEmoji", server.getDungeonQueueHandler().getEmoji());
+            String[] channelIds = new String[server.getDungeonQueueHandler().getChannels().size()];
+            String[] roleIds = new String[server.getDungeonQueueHandler().getChannels().size()];
+            for (int i = 0; i < server.getDungeonQueueHandler().getChannels().size(); i++) {
+                channelIds[i] = server.getDungeonQueueHandler().getChannels().get(i).getChannelId();
+                roleIds[i] = server.getDungeonQueueHandler().getChannels().get(i).getRoleId();
+            }
+            obj.put("dungeonChan", channelIds);
+            obj.put("dungeonChanRoles", roleIds);
+        }
+
+        String dungeonMessage = (String) obj.get("dungeonQueueMessage");
+        String dungeonEmoji = (String) obj.get("dungeonEmoji");
+        JSONArray dungeonChans = (JSONArray) obj.get("dungeonChan");
+        JSONArray dungeonRoles = (JSONArray) obj.get("dungeonChanRoles");
         return obj;
     }
 
