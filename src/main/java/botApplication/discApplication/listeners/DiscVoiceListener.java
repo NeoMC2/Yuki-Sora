@@ -16,11 +16,13 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
     private final Engine engine;
+    private HashMap<String, VoiceChannel> deafens = new HashMap<>();
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;
@@ -115,10 +117,18 @@ public class DiscVoiceListener extends ListenerAdapter {
     @Override
     public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
         DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
-        if(server.isMoveMemberOnSDeafen()){
-            VoiceChannel afk = event.getGuild().getAfkChannel();
-            if(afk != null){
-                event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+        if(event.isSelfDeafened()){
+            deafens.put(event.getMember().getId(), event.getVoiceState().getChannel());
+            if(server.isMoveMemberOnSDeafen()){
+                VoiceChannel afk = event.getGuild().getAfkChannel();
+                if(afk != null){
+                    event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+                }
+            }
+        } else {
+            VoiceChannel v = deafens.get(event.getMember().getId());
+            if(v != null){
+                event.getGuild().moveVoiceMember(event.getMember(), v).queue();
             }
         }
     }
