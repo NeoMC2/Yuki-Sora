@@ -209,11 +209,6 @@ public class DiscApplicationUser implements Serializable {
         this.lastDungeonVisit = lastDungeonVisit;
     }
 
-    public void upgrade() {
-        edit = true;
-        maxItems = 30;
-    }
-
     public boolean isEdit() {
         return edit;
     }
@@ -224,7 +219,7 @@ public class DiscApplicationUser implements Serializable {
 
     public void substractCoins(int coins, Engine engine) throws Exception {
         this.coins -= coins;
-        if (coins < 0) {
+        if (this.coins < 0) {
             this.coins += coins;
             throw new Exception("not enough coins!");
         }
