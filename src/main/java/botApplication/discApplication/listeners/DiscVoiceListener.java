@@ -17,6 +17,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
@@ -118,19 +121,28 @@ public class DiscVoiceListener extends ListenerAdapter {
     public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
         DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if(event.isSelfDeafened()){
-            deafens.put(event.getMember().getId(), event.getVoiceState().getChannel());
-            if(server.isMoveMemberOnSDeafen()){
-                VoiceChannel afk = event.getGuild().getAfkChannel();
-                if(afk != null){
-                    event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+            Member m = event.getMember();
+            Runnable task = () -> {
+                if(!m.getVoiceState().isDeafened())
+                    return;
+                deafens.put(event.getMember().getId(), event.getVoiceState().getChannel());
+                if(server.isMoveMemberOnSDeafen()){
+                    VoiceChannel afk = event.getGuild().getAfkChannel();
+                    if(afk != null){
+                        event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+                    }
                 }
-            }
+            };
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            executor.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MINUTES);
         } else {
             VoiceChannel v = deafens.get(event.getMember().getId());
             if(v != null){
-                event.getGuild().moveVoiceMember(event.getMember(), v).queue();
-                deafens.remove(event.getMember());
+                if(event.getMember().getVoiceState().getChannel().getId().equals(event.getGuild().getAfkChannel().getId())){
+                    event.getGuild().moveVoiceMember(event.getMember(), v).queue();
+                }
             }
+            deafens.remove(event.getMember().getId());
         }
     }
 
