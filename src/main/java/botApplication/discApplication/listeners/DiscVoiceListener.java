@@ -134,7 +134,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                 }
             };
             ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
-            executor.scheduleWithFixedDelay(task, 0, 10, TimeUnit.MINUTES);
+            executor.schedule(task, 10, TimeUnit.MINUTES);
         } else {
             VoiceChannel v = deafens.get(event.getMember().getId());
             if(v != null){
