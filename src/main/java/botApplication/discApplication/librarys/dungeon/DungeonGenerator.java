@@ -266,7 +266,7 @@ public class DungeonGenerator {
             case Trap:
                 return 30;
             case XPDrop:
-                return 10;
+                return 20;
         }
         return 100;
     }

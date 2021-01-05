@@ -13,10 +13,13 @@ import core.Engine;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
+import net.dv8tion.jda.api.entities.Guild;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DiscApplicationEngine {
 
@@ -76,8 +79,22 @@ public class DiscApplicationEngine {
         apiManager = new ApiManager(engine);
         filesHandler = new DiscApplicationFilesHandler(engine);
         filesHandler.loadAllBotFiles();
+        initServers();
         updateAllServerStats();
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot successfully started!", false);
+    }
+
+    public void initServers(){
+        Timer t = new Timer();
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                for (Guild g:botJDA.getGuilds()) {
+                    System.out.println(DiscUtilityBase.lookForServer(g, engine).getServerName() + " initialized");
+                }
+            }
+        };
+        t.schedule(tt, 10 * 10 * 10 * 10);
     }
 
     private void initPreCmds() {

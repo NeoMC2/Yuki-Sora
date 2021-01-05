@@ -131,13 +131,25 @@ public class Dungeon {
                 }
 
                 currentCave.init(d);
-                currentCave.enter(before);
+
+                try {
+                    currentCave.enter(before);
+                } catch (Exception e){
+                    dungeonCorruptedDeadEnd();
+                    if(engine.getProperties().debug)
+                        e.printStackTrace();
+                }
             }
         };
         r.discUserId = member.getId();
         r.discChannelId = textChannel.getId();
         r.discGuildId = g.getId();
         engine.getResponseHandler().makeResponse(r);
+    }
+
+    public void dungeonCorruptedDeadEnd(){
+        engine.getDiscEngine().getTextUtils().sendError("Seems like this dungeon is corrupted! We are sorry for that!\n\nAborting", textChannel, true);
+        caveActionFinished(true);
     }
 
     public Member getMember() {

@@ -23,6 +23,10 @@ public class ConsoleCommandHandler {
             return;
         }
         switch (args0.toLowerCase()) {
+            case "initserver":
+                engine.getDiscEngine().initServers();
+                break;
+
             case "save":
                 engine.saveProperties();
                 if (engine.getDiscEngine().isRunning()) {

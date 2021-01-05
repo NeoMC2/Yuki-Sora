@@ -1,5 +1,6 @@
 package botApplication.discApplication.librarys.dungeon.queue;
 
+import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -7,6 +8,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -27,7 +30,7 @@ public class DungeonQueueHandler implements Serializable {
     private ArrayList<DungeonChannelHandler> channels = new ArrayList<>();
     private transient HashMap<String, UsedDungeonChannel> usedChannels = new HashMap<>();
 
-    public void click(TextChannel textChannel, Engine engine, Guild g, Member member) {
+    public void click(TextChannel textChannel, Engine engine, Guild g, Member member, DiscApplicationServer server) {
         DiscApplicationUser user = engine.getDiscEngine().getFilesHandler().getUserById(member.getId());
 
         Instant fourHoursAgo = Instant.now().minus(Duration.ofHours(4));
@@ -41,6 +44,22 @@ public class DungeonQueueHandler implements Serializable {
             m.delete().queueAfter(8, TimeUnit.SECONDS);
             return;
         }
+
+        int size = 0;
+        try {
+            size = ((JSONArray) (engine.getDiscEngine().getApiManager().getUserMonstersById(member.getId()).get("data"))).size();
+        } catch (Exception igonored){
+
+        }
+
+        if(size <= 0){
+            EmbedBuilder b = new EmbedBuilder().setColor(Color.RED).setDescription("You don't have a single monster yet! Buy a monster before entering the dungeon!");
+            Message m = textChannel.sendMessage(b.build()).complete();
+            m.delete().queueAfter(8, TimeUnit.SECONDS);
+            return;
+        }
+
+
 
         if (usedChannels == null)
             usedChannels = new HashMap<>();
@@ -57,7 +76,7 @@ public class DungeonQueueHandler implements Serializable {
             Message m = textChannel.sendMessage(b.build()).complete();
             m.delete().queueAfter(5, TimeUnit.SECONDS);
         } else {
-            channelHandler.clicked(engine, g, member);
+            channelHandler.clicked(engine, g, member, user, server);
             UsedDungeonChannel chanel = new UsedDungeonChannel(channelHandler, member, g);
             usedChannels.put(channelHandler.getChannelId(), chanel);
             user.setLastDungeonVisit(new Date());
