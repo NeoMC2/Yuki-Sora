@@ -26,6 +26,7 @@ public class DiscVoiceListener extends ListenerAdapter {
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
     private final Engine engine;
     private HashMap<String, VoiceChannel> deafens = new HashMap<>();
+    private HashMap<String, ScheduledExecutorService> scheudlers = new HashMap<>();
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;
@@ -119,6 +120,11 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
+        if(scheudlers.containsKey(event.getMember().getId())){
+            scheudlers.get(event.getMember().getId()).shutdown();
+            scheudlers.remove(event.getMember().getId());
+        }
+        
         DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if(event.isSelfDeafened()){
             Member m = event.getMember();
@@ -135,6 +141,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             };
             ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
             executor.schedule(task, 10, TimeUnit.MINUTES);
+            scheudlers.put(event.getMember().getId(), executor);
         } else {
             VoiceChannel v = deafens.get(event.getMember().getId());
             if(v != null){
