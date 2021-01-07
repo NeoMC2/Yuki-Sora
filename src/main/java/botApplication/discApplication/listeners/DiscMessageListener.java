@@ -300,8 +300,10 @@ public class DiscMessageListener extends ListenerAdapter {
                             for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(po.getDenied()).queue();
-                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.VIEW_CHANNEL);
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
                                 } catch (Exception er){
+                                    if(engine.getProperties().debug)
+                                        er.printStackTrace();
                                 }
                             }
                             break;
@@ -338,8 +340,10 @@ public class DiscMessageListener extends ListenerAdapter {
                             for (PermissionOverride po:vc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(Permission.ALL_TEXT_PERMISSIONS).setDeny(po.getDenied()).queue();
-                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL);
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL).queue();
                                 } catch (Exception er){
+                                    if(engine.getProperties().debug)
+                                        er.printStackTrace();
                                 }
                             }
                             break;
