@@ -295,19 +295,19 @@ public class DiscMessageListener extends ListenerAdapter {
                                 return;
                             }
 
-                            tc.delete().queue();
                             user.getBoosterChans().remove(s);
                             user.setEdit(true);
                             user.addBoosterChan(v.getId());
 
                             for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
                                 try {
-                                    v.putPermissionOverride(po.getMember()).setAllow(voicePermissions).setDeny(po.getDenied()).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(voicePermissions).setDeny(po.getDenied()).complete();
                                 } catch (Exception er){
                                     if(engine.getProperties().debug)
                                         er.printStackTrace();
                                 }
                             }
+                            tc.delete().queue();
                             break;
                         }
                     }
@@ -334,19 +334,19 @@ public class DiscMessageListener extends ListenerAdapter {
                                 return;
                             }
 
-                            vc.delete().queue();
                             user.getBoosterChans().remove(s);
                             user.setEdit(true);
                             user.addBoosterChan(v.getId());
 
                             for (PermissionOverride po:vc.getMemberPermissionOverrides()) {
                                 try {
-                                    v.putPermissionOverride(po.getMember()).setAllow(textPermissions).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(textPermissions).complete();
                                 } catch (Exception er){
                                     if(engine.getProperties().debug)
                                         er.printStackTrace();
                                 }
                             }
+                            vc.delete().queue();
                             break;
                         }
                     }
