@@ -287,6 +287,13 @@ public class DiscMessageListener extends ListenerAdapter {
 
                             VoiceChannel v = e.getGuild().createVoiceChannel(user.getUserName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
                             user.addBoosterChan(v.getId());
+
+                            for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
+                                try {
+                                    v.putPermissionOverride(po.getMember()).setAllow(po.getAllowed()).setDeny(po.getDenied()).queue();
+                                } catch (Exception er){
+                                }
+                            }
                             break;
                         }
                     }
@@ -309,6 +316,13 @@ public class DiscMessageListener extends ListenerAdapter {
 
                             TextChannel v = e.getGuild().createTextChannel(user.getUserName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
                             user.addBoosterChan(v.getId());
+
+                            for (PermissionOverride po:vc.getMemberPermissionOverrides()) {
+                                try {
+                                    v.putPermissionOverride(po.getMember()).setAllow(po.getAllowed()).setDeny(po.getDenied()).queue();
+                                } catch (Exception er){
+                                }
+                            }
                             break;
                         }
                     }
