@@ -281,16 +281,26 @@ public class DiscMessageListener extends ListenerAdapter {
                 if(tc != null){
                     for (String s:user.getBoosterChans()) {
                         if(tc.getId().equals(s)){
+                            VoiceChannel v;
+
+                            try {
+                                v = e.getGuild().createVoiceChannel(tc.getName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
+                            } catch (Exception er){
+                                engine.getDiscEngine().getTextUtils().sendError("Can't change channel!", e.getChannel(), false);
+                                if(engine.getProperties().debug)
+                                    er.printStackTrace();
+                                return;
+                            }
+
                             tc.delete().queue();
                             user.getBoosterChans().remove(s);
                             user.setEdit(true);
-
-                            VoiceChannel v = e.getGuild().createVoiceChannel(user.getUserName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
                             user.addBoosterChan(v.getId());
 
                             for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(po.getDenied()).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.VIEW_CHANNEL);
                                 } catch (Exception er){
                                 }
                             }
@@ -310,16 +320,25 @@ public class DiscMessageListener extends ListenerAdapter {
                 } else if(vc != null){
                     for (String s:user.getBoosterChans()) {
                         if(vc.getId().equals(s)){
+                            TextChannel v;
+                            try {
+                                v = e.getGuild().createTextChannel(vc.getName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
+                            } catch (Exception er){
+                                engine.getDiscEngine().getTextUtils().sendError("Can't change channel!", e.getChannel(), false);
+                                if(engine.getProperties().debug)
+                                    er.printStackTrace();
+                                return;
+                            }
+
                             vc.delete().queue();
                             user.getBoosterChans().remove(s);
                             user.setEdit(true);
-
-                            TextChannel v = e.getGuild().createTextChannel(user.getUserName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
                             user.addBoosterChan(v.getId());
 
                             for (PermissionOverride po:vc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(Permission.ALL_TEXT_PERMISSIONS).setDeny(po.getDenied()).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL);
                                 } catch (Exception er){
                                 }
                             }
@@ -347,7 +366,10 @@ public class DiscMessageListener extends ListenerAdapter {
                 }
                 break;
         }
-        engine.getDiscEngine().getTextUtils().sendSucces("Updated your channel!", e.getChannel());
+        try {
+            engine.getDiscEngine().getTextUtils().sendSucces("Updated your channel!", e.getChannel());
+        } catch (Exception er){
+        }
     }
 
     private TextChannel getTc(GuildMessageReceivedEvent event, DiscApplicationUser user){
