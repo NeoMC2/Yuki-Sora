@@ -25,7 +25,6 @@ public class ApiUpdateThread implements Runnable{
             if (stop) {
                 break;
             }
-            engine.saveProperties();
             if (engine.getDiscEngine().isRunning()) {
                 engine.getDiscEngine().getFilesHandler().updateApiData();
             }

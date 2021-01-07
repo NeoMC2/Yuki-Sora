@@ -145,7 +145,7 @@ public class Engine {
     }
 
     public void saveProperties() {
-        utilityBase.printOutput(consMsgDef + " !Saving properties!", false);
+        utilityBase.printOutput(consMsgDef + " !Saving properties!", true);
         try {
             fileUtils.saveObject(fileUtils.home + "/properties.prop", properties);
         } catch (Exception e) {
