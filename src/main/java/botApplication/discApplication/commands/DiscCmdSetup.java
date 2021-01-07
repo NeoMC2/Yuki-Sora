@@ -36,9 +36,6 @@ public class DiscCmdSetup implements DiscCommand {
         String text = "";
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
-                case "test":
-                    engine.getDiscEngine().test.update(true, event.getGuild());
-                    break;
                 case "settings":
                     if (args.length >= 2) {
                         if (args[1].equals("?")) {
@@ -46,6 +43,41 @@ public class DiscCmdSetup implements DiscCommand {
                             return;
                         }
                         switch (args[1].toLowerCase()) {
+
+                            case "boostrole":
+                                Role role = null;
+
+                                try {
+                                    role = event.getGuild().getRoleById(args[2]);
+                                } catch (Exception e) {
+                                }
+
+                                if (role == null) {
+                                    engine.getDiscEngine().getTextUtils().sendError("This role doesn't exist", event.getChannel(), false);
+                                    return;
+                                }
+
+                                server.setBoosterRoleId(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("Boost role set!", event.getChannel());
+
+                                break;
+
+                            case "boostCategory":
+                                Category category = null;
+
+                                try {
+                                    category = event.getGuild().getCategoryById(args[2]);
+                                } catch (Exception e) {
+                                }
+
+                                if (category == null) {
+                                    engine.getDiscEngine().getTextUtils().sendError("This category doesn't exist", event.getChannel(), false);
+                                    return;
+                                }
+
+                                server.setBoosterCategoryId(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("Boost category set!", event.getChannel());
+                                break;
 
                             case "deafenmove":
                                 server.setMoveMemberOnSDeafen(!server.isMoveMemberOnSDeafen());

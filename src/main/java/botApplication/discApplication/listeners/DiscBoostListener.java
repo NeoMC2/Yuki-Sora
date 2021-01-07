@@ -39,11 +39,6 @@ public class DiscBoostListener extends ListenerAdapter {
         ArrayList<DiscApplicationUser> boostersUsers = new ArrayList<>();
         ArrayList<String> boosterIds = new ArrayList<>();
 
-        boosters.add(guild.getMemberById("377469972949237760"));
-        boostersUsers.add(DiscUtilityBase.lookForUserById(boosters.get(0).getUser(), engine));
-        boosterIds.add(boosters.get(0).getUser().getId());
-
-
         for (Member m:guild.getBoosters()) {
             boosterIds.add(m.getUser().getId());
             boosters.add(m);
