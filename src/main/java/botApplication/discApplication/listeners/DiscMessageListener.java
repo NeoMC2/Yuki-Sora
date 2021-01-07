@@ -256,13 +256,13 @@ public class DiscMessageListener extends ListenerAdapter {
             case "inv":
                 if(tc != null){
                     for (Member m:mem) {
-                        tc.createPermissionOverride(m).setAllow(Permission.ALL_TEXT_PERMISSIONS).queue();
-                        tc.createPermissionOverride(m).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL).queue();
+                        tc.putPermissionOverride(m).setAllow(Permission.ALL_TEXT_PERMISSIONS).queue();
+                        tc.putPermissionOverride(m).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL).queue();
                     }
                 } else if(vc != null){
                     for (Member m:mem) {
-                        vc.createPermissionOverride(m).setAllow(Permission.ALL_VOICE_PERMISSIONS).queue();
-                        vc.createPermissionOverride(m).setAllow(Permission.VIEW_CHANNEL).queue();
+                        vc.putPermissionOverride(m).setAllow(Permission.ALL_VOICE_PERMISSIONS).queue();
+                        vc.putPermissionOverride(m).setAllow(Permission.VIEW_CHANNEL).queue();
                     }
                 }
                 break;
@@ -301,8 +301,8 @@ public class DiscMessageListener extends ListenerAdapter {
 
                             for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
                                 try {
-                                    v.createPermissionOverride(po.getMember()).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(po.getDenied()).queue();
-                                    v.createPermissionOverride(po.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(po.getDenied()).queue();
+                                    v.putPermissionOverride(po.getMember()).setAllow(Permission.VIEW_CHANNEL).queue();
                                 } catch (Exception er){
                                     if(engine.getProperties().debug)
                                         er.printStackTrace();
