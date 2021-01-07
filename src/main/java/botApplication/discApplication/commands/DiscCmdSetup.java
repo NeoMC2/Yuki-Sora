@@ -44,6 +44,10 @@ public class DiscCmdSetup implements DiscCommand {
                         }
                         switch (args[1].toLowerCase()) {
 
+                            case "boostload":
+                                engine.getDiscEngine().discBoostListener.update(true, event.getGuild());
+                                break;
+
                             case "boostrole":
                                 Role role = null;
 
@@ -62,7 +66,7 @@ public class DiscCmdSetup implements DiscCommand {
 
                                 break;
 
-                            case "boostCategory":
+                            case "boostcategory":
                                 Category category = null;
 
                                 try {

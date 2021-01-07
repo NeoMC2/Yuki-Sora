@@ -14,7 +14,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class DiscApplicationEngine {
     private DiscCmdVote voteCmd;
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
-    public DiscBoostListener test;
+    public DiscBoostListener discBoostListener;
 
     public DiscApplicationEngine(Engine engine) {
         this.engine = engine;
@@ -130,8 +129,8 @@ public class DiscApplicationEngine {
         builder.addEventListeners(new DiscReactionListener(engine));
         builder.addEventListeners(new DiscChannelAddListener(engine));
         builder.addEventListeners(new DiscVoiceListener(engine));
-        test = new DiscBoostListener(engine);
-        builder.addEventListeners(test);
+        discBoostListener = new DiscBoostListener(engine);
+        builder.addEventListeners(discBoostListener);
     }
 
     public void updateAllServerStats() {
