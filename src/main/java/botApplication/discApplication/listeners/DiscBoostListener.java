@@ -38,7 +38,6 @@ public class DiscBoostListener extends ListenerAdapter {
         ArrayList<Member> boosters = new ArrayList<>();
         ArrayList<DiscApplicationUser> boostersUsers = new ArrayList<>();
         ArrayList<String> boosterIds = new ArrayList<>();
-        ArrayList<String> newBoosters = new ArrayList<>();
 
         for (Member m:guild.getBoosters()) {
             boosterIds.add(m.getUser().getId());
@@ -57,7 +56,6 @@ public class DiscBoostListener extends ListenerAdapter {
                 //if its a new booster
                 if(!usr.isBooster()){
                     usr.setBooster(true);
-                    newBoosters.add(usr.getUserId());
                     EmbedBuilder b = new EmbedBuilder().setColor(Color.MAGENTA).setAuthor(guild.getName() + " says thank you!", null, boosters.get(0).getUser().getAvatarUrl()).setDescription("As a little reward for your support you've got the donation role on " + guild.getName() + ".\n\n" +
                             "Furthermore you've got your own channel in the donation category!\n\nYou can invite members by typing `!inv <member...>`\nRemove them by typing `!rem <member...>`\nChange the name by typing `!name <name>`\nChange the channel type by typing either `!vc` or `!tc`\n\nThanks again and have fun on our discord, your " + guild.getName() + " team :tada: :confetti_ball: :tada: :confetti_ball: ");
                     boosters.get(i).getUser().openPrivateChannel().complete().sendMessage(b.build()).queue();
@@ -77,7 +75,7 @@ public class DiscBoostListener extends ListenerAdapter {
 
         for (DiscApplicationUser usr:engine.getDiscEngine().getFilesHandler().getUsers().values()){
             Member u = guild.getMemberById(usr.getUserId());
-            if( !newBoosters.contains(usr.getUserId()) && usr.isBooster() && boosterIds.contains(u.getUser().getId())){
+            if(usr.isBooster() && !boosterIds.contains(u.getUser().getId())){
                 guild.removeRoleFromMember(u, guild.getRoleById(server.getBoosterRoleId())).queue();
                 for (String s: usr.getBoosterChans()){
                     VoiceChannel vc = null;
