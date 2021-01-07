@@ -36,6 +36,8 @@ public class DiscUtilityBase {
 
     public static DiscApplicationUser lookForUserById(User discuser, Engine engine) {
         DiscApplicationUser user = null;
+        if(discuser == null)
+            return null;
 
         try {
             user = engine.getDiscEngine().getFilesHandler().getUserById(discuser.getId());

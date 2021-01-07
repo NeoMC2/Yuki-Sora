@@ -146,6 +146,9 @@ public class ConsoleCommandHandler {
 
             case "botslaves":
                 final String[] s = {""};
+                if(engine.getProperties().botSlaves == null)
+                    engine.getProperties().botSlaves = new ArrayList<>();
+
                 engine.getProperties().botSlaves.forEach(e -> {
                     s[0] += e + "\n";
                 });

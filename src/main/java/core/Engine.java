@@ -1,5 +1,7 @@
 package core;
 
+import botApplication.botApi.BotRequestApi;
+import botApplication.botApi.BotRequestHandler;
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
@@ -21,6 +23,9 @@ public class Engine {
     public JSONObject lang;
     public JSONObject pics;
     private Properties properties;
+
+    private BotRequestApi botRequestApi = new BotRequestApi(this);
+    private BotRequestHandler botRequestHandler = new BotRequestHandler(this);
 
     public void boot(String[] args) {
         loadLanguage();
@@ -232,5 +237,13 @@ public class Engine {
 
     public NetworkManager getNetworkManager() {
         return networkManager;
+    }
+
+    public BotRequestApi getBotRequestApi() {
+        return botRequestApi;
+    }
+
+    public BotRequestHandler getBotRequestHandler() {
+        return botRequestHandler;
     }
 }

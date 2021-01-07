@@ -1,0 +1,14 @@
+Yuki-Sora patched to Patch_4.3
+
+New features
+• Boost features
+•
+•
+
+Bugfix
+• Empty botslave array initialize if its null
+• Added read timeout to web requests
+• Music bot slave single commands works again
+
+Improvements
+• Added very important space between jobs short name and jobs name

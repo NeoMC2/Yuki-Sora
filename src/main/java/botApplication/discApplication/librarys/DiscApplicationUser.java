@@ -4,6 +4,7 @@ import botApplication.discApplication.librarys.certification.DiscCertificationLe
 import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.api.entities.User;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.io.Serializable;
@@ -37,6 +38,10 @@ public class DiscApplicationUser implements Serializable {
 
     private boolean saidHello = false;
 
+    private boolean isBooster = false;
+
+    private ArrayList<String> boosterChans;
+
     public DiscApplicationUser() {
         edit = true;
     }
@@ -60,6 +65,16 @@ public class DiscApplicationUser implements Serializable {
         level = Math.toIntExact((long) obj.get("level"));
         maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
         maxItems = Math.toIntExact((long) obj.get("maxItems"));
+
+        try {
+            isBooster = (boolean) obj.get("isBooster");
+        } catch (Exception ignored){
+        }
+
+        try {
+            boosterChans = jsonArrayToArray((JSONArray) obj.get("boosterChannels"));
+        } catch (Exception ignored){
+        }
     }
 
     public void update(JSONObject obj) {
@@ -68,6 +83,15 @@ public class DiscApplicationUser implements Serializable {
         level = Math.toIntExact((long) obj.get("level"));
         maxMonsters = Math.toIntExact((long) obj.get("maxMonsters"));
         maxItems = Math.toIntExact((long) obj.get("maxItems"));
+    }
+
+    private ArrayList<String> jsonArrayToArray(JSONArray a){
+        ArrayList<String> s = new ArrayList<>();
+        for (Object o:a) {
+            String st = (String) o;
+            s.add(st);
+        }
+        return s;
     }
 
     public String getUserName() {
@@ -233,5 +257,28 @@ public class DiscApplicationUser implements Serializable {
     public void addCoins(int coins, Engine engine) {
         this.coins += coins;
         engine.getDiscEngine().getApiManager().giveCoinsToUser(userId, coins);
+    }
+
+    public boolean isBooster() {
+        return isBooster;
+    }
+
+    public void setBooster(boolean booster) {
+        edit = true;
+        isBooster = booster;
+    }
+
+    public void addBoosterChan(String s){
+        edit = true;
+        boosterChans.add(s);
+    }
+
+    public void clearBoosterChans(){
+        edit = true;
+        boosterChans.clear();
+    }
+
+    public ArrayList<String> getBoosterChans() {
+        return boosterChans;
     }
 }

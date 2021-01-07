@@ -30,6 +30,8 @@ public class DiscApplicationServer implements Serializable {
 
     private String vipRoleId;
     private String primeRoleId;
+    private String boosterRoleId;
+    private String boosterCategoryId;
 
     private boolean setupMode = false;
     private boolean setupDone = false;
@@ -72,6 +74,12 @@ public class DiscApplicationServer implements Serializable {
         vipRoleId = (String) obj.get("vipRoleId");
         defaultRoles = jsonArrayToArray((JSONArray) obj.get("roleIds"));
         autoChannels = jsonArrayToArray((JSONArray) obj.get("autoChannelIds"));
+
+        try {
+            boosterRoleId = (String) obj.get("boosterRoleId");
+            boosterCategoryId = (String) obj.get("boosterCategoryId");
+        } catch (Exception ignored){
+        }
 
         String dungeonMessage = (String) obj.get("dungeonQueueMessage");
         String dungeonEmoji = (String) obj.get("dungeonEmoji");
@@ -365,5 +373,23 @@ public class DiscApplicationServer implements Serializable {
 
     public void setEdit(boolean edit) {
         this.edit = edit;
+    }
+
+    public String getBoosterRoleId() {
+        return boosterRoleId;
+    }
+
+    public void setBoosterRoleId(String boosterRoleId) {
+        edit = true;
+        this.boosterRoleId = boosterRoleId;
+    }
+
+    public String getBoosterCategoryId() {
+        return boosterCategoryId;
+    }
+
+    public void setBoosterCategoryId(String boosterCategoryId) {
+        edit = true;
+        this.boosterCategoryId = boosterCategoryId;
     }
 }

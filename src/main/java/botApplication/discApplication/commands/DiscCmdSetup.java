@@ -36,6 +36,9 @@ public class DiscCmdSetup implements DiscCommand {
         String text = "";
         if (args.length >= 1) {
             switch (args[0].toLowerCase()) {
+                case "test":
+                    engine.getDiscEngine().test.update(true, event.getGuild());
+                    break;
                 case "settings":
                     if (args.length >= 2) {
                         if (args[1].equals("?")) {

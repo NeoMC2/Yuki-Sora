@@ -239,6 +239,8 @@ public class DiscApplicationFilesHandler {
         obj.put("vipRoleId", server.getVipRoleId());
         obj.put("roleIds", getArrayFromArray(server.getDefaultRoles()));
         obj.put("autoChannelIds", getArrayFromArray(server.getAutoChannels()));
+        obj.put("boosterRoleId", server.getBoosterRoleId());
+        obj.put("boosterCategoryId", server.getBoosterCategoryId());
 
         if(server.getDungeonQueueHandler() != null){
             obj.put("dungeonQueueMessage", server.getDungeonQueueHandler().getMsgId());
@@ -281,6 +283,8 @@ public class DiscApplicationFilesHandler {
         obj.put("level", user.getLevel());
         obj.put("maxMonsters", user.getMaxMonsters());
         obj.put("maxItems", user.getMaxItems());
+        obj.put("isBooster", user.isBooster());
+        obj.put("boosterChannels", getArrayFromArray(user.getBoosterChans()));
         return obj;
     }
 

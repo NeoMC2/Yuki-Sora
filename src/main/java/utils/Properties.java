@@ -24,4 +24,5 @@ public class Properties implements Serializable {
     public int saveSpeed = 10;
     public ArrayList<String> botSlaves;
     public String api;
+    public int apiPort = 5003;
 }

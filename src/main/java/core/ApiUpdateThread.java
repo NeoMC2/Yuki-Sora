@@ -16,7 +16,7 @@ public class ApiUpdateThread implements Runnable{
                 break;
             }
             try {
-                Thread.sleep(6000 * engine.getProperties().saveSpeed);
+                Thread.sleep(1000 * 10);
             } catch (InterruptedException e) {
                 if (engine.getProperties().debug) {
                     e.printStackTrace();
