@@ -257,7 +257,7 @@ public class DiscMessageListener extends ListenerAdapter {
                 if(tc != null){
                     for (Member m:mem) {
                         tc.createPermissionOverride(m).setAllow(Permission.ALL_TEXT_PERMISSIONS).queue();
-                        vc.putPermissionOverride(m).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL).queue();
+                        tc.putPermissionOverride(m).setAllow(Permission.MESSAGE_READ, Permission.VIEW_CHANNEL).queue();
                     }
                 } else if(vc != null){
                     for (Member m:mem) {
