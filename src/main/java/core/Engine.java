@@ -24,8 +24,8 @@ public class Engine {
     public JSONObject pics;
     private Properties properties;
 
-    private BotRequestApi botRequestApi = new BotRequestApi(this);
-    private BotRequestHandler botRequestHandler = new BotRequestHandler(this);
+    private final BotRequestApi botRequestApi = new BotRequestApi(this);
+    private final BotRequestHandler botRequestHandler = new BotRequestHandler(this);
 
     public void boot(String[] args) {
         loadLanguage();

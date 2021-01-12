@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class DiscBoostListener extends ListenerAdapter {
 
-    private Engine engine;
+    private final Engine engine;
 
     public DiscBoostListener(Engine engine) {
         this.engine = engine;

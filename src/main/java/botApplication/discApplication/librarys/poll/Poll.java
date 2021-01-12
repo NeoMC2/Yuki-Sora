@@ -102,8 +102,15 @@ public class Poll implements Serializable {
                 if (answer.equals(pa.getAnswerEmoji())) {
                     if (message == null)
                         pa.setCount(0);
-                    else
-                        pa.setCount(message.getReactions().size() - 1);
+                    else {
+                        for (MessageReaction mr :message.getReactions()){
+                            if(mr.getReactionEmote().getName().equals(pa.getAnswerEmoji())){
+                                pa.setCount(mr.getCount() - 1);
+                                break;
+                            }
+                        }
+                    }
+
                 }
                 des = des + pa.getAnswerEmoji() + " " + pa.getAnswer() + " ```Votes:" + pa.getCount() + "```" + "\n";
             }

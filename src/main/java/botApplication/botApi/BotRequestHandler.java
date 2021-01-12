@@ -13,7 +13,7 @@ import java.awt.*;
 
 public class BotRequestHandler {
 
-    private Engine engine;
+    private final Engine engine;
 
     public BotRequestHandler(Engine engine) {
         this.engine = engine;

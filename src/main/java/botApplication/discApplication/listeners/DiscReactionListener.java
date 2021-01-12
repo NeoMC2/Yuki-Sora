@@ -4,6 +4,8 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import botApplication.discApplication.librarys.poll.Poll;
 import core.Engine;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveAllEvent;
@@ -36,7 +38,7 @@ public class DiscReactionListener extends ListenerAdapter {
 
         Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
-            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), event.getChannel().getHistory().getMessageById(event.getMessageId()), engine);
+            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), getMessage(event.getChannel(), event.getMessageId()) , engine);
             return;
         }
         DungeonQueueHandler qh = getDungeonQueueHandler(s, event.getMessageId());
@@ -86,7 +88,7 @@ public class DiscReactionListener extends ListenerAdapter {
 
         Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
-            p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), event.getChannel().getHistory().getMessageById(event.getMessageId()), engine);
+            p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), getMessage(event.getChannel(), event.getMessageId()), engine);
             return;
         }
 
@@ -109,6 +111,15 @@ public class DiscReactionListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionRemoveAll(GuildMessageReactionRemoveAllEvent event) {
 
+    }
+
+    private Message getMessage(TextChannel tc, String id){
+        List<Message> messages = tc.getHistory().retrievePast(5).complete();
+        for(Message msg : messages){
+            if(msg.getId().equals(id))
+                return msg;
+        }
+        return null;
     }
 
     private boolean exec(List<User> users, String userId) {
