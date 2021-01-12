@@ -122,23 +122,29 @@ public class DiscMessageListener extends ListenerAdapter {
             //contains
             for (int i = 0; msgArgs.length > i; i++) {
                 switch (msgArgs[i].toLowerCase()) {
+                    case "manga":
+                        sendNormalText(event, "Who said Manga :O");
+                        return;
                     case "anime":
                         sendNormalText(event, "Who said Anime :O");
                         return;
                     case "baka":
-                        sendNormalText(event, "Baaaaaaaaaaaaaka! XD");
-                        return;
-                    case "jaja":
-                        sendNormalText(event, "JAJA HEIßT LECK MICH AM ARSCH :D ");
+                        sendNormalText(event, "**Baaaaaaaaaaaaaka!** XD");
                         return;
                     case "aloha":
                         sendNormalText(event, "Aloha " + event.getAuthor().getName() + " XD \nDas hat mir der Mosel beigebracht ");
+                        return;
+                    case "was liebt hanna":
+                    case "was mag hanna":
+                    case "was sucht hanna":
+                    case "was will hanna":
+                    case "was möchte hanna":
+                        sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
                         return;
                 }
             }
         }
         return;
-
     }
 
     private void sendNormalText(GuildMessageReceivedEvent event, String Message) {
