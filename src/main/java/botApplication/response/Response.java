@@ -30,6 +30,10 @@ public abstract class Response {
     public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
     }
 
+    public void onError(Exception e){
+
+    }
+
     public enum ResponseTyp {
         Discord
     }

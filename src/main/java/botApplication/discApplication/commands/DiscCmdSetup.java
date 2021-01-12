@@ -44,6 +44,45 @@ public class DiscCmdSetup implements DiscCommand {
                         }
                         switch (args[1].toLowerCase()) {
 
+                            case "boostload":
+                                engine.getDiscEngine().discBoostListener.update(true, event.getGuild());
+                                break;
+
+                            case "boostrole":
+                                Role role = null;
+
+                                try {
+                                    role = event.getGuild().getRoleById(args[2]);
+                                } catch (Exception e) {
+                                }
+
+                                if (role == null) {
+                                    engine.getDiscEngine().getTextUtils().sendError("This role doesn't exist", event.getChannel(), false);
+                                    return;
+                                }
+
+                                server.setBoosterRoleId(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("Boost role set!", event.getChannel());
+
+                                break;
+
+                            case "boostcategory":
+                                Category category = null;
+
+                                try {
+                                    category = event.getGuild().getCategoryById(args[2]);
+                                } catch (Exception e) {
+                                }
+
+                                if (category == null) {
+                                    engine.getDiscEngine().getTextUtils().sendError("This category doesn't exist", event.getChannel(), false);
+                                    return;
+                                }
+
+                                server.setBoosterCategoryId(args[2]);
+                                engine.getDiscEngine().getTextUtils().sendSucces("Boost category set!", event.getChannel());
+                                break;
+
                             case "deafenmove":
                                 server.setMoveMemberOnSDeafen(!server.isMoveMemberOnSDeafen());
                                 engine.getDiscEngine().getTextUtils().sendWarining("deafen move is now: " + server.isMoveMemberOnSDeafen() + "!", event.getChannel());

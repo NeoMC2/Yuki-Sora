@@ -142,15 +142,15 @@ public class FightHandler {
                     break;
 
                 case "info": {
-                    String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
-                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
+                    String m1 = m1JsonRoot.get("name") + " with " + getNumber(m1Json, "hp") + " hp";
+                    String m2 = m2JsonRoot.get("name") + " with " + getNumber(m2Json, "hp") + " hp";
                     sameUser = true;
                     return m1 + " against " + m2;
                 }
 
                 case "help":
-                    String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
-                    String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
+                    String m1 = m1JsonRoot.get("name") + " with " + getNumber(m1Json, "hp") + " hp";
+                    String m2 = m2JsonRoot.get("name") + " with " + getNumber(m2Json, "hp") + " hp";
                     sameUser = true;
                     return "You are in a fight!\n\n" + m1 + " against " + m2 + "\n\nType info to see the info again and a1, a2, a3, a4 to use one of your attackslots";
 
@@ -184,8 +184,8 @@ public class FightHandler {
     private boolean testAi(boolean m1Ai, String user2, String m22) {
         if (m1Ai) {
             JSONObject res = engine.getDiscEngine().getApiManager().fight(user2, true, false, null, m22, null, null);
-            m1Json = (JSONObject) res.get("monster1");
-            m2Json = (JSONObject) res.get("monster2");
+            m2Json = (JSONObject) res.get("monster1");
+            m1Json = (JSONObject) res.get("monster2");
             lastDmg = getNumber(res, "dmg");
             return true;
         }
@@ -194,13 +194,11 @@ public class FightHandler {
 
     private String fightInfo() {
         fightDone = calcFightDone();
-        String m1 = m1JsonRoot.get("name") + " with " + m1Json.get("hp") + " hp";
-        String m2 = m2JsonRoot.get("name") + " with " + m2Json.get("hp") + " hp";
 
         if (round) {
-            return m1 + " attacked " + m2 + " and made " + lastDmg + " damage";
+            return m1JsonRoot.get("name") + " with " + getNumber(m1Json, "hp") + " hp attacked " + m2JsonRoot.get("name") + " and made " + lastDmg + " damage. " + m2JsonRoot.get("name") + " has " + getNumber(m2Json, "hp") + " hp left";
         } else {
-            return m2 + " attacked " + m1 + " and made " + lastDmg + " damage";
+            return m2JsonRoot.get("name") + " with " + getNumber(m2Json, "hp") + " hp attacked " + m1JsonRoot.get("name") + " and made " + lastDmg + " damage. " + m1JsonRoot.get("name") + " has " + getNumber(m1Json, "hp") + " hp left";
         }
     }
 
@@ -224,5 +222,17 @@ public class FightHandler {
                 return user1;
         }
         return null;
+    }
+
+    public String getAgainst(){
+        return m1JsonRoot.get("name") + " against " + m2JsonRoot.get("name");
+    }
+
+    public String getRoundImage(){
+        if (round) {
+            return (String) m1JsonRoot.get("imageUrl");
+        } else {
+            return (String) m2JsonRoot.get("imageUrl");
+        }
     }
 }

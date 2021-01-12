@@ -43,7 +43,7 @@ public class DiscReactionListener extends ListenerAdapter {
         if (qh != null) {
             event.getChannel().clearReactionsById(event.getMessageId()).complete();
             event.getChannel().addReactionById(qh.getMsgId(), qh.getEmoji()).queue();
-            qh.click(event.getChannel(), engine, event.getGuild(), event.getMember());
+            qh.click(event.getChannel(), engine, event.getGuild(), event.getMember(), s);
             return;
         }
 

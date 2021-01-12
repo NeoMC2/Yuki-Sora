@@ -1,6 +1,12 @@
 # Welcome to the Yuki-Sora wiki!
 Yuki-Sora is a Discordbot with a lot of features. Here you can see all the stuff you need to know about each module.
 
+# Other Yuki Reposetorys
+* [Database](https://github.com/MindCollaps/Yuki-Sora-Database)
+* [Homepage](https://github.com/MindCollaps/mindcollaps.de)
+* [Lazy Team](https://github.com/MindCollaps/Lazy-Team)
+* [Music Slave](https://github.com/MindCollaps/Yuki-Sora-MusicSlave)
+
 # Wikis
 * [Monsters](https://github.com/NeoMC2/Yuki-Sora/wiki/Monsters)
 * [Items](https://github.com/NeoMC2/Yuki-Sora/wiki/Item)

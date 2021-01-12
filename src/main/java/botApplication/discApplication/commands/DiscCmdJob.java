@@ -27,7 +27,7 @@ public class DiscCmdJob implements DiscCommand {
                 String jbS = "";
                 for (Object o : jbss) {
                     JSONObject ob = (JSONObject) o;
-                    jbS += "Work as " + ob.get("doing") + " at " + ob.get("jobName") + "[" + ob.get("shortName") + "]\n";
+                    jbS += "Work as " + ob.get("doing") + " at " + ob.get("jobName") + " [" + ob.get("shortName") + "]\n";
                 }
                 engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
                 return;
@@ -94,7 +94,7 @@ public class DiscCmdJob implements DiscCommand {
                                 break;
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendSucces("You work as " + o.get("doing") + " at " + o.get("jobName") + "[" + o.get("shortName") + "]. You are " + ujb.get("jobPosition") + " and earn " + earning + ". You have " + ujb.get("jobXP") + " xp and " + ujb.get("jobLevel") + " level! You are at " + (ujb.get("jobStreak") + ":fire:") , event.getChannel());
+                        engine.getDiscEngine().getTextUtils().sendSucces("You work as " + o.get("doing") + " at " + o.get("jobName") + " [" + o.get("shortName") + "]. You are " + ujb.get("jobPosition") + " and earn " + earning + ". You have " + ujb.get("jobXP") + " xp and " + ujb.get("jobLevel") + " level! You are at " + (ujb.get("jobStreak") + ":fire:") , event.getChannel());
                     } else {
 
                     }

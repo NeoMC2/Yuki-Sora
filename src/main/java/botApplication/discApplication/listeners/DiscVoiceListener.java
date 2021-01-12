@@ -17,12 +17,16 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
     private final Engine engine;
     private HashMap<String, VoiceChannel> deafens = new HashMap<>();
+    private HashMap<String, ScheduledExecutorService> scheudlers = new HashMap<>();
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;
@@ -116,21 +120,36 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
+        if(scheudlers.containsKey(event.getMember().getId())){
+            scheudlers.get(event.getMember().getId()).shutdown();
+            scheudlers.remove(event.getMember().getId());
+        }
+        
         DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
         if(event.isSelfDeafened()){
-            deafens.put(event.getMember().getId(), event.getVoiceState().getChannel());
-            if(server.isMoveMemberOnSDeafen()){
-                VoiceChannel afk = event.getGuild().getAfkChannel();
-                if(afk != null){
-                    event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+            Member m = event.getMember();
+            Runnable task = () -> {
+                if(!m.getVoiceState().isDeafened())
+                    return;
+                deafens.put(event.getMember().getId(), event.getVoiceState().getChannel());
+                if(server.isMoveMemberOnSDeafen()){
+                    VoiceChannel afk = event.getGuild().getAfkChannel();
+                    if(afk != null){
+                        event.getGuild().moveVoiceMember(event.getMember(), afk).queue();
+                    }
                 }
-            }
+            };
+            ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
+            executor.schedule(task, 10, TimeUnit.MINUTES);
+            scheudlers.put(event.getMember().getId(), executor);
         } else {
             VoiceChannel v = deafens.get(event.getMember().getId());
             if(v != null){
-                event.getGuild().moveVoiceMember(event.getMember(), v).queue();
-                deafens.remove(event.getMember());
+                if(event.getMember().getVoiceState().getChannel().getId().equals(event.getGuild().getAfkChannel().getId())){
+                    event.getGuild().moveVoiceMember(event.getMember(), v).queue();
+                }
             }
+            deafens.remove(event.getMember().getId());
         }
     }
 

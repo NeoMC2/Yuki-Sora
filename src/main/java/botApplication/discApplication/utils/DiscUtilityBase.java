@@ -36,6 +36,8 @@ public class DiscUtilityBase {
 
     public static DiscApplicationUser lookForUserById(User discuser, Engine engine) {
         DiscApplicationUser user = null;
+        if(discuser == null)
+            return null;
 
         try {
             user = engine.getDiscEngine().getFilesHandler().getUserById(discuser.getId());
@@ -179,8 +181,16 @@ public class DiscUtilityBase {
         String attss = getAttacksListFromAttackList(engine, (JSONArray) engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) mon.get("_id")).get("data"));
 
 
-        s = root.get("name") + ", xp: " + mon.get("xp") + ", level: " + mon.get("level") + ", hp: " + mon.get("hp") + " [" + mon.get("maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Selected Attacks**\n" + attss);
+        s = root.get("name") + ", xp: " + getNumber(mon, "xp") + ", level: " + mon.get("level") + ", hp: " + getNumber(mon, "hp") + " [" + getNumber(mon, "maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Available Attacks**\n" + attss);
         return s;
+    }
+
+    private static int getNumber(JSONObject o, String r) {
+        try {
+            return Math.toIntExact((Long) o.get(r));
+        } catch (Exception e) {
+            return Math.toIntExact(Math.round((Double) o.get(r)));
+        }
     }
 
     public static JSONObject findAttack(String id, JSONArray atts){

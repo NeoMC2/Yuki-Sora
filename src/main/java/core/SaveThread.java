@@ -16,7 +16,7 @@ public class SaveThread implements Runnable {
                 break;
             }
             try {
-                Thread.sleep(600000 * engine.getProperties().saveSpeed);
+                Thread.sleep(60000 * engine.getProperties().saveSpeed);
             } catch (InterruptedException e) {
                 if (engine.getProperties().debug) {
                     e.printStackTrace();

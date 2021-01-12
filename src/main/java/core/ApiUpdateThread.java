@@ -16,7 +16,7 @@ public class ApiUpdateThread implements Runnable{
                 break;
             }
             try {
-                Thread.sleep(6000 * engine.getProperties().saveSpeed);
+                Thread.sleep(1000 * 10);
             } catch (InterruptedException e) {
                 if (engine.getProperties().debug) {
                     e.printStackTrace();
@@ -25,7 +25,6 @@ public class ApiUpdateThread implements Runnable{
             if (stop) {
                 break;
             }
-            engine.saveProperties();
             if (engine.getDiscEngine().isRunning()) {
                 engine.getDiscEngine().getFilesHandler().updateApiData();
             }

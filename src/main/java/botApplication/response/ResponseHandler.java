@@ -47,10 +47,12 @@ public class ResponseHandler {
 
     public boolean lookForResponse(GuildMessageReceivedEvent update) {
         final ArrayList<Response> r = responses;
+        Response re = null;
         try {
             for (Response res : r) {
                 if (update.getAuthor().getId().equals(res.discUserId)) {
                     if (update.getChannel().getId().equals(res.discChannelId)) {
+                        re = res;
                         engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
                         responses.remove(res);
                         res.respondDisc(update);
@@ -62,6 +64,16 @@ public class ResponseHandler {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
             if (engine.getProperties().debug)
                 e.printStackTrace();
+
+            if (re != null){
+             try {
+                 re.onError(e);
+             } catch (Exception ee){
+                 engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
+                 if (engine.getProperties().debug)
+                     e.printStackTrace();
+             }
+            }
             return false;
         }
         return false;
