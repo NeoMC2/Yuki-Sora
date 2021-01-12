@@ -134,14 +134,17 @@ public class DiscMessageListener extends ListenerAdapter {
                     case "aloha":
                         sendNormalText(event, "Aloha " + event.getAuthor().getName() + " XD \nDas hat mir der Mosel beigebracht ");
                         return;
-                    case "was liebt hanna":
-                    case "was mag hanna":
-                    case "was sucht hanna":
-                    case "was will hanna":
-                    case "was möchte hanna":
-                        sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
-                        return;
                 }
+            }
+
+            switch (message.toLowerCase()){
+                case "was liebt hanna":
+                case "was mag hanna":
+                case "was sucht hanna":
+                case "was will hanna":
+                case "was möchte hanna":
+                    sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
+                    return;
             }
         }
         return;

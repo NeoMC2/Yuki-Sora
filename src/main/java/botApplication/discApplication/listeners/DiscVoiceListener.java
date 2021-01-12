@@ -25,8 +25,11 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
     private final Engine engine;
+    
+    /* Feature deleted by member request
     private final HashMap<String, VoiceChannel> deafens = new HashMap<>();
     private final HashMap<String, ScheduledExecutorService> scheudlers = new HashMap<>();
+     */
 
     public DiscVoiceListener(Engine engine) {
         this.engine = engine;
@@ -118,6 +121,7 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
     }
 
+    /* Feature deleted by member request
     @Override
     public void onGuildVoiceSelfDeafen(GuildVoiceSelfDeafenEvent event) {
         if(scheudlers.containsKey(event.getMember().getId())){
@@ -152,6 +156,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             deafens.remove(event.getMember().getId());
         }
     }
+     */
 
     private void setupVc(VoiceChannel vc, Guild gc, Member m) {
         VoiceChannel nvc = gc.createVoiceChannel(vc.getName() + " [AC]")
