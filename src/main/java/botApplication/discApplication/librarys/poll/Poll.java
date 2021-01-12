@@ -91,7 +91,7 @@ public class Poll implements Serializable {
         this.guildId = guildId;
     }
 
-    public Message update(String answer, int quant, Guild g, Member voter, Engine engine) {
+    public Message update(String answer, int quant, Guild g, Member voter, Message message, Engine engine) {
         TextChannel t = g.getTextChannelById(channel);
         Message msg;
         EmbedBuilder ans = null;
@@ -100,7 +100,10 @@ public class Poll implements Serializable {
             for (int i = 0; i < answers.size(); i++) {
                 PollAnswer pa = answers.get(i);
                 if (answer.equals(pa.getAnswerEmoji())) {
-                    pa.setCount(pa.getCount() + quant);
+                    if (message == null)
+                        pa.setCount(0);
+                    else
+                        pa.setCount(message.getReactions().size() - 1);
                 }
                 des = des + pa.getAnswerEmoji() + " " + pa.getAnswer() + " ```Votes:" + pa.getCount() + "```" + "\n";
             }
@@ -178,7 +181,7 @@ public class Poll implements Serializable {
 
     public void create(Guild g, Engine engine) {
         TextChannel t = g.getTextChannelById(channel);
-        Message msg = update("0x33333", -1000, g, null, engine);
+        Message msg = update("0x33333", -1000, g, null, null, engine);
         for (PollAnswer pa : answers) {
             try {
                 t.addReactionById(msg.getId(), pa.getAnswerEmoji()).complete();
