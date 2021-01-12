@@ -22,9 +22,13 @@ public class DiscReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionAdd(GuildMessageReactionAddEvent event) {
-        if (event.getUser().isBot()) {
-            return;
+        try {
+            if (event.getUser().isBot()) {
+                return;
+            }
+        } catch (Exception ignored) {
         }
+
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s == null) {
             return;
@@ -32,7 +36,7 @@ public class DiscReactionListener extends ListenerAdapter {
 
         Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
-            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), engine);
+            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), event.getChannel().getHistory().getMessageById(event.getMessageId()), engine);
             return;
         }
         DungeonQueueHandler qh = getDungeonQueueHandler(s, event.getMessageId());
@@ -69,8 +73,11 @@ public class DiscReactionListener extends ListenerAdapter {
 
     @Override
     public void onGuildMessageReactionRemove(GuildMessageReactionRemoveEvent event) {
-        if (event.getUser().isBot()) {
-            return;
+        try {
+            if (event.getUser().isBot()) {
+                return;
+            }
+        } catch (Exception ignored) {
         }
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s == null) {
@@ -79,7 +86,7 @@ public class DiscReactionListener extends ListenerAdapter {
 
         Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
-            p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), engine);
+            p.update(event.getReactionEmote().getName(), -1, event.getGuild(), event.getMember(), event.getChannel().getHistory().getMessageById(event.getMessageId()), engine);
             return;
         }
 
