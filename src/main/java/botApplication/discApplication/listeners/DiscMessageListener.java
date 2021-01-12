@@ -238,8 +238,11 @@ public class DiscMessageListener extends ListenerAdapter {
         DiscApplicationServer server = DiscUtilityBase.lookForServer(e.getGuild(), engine);
         DiscApplicationUser user = DiscUtilityBase.lookForUserById(e.getAuthor(), engine);
 
-        if(!user.isBooster())
-            return;
+        try {
+            if(!user.isBooster())
+                return;
+        } catch (Exception ignored){
+        }
 
         String[] inv1 = e.getMessage().getContentRaw().split(" ");
         String invoke = inv1[0].substring(1);

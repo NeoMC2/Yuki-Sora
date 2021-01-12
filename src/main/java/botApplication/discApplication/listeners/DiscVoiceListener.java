@@ -25,7 +25,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     public static ArrayList<VoiceChannel> active = new ArrayList<>();
     private final Engine engine;
-    
+
     /* Feature deleted by member request
     private final HashMap<String, VoiceChannel> deafens = new HashMap<>();
     private final HashMap<String, ScheduledExecutorService> scheudlers = new HashMap<>();
