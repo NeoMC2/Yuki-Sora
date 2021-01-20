@@ -143,8 +143,20 @@ public class DiscMessageListener extends ListenerAdapter {
                 case "was sucht hanna":
                 case "was will hanna":
                 case "was möchte hanna":
+                case "was isst hanna":
+                case "was braucht hanna":
+                case "was holt hanna":
                     sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
                     return;
+
+                case "ich will hanna":
+                    sendNormalText(event, "HAHAHAHAHAHAHAHAHAHAHAHAHAHA\n\n\nNo");
+                    return;
+            }
+
+            if(event.getAuthor().getId().equals("510872452654694410")){
+                if(event.getMessage().getContentRaw().equals("was will ich"))
+                    sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
             }
         }
         return;

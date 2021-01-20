@@ -283,17 +283,22 @@ public class DiscApplicationFilesHandler {
         obj.put("level", user.getLevel());
         obj.put("maxMonsters", user.getMaxMonsters());
         obj.put("maxItems", user.getMaxItems());
+        //these will cahted in methode
         obj.put("isBooster", user.isBooster());
         obj.put("boosterChannels", getArrayFromArray(user.getBoosterChans()));
         return obj;
     }
 
     private JSONArray getArrayFromArray(ArrayList<String> ar) {
-        JSONArray arr = new JSONArray();
-        for (String s : ar) {
-            arr.add(s);
+        try {
+            JSONArray arr = new JSONArray();
+            for (String s : ar) {
+                arr.add(s);
+            }
+            return arr;
+        } catch (Exception e){
+            return new JSONArray();
         }
-        return arr;
     }
 
     public HashMap<String, DiscApplicationServer> getServers() {

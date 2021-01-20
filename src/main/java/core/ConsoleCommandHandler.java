@@ -187,10 +187,13 @@ public class ConsoleCommandHandler {
 
         @Override
         public void run() {
-            String line;
+            String line = "";
             Scanner scanner = new Scanner(System.in);
             while (true) {
-                line = scanner.nextLine();
+                try {
+                    line = scanner.nextLine();
+                } catch (Exception e){
+                }
                 try {
                     handleConsoleCommand(line);
                 } catch (Exception e) {
