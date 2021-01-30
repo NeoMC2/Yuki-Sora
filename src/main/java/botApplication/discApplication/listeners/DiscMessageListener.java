@@ -38,7 +38,6 @@ public class DiscMessageListener extends ListenerAdapter {
         boolean commandWorked = false;
 
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
-            engine.getUtilityBase().printOutput(" message listener received guild message!", true);
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
             }

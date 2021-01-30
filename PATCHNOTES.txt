@@ -1,4 +1,4 @@
-Yuki-Sora patched to Patch_4.3 <HOTFIX>
+Yuki-Sora patched to Patch_4.3
 
 New features
 •
@@ -6,8 +6,8 @@ New features
 •
 
 Bugfix
-• User load error fix
-• User save error fix
+•
+•
 •
 
 Improvements
