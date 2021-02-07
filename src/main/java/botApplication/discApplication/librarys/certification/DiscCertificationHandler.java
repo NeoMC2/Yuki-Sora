@@ -2,6 +2,7 @@ package botApplication.discApplication.librarys.certification;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
+import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -22,7 +23,12 @@ public class DiscCertificationHandler {
     public void addMemberCertification(Member member, Guild guild) {
         ArrayList<Role> roles = new ArrayList<>();
         engine.getUtilityBase().printOutput(consMsgDef + " !Add member certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
-        DiscApplicationUser usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.Member);
+        DiscApplicationUser usr = DiscUtilityBase.lookForUserById(member.getUser(), engine);
+        boolean neww = false;
+        if(usr == null) {
+            usr = engine.getDiscEngine().getFilesHandler().createNewUser(member.getUser(), DiscCertificationLevel.Member);
+            neww = true;
+        }
         DiscApplicationServer server = engine.getDiscEngine().getFilesHandler().getServerById(guild.getId());
 
         usr.getServers().add(guild.getId());
@@ -39,7 +45,7 @@ public class DiscCertificationHandler {
         }
 
         try {
-            if (!usr.isSaidHello()) {
+            if (neww) {
                 engine.getDiscEngine().getTextUtils().sendCustomMessage("We have a new Member here 🎊. Say hello to " + member.getUser().getName() + "!", guild.getTextChannelById(server.getWelcomeMessageChannel()), "Welcome", Color.YELLOW);
                 usr.setSaidHello(true);
             }

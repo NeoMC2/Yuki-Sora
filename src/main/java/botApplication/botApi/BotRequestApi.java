@@ -100,7 +100,7 @@ public class BotRequestApi {
             try {
                 rec = handleRec(req);
             } catch (Exception e) {
-                if (engine.getProperties().debug)
+                    if (engine.getProperties().debug)
                     e.printStackTrace();
                 sendResponse(httpExchange, "{ \"status\" : \"400\", \"response\" : \"Error with json file\"}", 400);
                 engine.getUtilityBase().printOutput(consMsgDef + "!!!Error in request -> Respond: " + "400" + "!!!", true);

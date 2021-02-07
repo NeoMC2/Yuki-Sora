@@ -328,6 +328,10 @@ public class DiscCmdSetup implements DiscCommand {
                                             engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
                                             continue;
                                         }
+                                        if(roleType == DiscRole.RoleType.Member)
+                                            server.setDefaultMemberRoleId(role.getId());
+                                        if(roleType == DiscRole.RoleType.TempGamer)
+                                            server.setDefaultTempGamerRoleId(role.getId());
                                         discRole.addRoleType(roleType);
                                         discRole.setName(role.getName());
                                         discRole.setId(role.getId());

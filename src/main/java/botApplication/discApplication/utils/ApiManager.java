@@ -10,7 +10,7 @@ public class ApiManager {
 
     private final String apiToken;
     private final Engine engine;
-    private final String api;
+    private String api;
 
     public ApiManager(Engine engine) {
         JSONObject se = null;
@@ -24,8 +24,6 @@ public class ApiManager {
 
         if(engine.getProperties().api != null)
             this.api = engine.getProperties().api;
-        else
-            api = "https://yuki.mindcollaps.de/api/yuki";
     }
 
     public JSONObject getServerById(String id){

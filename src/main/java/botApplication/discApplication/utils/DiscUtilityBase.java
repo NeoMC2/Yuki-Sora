@@ -178,7 +178,11 @@ public class DiscUtilityBase {
             a4T = getAttackInfo(a4);
         }
 
-        String attss = getAttacksListFromAttackList(engine, (JSONArray) engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) mon.get("_id")).get("data"));
+        String attss = "";
+        try {
+            attss = getAttacksListFromAttackList(engine, (JSONArray) engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) mon.get("_id")).get("data"));
+        } catch (Exception e){
+        }
 
 
         s = root.get("name") + ", xp: " + getNumber(mon, "xp") + ", level: " + mon.get("level") + ", hp: " + getNumber(mon, "hp") + " [" + getNumber(mon, "maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Available Attacks**\n" + attss);
