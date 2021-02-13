@@ -93,7 +93,6 @@ public class DungeonQueueHandler implements Serializable {
                 try {
                     tc.deleteMessages(tc.getIterableHistory().complete()).queue();
                 } catch (Exception e) {
-                    e.printStackTrace();
                 }
                 ch.getG().removeRoleFromMember(ch.getM(), ch.getG().getRoleById(ch.getCh().getRoleId())).queue();
                 break;

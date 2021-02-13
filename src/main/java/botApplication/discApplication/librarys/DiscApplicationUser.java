@@ -1,7 +1,6 @@
 package botApplication.discApplication.librarys;
 
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
-import botApplication.discApplication.librarys.job.UserJob;
 import core.Engine;
 import net.dv8tion.jda.api.entities.User;
 import org.json.simple.JSONArray;
@@ -29,7 +28,6 @@ public class DiscApplicationUser implements Serializable {
     private Date lastWorkTime;
     private Date lastDungeonVisit;
     private long coins = 20;
-    private UserJob userJob;
     private int xp;
     private int level;
 
@@ -178,16 +176,6 @@ public class DiscApplicationUser implements Serializable {
 
     public long getCoins() {
         return coins;
-    }
-
-    public UserJob getUserJob() {
-        edit = true;
-        return userJob;
-    }
-
-    public void setUserJob(UserJob userJob) {
-        edit = true;
-        this.userJob = userJob;
     }
 
     public int getXp() {

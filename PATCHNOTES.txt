@@ -1,14 +1,14 @@
 Yuki-Sora patched to Patch_4.3
 
 New features
-•
+• Server stats
 •
 •
 
 Bugfix
-•
-•
+• Dungeon queue gets uploaded now
+• Unhandled exception in certification process
 •
 
 Improvements
-• 
+• Deleted unused commands

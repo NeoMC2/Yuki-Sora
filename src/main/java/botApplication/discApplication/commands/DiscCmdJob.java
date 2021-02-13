@@ -131,14 +131,4 @@ public class DiscCmdJob implements DiscCommand {
     public void actionTelegram(Member member, Engine engine, DiscApplicationUser user, String[] args) {
 
     }
-
-    private String evolved(String msg, DiscApplicationUser user, Engine engine) {
-        if (user.getUserJob().isLvlUp()) {
-            msg += "\n\n" + engine.lang("cmd.work.info.levelUp", user.getLang(), new String[]{String.valueOf(user.getUserJob().getJobLevel())});
-        }
-        if (user.getUserJob().isPositionUp()) {
-            msg += "\n\n" + engine.lang("cmd.work.info.positionUp", user.getLang(), new String[]{String.valueOf(user.getUserJob().jobRankToString(user.getUserJob().getJobRank()))});
-        }
-        return msg;
-    }
 }

@@ -3,7 +3,8 @@ package botApplication.discApplication.librarys;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonChannelHandler;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import core.Engine;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -101,10 +102,6 @@ public class DiscApplicationServer implements Serializable {
 
     }
 
-    public void update(JSONObject obj){
-
-    }
-
     private ArrayList<String> jsonArrayToArray(JSONArray a){
         ArrayList<String> s = new ArrayList<>();
         for (Object o:a) {
@@ -116,11 +113,17 @@ public class DiscApplicationServer implements Serializable {
 
     public void updateServerStats(Engine engine) {
         Guild g = engine.getDiscEngine().getBotJDA().getGuildById(serverID);
-        try {
-            g.getCategoryById(memberCountCategoryId).getManager().setName("\uD83D\uDCCAMember Count: " + g.getMembers().size()).queue();
-        } catch (Exception e) {
-
-        }
+        if(getMemberCountCategoryId() != null)
+            if(!getMemberCountCategoryId().equals("")){
+                Category category = g.getCategoryById(getMemberCountCategoryId());
+                category.getManager().setName("\uD83D\uDCCAServer stats").queue();
+                for (GuildChannel ch:category.getChannels()) {
+                    ch.delete().queue();
+                }
+                Role mrole = g.getRoleById(getDefaultMemberRoleId());
+                VoiceChannel vc = category.createVoiceChannel("\uD83D\uDCCAMembers: " + g.getMemberCount()).complete();
+                vc.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
+            }
     }
 
     public String getServerName() {

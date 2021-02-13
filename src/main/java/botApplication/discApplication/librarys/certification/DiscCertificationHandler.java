@@ -56,7 +56,10 @@ public class DiscCertificationHandler {
 
     public void removeCertification(Member member, Guild guild) {
         ArrayList<Role> roles = new ArrayList<>();
-        engine.getUtilityBase().printOutput(consMsgDef + " !Remove member certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
+        try {
+            engine.getUtilityBase().printOutput(consMsgDef + " !Remove member certification: " + member.getUser().getName() + " Id: " + member.getUser().getId() + "!", true);
+        } catch (Exception e){
+        }
         DiscApplicationUser usr = null;
         try {
             usr = engine.getDiscEngine().getFilesHandler().getUserById(member.getUser().getId());

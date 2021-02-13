@@ -126,6 +126,7 @@ public class DiscCmdSetup implements DiscCommand {
                                         m.addReaction(emoji).queue();
                                         qh.setMsgId(m.getId());
                                         server.setDungeonQueueHandler(qh);
+                                        server.setEdit(true);
                                         break;
 
                                     case "chan":
@@ -159,6 +160,7 @@ public class DiscCmdSetup implements DiscCommand {
                                         DungeonChannelHandler ch = new DungeonChannelHandler(ttc.getId(), r.getId());
                                         server.getDungeonQueueHandler().getChannels().add(ch);
                                         engine.getDiscEngine().getTextUtils().sendSucces("Added!", event.getChannel());
+                                        server.setEdit(true);
                                         break;
                                 }
                                 break;
@@ -328,9 +330,9 @@ public class DiscCmdSetup implements DiscCommand {
                                             engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
                                             continue;
                                         }
-                                        if(roleType == DiscRole.RoleType.Member)
+                                        if (roleType == DiscRole.RoleType.Member)
                                             server.setDefaultMemberRoleId(role.getId());
-                                        if(roleType == DiscRole.RoleType.TempGamer)
+                                        if (roleType == DiscRole.RoleType.TempGamer)
                                             server.setDefaultTempGamerRoleId(role.getId());
                                         discRole.addRoleType(roleType);
                                         discRole.setName(role.getName());

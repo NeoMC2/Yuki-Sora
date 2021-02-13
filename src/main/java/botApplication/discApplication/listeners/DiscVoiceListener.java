@@ -1,6 +1,5 @@
 package botApplication.discApplication.listeners;
 
-import botApplication.discApplication.commands.DiscCmdBait;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
@@ -12,14 +11,9 @@ import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.guild.voice.GuildVoiceSelfDeafenEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
@@ -43,17 +37,6 @@ public class DiscVoiceListener extends ListenerAdapter {
             return;
         }
 
-        ArrayList<DiscCmdBait.Bait> baits = engine.getDiscEngine().getFilesHandler().getBaits();
-        for (Member ba : event.getChannelJoined().getMembers()) {
-            for (DiscCmdBait.Bait b : baits) {
-                if (ba.getId().equals(b.baider.getId())) {
-                    if (event.getMember().getId().equals(b.bait.getId())) {
-                        event.getGuild().moveVoiceMember(b.bait, event.getGuild().getVoiceChannelById(server.getBaitChannel())).queue();
-                    }
-                }
-            }
-        }
-
         for (String vcI : server.getAutoChannels()) {
             if (vcI.equals(event.getChannelJoined().getId())) {
                 VoiceChannel vc = event.getGuild().getVoiceChannelById(vcI);
@@ -75,17 +58,6 @@ public class DiscVoiceListener extends ListenerAdapter {
         if (server == null) {
             engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
             return;
-        }
-
-        ArrayList<DiscCmdBait.Bait> baits = engine.getDiscEngine().getFilesHandler().getBaits();
-        for (Member ba : event.getChannelJoined().getMembers()) {
-            for (DiscCmdBait.Bait b : baits) {
-                if (ba.getId().equals(b.baider.getId())) {
-                    if (event.getMember().getId().equals(b.bait.getId())) {
-                        event.getGuild().moveVoiceMember(b.bait, event.getGuild().getVoiceChannelById(server.getBaitChannel())).queue();
-                    }
-                }
-            }
         }
 
         for (String vcI : server.getAutoChannels()) {

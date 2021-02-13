@@ -13,13 +13,12 @@ import core.Engine;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.requests.GatewayIntent;
 
 import javax.security.auth.login.LoginException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class DiscApplicationEngine {
 
@@ -65,6 +64,7 @@ public class DiscApplicationEngine {
         builder = JDABuilder.createDefault(engine.getProperties().discBotApplicationToken);
         builder.setAutoReconnect(true);
         builder.setStatus(OnlineStatus.ONLINE);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
         addBotCommands();
         addBotListeners();
         try {
@@ -93,7 +93,13 @@ public class DiscApplicationEngine {
             @Override
             public void run() {
                 for (Guild g:botJDA.getGuilds()) {
-                    System.out.println(DiscUtilityBase.lookForServer(g, engine).getServerName() + " initialized");
+                    DiscApplicationServer s = DiscUtilityBase.lookForServer(g, engine);
+                    if(s == null)
+                        return;
+
+                    s.updateServerStats(engine);
+
+                    System.out.println(s.getServerName() + " initialized");
                 }
             }
         };
@@ -109,7 +115,6 @@ public class DiscApplicationEngine {
         engine.getUtilityBase().printOutput(consMsgDef + " !Add commands!", false);
         commandHandler.createNewCommand("setup", new DiscCmdSetup(engine));
         commandHandler.createNewCommand("autochan", new DiscCmdAutoChannel());
-        commandHandler.createNewCommand("move", new DiscCmdMove());
         commandHandler.createNewCommand("vote", voteCmd);
         commandHandler.createNewCommand("rps", new DiscCmdRockPaperScissors());
         commandHandler.createNewCommand("help", new DiscCmdHelp());
@@ -118,8 +123,6 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("monster", new DiscCmdMonster());
         commandHandler.createNewCommand("m", new DiscCmdMusic());
         commandHandler.createNewCommand("item", new DiscCmdItem());
-        commandHandler.createNewCommand("oven", new DiscCmdOven());
-        commandHandler.createNewCommand("bait", new DiscCmdBait());
     }
 
     private void addBotListeners() {
