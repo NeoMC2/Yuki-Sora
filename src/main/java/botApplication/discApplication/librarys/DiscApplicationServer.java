@@ -59,7 +59,7 @@ public class DiscApplicationServer implements Serializable {
         this.serverID = guild.getId();
     }
 
-    public void generateFromJSON(JSONObject obj){
+    public void generateFromJSON(JSONObject obj) {
         edit = false;
         serverName = (String) obj.get("serverName");
         serverID = (String) obj.get("serverId");
@@ -69,7 +69,7 @@ public class DiscApplicationServer implements Serializable {
         welcomeMessageChannel = (String) obj.get("welcomeMessageChannelId");
         welcomeText = (String) obj.get("welcomeText");
         memberCountCategoryId = (String) obj.get("memberCountStatsChannelId");
-        defaultMemberRoleId  = (String) obj.get("defaultMemberRoleId");
+        defaultMemberRoleId = (String) obj.get("defaultMemberRoleId");
         defaultTempGamerRoleId = (String) obj.get("defaultTempGamerRoleId");
         primeRoleId = (String) obj.get("primeRoleId");
         vipRoleId = (String) obj.get("vipRoleId");
@@ -79,7 +79,7 @@ public class DiscApplicationServer implements Serializable {
         try {
             boosterRoleId = (String) obj.get("boosterRoleId");
             boosterCategoryId = (String) obj.get("boosterCategoryId");
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
 
         String dungeonMessage = (String) obj.get("dungeonQueueMessage");
@@ -87,7 +87,7 @@ public class DiscApplicationServer implements Serializable {
         JSONArray dungeonChans = (JSONArray) obj.get("dungeonChan");
         JSONArray dungeonRoles = (JSONArray) obj.get("dungeonChanRoles");
 
-        if(dungeonEmoji != null && dungeonMessage != null && dungeonChans != null && dungeonRoles !=null){
+        if (dungeonEmoji != null && dungeonMessage != null && dungeonChans != null && dungeonRoles != null) {
             dungeonQueueHandler = new DungeonQueueHandler();
             dungeonQueueHandler.setMsgId(dungeonMessage);
             dungeonQueueHandler.setEmoji(dungeonEmoji);
@@ -102,9 +102,9 @@ public class DiscApplicationServer implements Serializable {
 
     }
 
-    private ArrayList<String> jsonArrayToArray(JSONArray a){
+    private ArrayList<String> jsonArrayToArray(JSONArray a) {
         ArrayList<String> s = new ArrayList<>();
-        for (Object o:a) {
+        for (Object o : a) {
             String st = (String) o;
             s.add(st);
         }
@@ -113,16 +113,19 @@ public class DiscApplicationServer implements Serializable {
 
     public void updateServerStats(Engine engine) {
         Guild g = engine.getDiscEngine().getBotJDA().getGuildById(serverID);
-        if(getMemberCountCategoryId() != null)
-            if(!getMemberCountCategoryId().equals("")){
+        if (getMemberCountCategoryId() != null)
+            if (!getMemberCountCategoryId().equals("")) {
                 Category category = g.getCategoryById(getMemberCountCategoryId());
                 category.getManager().setName("\uD83D\uDCCAServer stats").queue();
-                for (GuildChannel ch:category.getChannels()) {
+                for (GuildChannel ch : category.getChannels()) {
                     ch.delete().queue();
                 }
                 Role mrole = g.getRoleById(getDefaultMemberRoleId());
                 VoiceChannel vc = category.createVoiceChannel("\uD83D\uDCCAMembers: " + g.getMemberCount()).complete();
-                vc.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
+                try {
+                    vc.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
+                } catch (Exception ignored) {
+                }
             }
     }
 
@@ -207,16 +210,16 @@ public class DiscApplicationServer implements Serializable {
         this.certificationMessageId = certificationMessageId;
     }
 
-    public ArrayList<String> getAutoChannels(){
+    public ArrayList<String> getAutoChannels() {
         return autoChannels;
     }
 
-    public void addAutoChannel(String id){
+    public void addAutoChannel(String id) {
         edit = true;
         autoChannels.add(id);
     }
 
-    public void removeAutoChannel(String id){
+    public void removeAutoChannel(String id) {
         edit = true;
         autoChannels.remove(id);
     }
