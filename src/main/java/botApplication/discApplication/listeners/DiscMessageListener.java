@@ -41,7 +41,16 @@ public class DiscMessageListener extends ListenerAdapter {
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
             }
-            handleSecret(event);
+
+            if(event.getMessage().getContentRaw().startsWith("?")){
+                try {
+                    sendTopic(event);
+                } catch (Exception e){
+                }
+                return;
+            }
+
+            //Gifs
             if (event.getMessage().getContentRaw().startsWith(".")) {
                 try {
                     pictureSelect(event);
@@ -50,10 +59,13 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
 
+            //Specific VIP commands
             if(event.getMessage().getContentRaw().startsWith("!")){
-                sendSpecialCommand(event);
+                sendVIPCommand(event);
                 return;
             }
+
+            //Command test
             if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {
                 boolean hasPermission = false;
                 try {
@@ -80,7 +92,10 @@ public class DiscMessageListener extends ListenerAdapter {
                     engine.getUtilityBase().printOutput(messageInfo(event.getGuild()) + " bot has not the permission!", true);
                     engine.getDiscEngine().getTextUtils().sendError("Bot has no permission!", event.getChannel(), engine.getProperties().longTime, true);
                 }
+                return;
             }
+
+            handleSecret(event);
         }
     }
 
@@ -190,6 +205,14 @@ public class DiscMessageListener extends ListenerAdapter {
         }
     }
 
+    private void sendTopic(GuildMessageReceivedEvent event){
+        JSONObject res = (JSONObject) engine.getDiscEngine().getApiManager().getRandomTopic(event.getMessage().getContentRaw().substring(1), event.getChannel().isNSFW()).get("data");
+        String title = (String) res.get("topic");
+        String des = (String) res.get("description");
+        EmbedBuilder b = new EmbedBuilder().setColor(Color.ORANGE).setAuthor(title).setDescription(des);
+        event.getChannel().sendMessage(b.build()).queue();
+    }
+
     private void pictureSelect(GuildMessageReceivedEvent event) {
         DiscApplicationUser user = DiscUtilityBase.lookForUserById(event.getAuthor(), engine);
         String c = event.getMessage().getContentDisplay();
@@ -210,7 +233,7 @@ public class DiscMessageListener extends ListenerAdapter {
         }
         if (ca.length < 2 && grp != null) {
             EmbedBuilder b = new EmbedBuilder()
-                    .setDescription(engine.lang("func.pic.error.noDest", user.getLang(), new String[]{ca[0]}))
+                    .setDescription(engine.lang("func.pic.error.noDest", user.getLang(), ca))
                     .setColor(Color.yellow)
                     .setImage("https://i.kym-cdn.com/photos/images/newsfeed/001/671/387/17c.jpg");
             event.getChannel().sendMessage(b.build()).queue();
@@ -245,7 +268,7 @@ public class DiscMessageListener extends ListenerAdapter {
         event.getChannel().sendMessage(b.build()).queue();
     }
 
-    private void sendSpecialCommand(GuildMessageReceivedEvent e){
+    private void sendVIPCommand(GuildMessageReceivedEvent e){
         DiscApplicationServer server = DiscUtilityBase.lookForServer(e.getGuild(), engine);
         DiscApplicationUser user = DiscUtilityBase.lookForUserById(e.getAuthor(), engine);
 

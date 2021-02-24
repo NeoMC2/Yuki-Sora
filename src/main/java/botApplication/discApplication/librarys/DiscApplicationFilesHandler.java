@@ -68,13 +68,15 @@ public class DiscApplicationFilesHandler {
         users = new HashMap<>();
 
         JSONObject ob = engine.getDiscEngine().getApiManager().getUsers();
-        if ((Long) (ob.get("status")) == 200) {
-            JSONArray dat = (JSONArray) ob.get("data");
-            for (Object o : dat) {
-                JSONObject dato = (JSONObject) o;
-                DiscApplicationUser user = new DiscApplicationUser();
-                user.generateFromJSON(dato, engine);
-                users.put(user.getUserId(), user);
+        if(ob != null){
+            if ((Long) (ob.get("status")) == 200) {
+                JSONArray dat = (JSONArray) ob.get("data");
+                for (Object o : dat) {
+                    JSONObject dato = (JSONObject) o;
+                    DiscApplicationUser user = new DiscApplicationUser();
+                    user.generateFromJSON(dato, engine);
+                    users.put(user.getUserId(), user);
+                }
             }
         }
         /*

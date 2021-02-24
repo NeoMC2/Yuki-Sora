@@ -9,7 +9,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 
 import java.awt.*;
 import java.io.Serializable;

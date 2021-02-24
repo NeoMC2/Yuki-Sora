@@ -299,6 +299,13 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/healMonster", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getRandomTopic(String tp, boolean nsfw){
+        JSONObject req = new JSONObject();
+        req.put("topic", tp);
+        req.put("nsfw", nsfw);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getRandomTopic", req.toJSONString(), apiToken));
+    }
+
     private JSONObject getErrorJson(){
         JSONObject o = new JSONObject();
         o.put("status", 400);

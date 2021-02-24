@@ -1,14 +1,14 @@
 Yuki-Sora patched to Patch_4.3
 
 New features
-• Server stats
+• Yuki can give you topics to talk about
 •
 •
 
 Bugfix
-• Dungeon queue gets uploaded now
-• Unhandled exception in certification process
+• JSON null error
+• gif command shows only one space of the name added
 •
 
 Improvements
-• Deleted unused commands
+• Import fix
