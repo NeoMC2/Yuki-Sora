@@ -6,6 +6,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -33,6 +34,7 @@ public class NetworkManager {
 
     private String req(String path, String json, String apiToken, String methode) {
         if (engine.getProperties().debug)
+            if(engine.getProperties().networkDebug)
             System.out.println("REQ : " + path + " Methode: " + methode + " req: " + json);
         HttpURLConnection connection;
         try {
@@ -71,6 +73,9 @@ public class NetworkManager {
             os.write(json);
             os.flush();
             os.close();
+        } catch (ConnectException e) {
+            if(engine.getProperties().networkDebug)
+            engine.getUtilityBase().printOutput("[Network Manager] Requested server is not available | Timeout", true);
         } catch (IOException e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -82,6 +87,7 @@ public class NetworkManager {
 
     public String get(String path, String apiToken) {
         if (engine.getProperties().debug)
+            if(engine.getProperties().networkDebug)
             System.out.println("REQ : " + path + " Methode: " + "GET");
         try {
             HttpURLConnection c = (HttpURLConnection) makeConnection(path);
@@ -103,6 +109,9 @@ public class NetworkManager {
         BufferedReader br = null;
         try {
             br = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+        } catch (ConnectException e) {
+            if(engine.getProperties().networkDebug)
+            engine.getUtilityBase().printOutput("[Network Manager] Requested server is not available | Timeout", true);
         } catch (IOException e) {
             if (engine.getProperties().debug) {
                 e.printStackTrace();
@@ -120,6 +129,7 @@ public class NetworkManager {
 
         }
         if (engine.getProperties().debug)
+            if(engine.getProperties().networkDebug)
             System.out.println("Res: " + responseString);
         return responseString;
     }

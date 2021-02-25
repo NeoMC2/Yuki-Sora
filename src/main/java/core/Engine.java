@@ -129,7 +129,7 @@ public class Engine {
         try {
             pics = fileUtils.loadJsonFile(fileUtils.home + "/pics/pics.json");
         } catch (Exception e) {
-            e.printStackTrace();
+            getUtilityBase().printOutput("Can't load pics", true);
         }
     }
 

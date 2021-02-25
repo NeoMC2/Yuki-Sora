@@ -146,6 +146,8 @@ public class DiscApplicationFilesHandler {
         }
 
         JSONObject edUsers = engine.getDiscEngine().getApiManager().getUpdatedUsers();
+        if(edUsers == null)
+            return;
         JSONArray edUs = (JSONArray) edUsers.get("data");
         for (Object o:edUs) {
             JSONObject obj = (JSONObject) o;

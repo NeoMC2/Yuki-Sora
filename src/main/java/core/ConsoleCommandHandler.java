@@ -51,6 +51,12 @@ public class ConsoleCommandHandler {
                 System.out.println("Debug is now " + engine.getProperties().debug);
                 break;
 
+            case "networkdebug":
+            case "debugnetwork":
+                engine.getProperties().networkDebug = !engine.getProperties().networkDebug;
+                System.out.println("Network Debug is now " + engine.getProperties().networkDebug);
+                break;
+
             case "showtime":
                 engine.getProperties().showTime = !engine.getProperties().showTime;
                 System.out.println("Show time is now " + engine.getProperties().showTime);
@@ -156,7 +162,7 @@ public class ConsoleCommandHandler {
                 break;
 
             case "help":
-                System.out.println("addbotslave <url> - adds music bot slave\nremovebotslave <url> - removes music bot slave\nmakeadmin <user id> - adds admin status\nundoadmin <user id> - removes admin status\nsavespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nshowtime - shows time at console output");
+                System.out.println("addbotslave <url> - adds music bot slave\nremovebotslave <url> - removes music bot slave\nmakeadmin <user id> - adds admin status\nundoadmin <user id> - removes admin status\nsavespeed <speed> - changes speed of save intervall...lol (minutes)\nload - loads all files (override)\nsave - saves all files\nstartBot - starts the bot...UwU\nstopBot - stops the bot\n<tele/disc>token <token> - sets api token\ntelename <name> - sets Name of the Telegram bot\ndebug - turns on debug mode to see more\nnetworkdebug - turns on the network debug mode\nshowtime - shows time at console output");
                 break;
 
             default:

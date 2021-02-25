@@ -74,11 +74,7 @@ public class FileUtils {
         JSONParser parser = new JSONParser();
         try {
             object = (JSONObject) parser.parse(json);
-        } catch (ParseException e) {
-            if (engine.getProperties().debug) {
-                e.printStackTrace();
-            }
-            engine.getUtilityBase().printOutput("Invalid Json", true);
+        } catch (ParseException ignored) {
         }
         return object;
     }

@@ -107,10 +107,10 @@ public class DiscApplicationEngine {
                         if(engine.getProperties().debug) {
                             e.printStackTrace();
                         }
-                        engine.getUtilityBase().printOutput("Failed to load autochans! Maybe never saved!", true);
+                        engine.getUtilityBase().printOutput(consMsgDef + " Failed to load autochans! Maybe never saved!", true);
                     }
 
-                    System.out.println(s.getServerName() + " initialized");
+                    System.out.println(consMsgDef + " " + s.getServerName() + " initialized");
                 }
             }
         };
@@ -143,7 +143,7 @@ public class DiscApplicationEngine {
         builder.addEventListeners(new DiscReactionListener(engine));
         builder.addEventListeners(new DiscChannelAddListener(engine));
         discVoiceListener = new DiscVoiceListener(engine);
-        builder.addEventListeners(discBoostListener);
+        builder.addEventListeners(discVoiceListener);
         discBoostListener = new DiscBoostListener(engine);
         builder.addEventListeners(discBoostListener);
     }

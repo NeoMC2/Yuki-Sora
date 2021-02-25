@@ -20,6 +20,7 @@ public class Properties implements Serializable {
     public String telBotApplicationName;
     //Engine stuff
     public boolean debug = false;
+    public boolean networkDebug = false;
     public boolean showTime = true;
     public int saveSpeed = 10;
     public ArrayList<String> botSlaves;
