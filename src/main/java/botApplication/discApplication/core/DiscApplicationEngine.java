@@ -39,6 +39,7 @@ public class DiscApplicationEngine {
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
     public DiscBoostListener discBoostListener;
+    public DiscVoiceListener discVoiceListener;
 
     public DiscApplicationEngine(Engine engine) {
         this.engine = engine;
@@ -100,6 +101,14 @@ public class DiscApplicationEngine {
                         return;
 
                     s.updateServerStats(engine);
+                    try {
+                        discVoiceListener.loadAutoChans((ArrayList<String>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/listener/autochans.dat"));
+                    } catch (Exception e) {
+                        if(engine.getProperties().debug) {
+                            e.printStackTrace();
+                        }
+                        engine.getUtilityBase().printOutput("Failed to load autochans! Maybe never saved!", true);
+                    }
 
                     System.out.println(s.getServerName() + " initialized");
                 }
@@ -133,7 +142,8 @@ public class DiscApplicationEngine {
         builder.addEventListeners(new DiscBotJoinListener(engine));
         builder.addEventListeners(new DiscReactionListener(engine));
         builder.addEventListeners(new DiscChannelAddListener(engine));
-        builder.addEventListeners(new DiscVoiceListener(engine));
+        discVoiceListener = new DiscVoiceListener(engine);
+        builder.addEventListeners(discBoostListener);
         discBoostListener = new DiscBoostListener(engine);
         builder.addEventListeners(discBoostListener);
     }
@@ -151,6 +161,12 @@ public class DiscApplicationEngine {
             return;
         }
         engine.getUtilityBase().printOutput(consMsgDef + " ~Bot shutting down!", false);
+        try {
+            engine.getFileUtils().saveObject(engine.getFileUtils().home + "/listener/autochans.dat", discVoiceListener.getAutoChanList());
+        } catch (Exception e) {
+            if(engine.getProperties().debug)
+            e.printStackTrace();
+        }
         try {
             botJDA.shutdownNow();
         } catch (Exception e) {

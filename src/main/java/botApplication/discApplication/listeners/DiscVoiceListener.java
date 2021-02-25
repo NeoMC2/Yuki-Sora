@@ -154,4 +154,50 @@ public class DiscVoiceListener extends ListenerAdapter {
             vc.delete().queue();
         }
     }
+
+    public ArrayList<String> getAutoChanList(){
+        ArrayList<String> ids = new ArrayList<>();
+        for (VoiceChannel vc:active) {
+            ids.add(vc.getId());
+        }
+        return ids;
+    }
+
+    private ArrayList<String> initServers = new ArrayList<>();
+
+    public void loadAutoChans(ArrayList<String> ids){
+        for (String s:ids) {
+            VoiceChannel vc = null;
+            try {
+                vc = engine.getDiscEngine().getBotJDA().getVoiceChannelById(s);
+            } catch (Exception e){
+            }
+            if(vc != null) {
+                if(!initServers.contains(vc.getGuild().getId())){
+                    initServers.add(vc.getGuild().getId());
+                    DiscApplicationServer server = DiscUtilityBase.lookForServer(vc.getGuild(), engine);
+                    if(server != null){
+                        for (String id:server.getAutoChannels()) {
+                            VoiceChannel auto = engine.getDiscEngine().getBotJDA().getVoiceChannelById(id);
+                            if(auto != null){
+                                if(auto.getMembers().size() >0){
+                                    Member m0 = null;
+                                    m0 = auto.getMembers().get(0);
+                                    auto.getGuild().moveVoiceMember(m0, auto).complete();
+                                    if(auto.getMembers().size() > 1)
+                                    for (int i = 1; i < auto.getMembers().size(); i++) {
+                                        try {
+                                            auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m0.getVoiceState().getChannel()).queue();
+                                        } catch (Exception ignored){
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                active.add(vc);
+            }
+        }
+    }
 }
