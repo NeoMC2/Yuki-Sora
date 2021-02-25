@@ -192,19 +192,20 @@ public class DiscVoiceListener extends ListenerAdapter {
                                 auto.getGuild().moveVoiceMember(m0, auto.getGuild().getAfkChannel()).complete();
                                 auto.getGuild().moveVoiceMember(m0, auto).complete();
                                 Timer t = new Timer();
-                                Member finalM = m0;
+                                String member0Id = m0.getId();
                                 TimerTask tt = new TimerTask() {
                                     @Override
                                     public void run() {
+                                        Member m = auto.getGuild().getMemberById(member0Id);
                                         if(auto.getMembers().size() > 1)
                                             for (int i = 1; i < auto.getMembers().size(); i++) {
                                                 try {
-                                                    auto.getGuild().moveVoiceMember(auto.getMembers().get(i), finalM.getVoiceState().getChannel()).queue();
+                                                    auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m.getVoiceState().getChannel()).queue();
                                                 } catch (Exception ignored){
                                                 }
                                             }
                                     }};
-                                t.schedule(tt, 10 * 10 * 10 * 1);
+                                t.schedule(tt, 10 * 10 * 10 * 2);
                             }
                         }
                     }
