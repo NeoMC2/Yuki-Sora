@@ -121,13 +121,20 @@ public class DiscApplicationServer implements Serializable {
                 for (GuildChannel ch : category.getChannels()) {
                     ch.delete().queue();
                 }
-                Role mrole = g.getRoleById(getDefaultMemberRoleId());
+                Role mrole = null;
+                try {
+                    g.getRoleById(getDefaultMemberRoleId());
+                } catch (Exception e){
+                }
                 VoiceChannel vc = category.createVoiceChannel("\uD83D\uDCCAMembers: " + g.getMemberCount()).complete();
                 VoiceChannel vc2 = category.createVoiceChannel(":robot: Version: " + engine.getProperties().mvnVersion).complete();
                 try {
                     vc.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
-                    vc2.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
                 } catch (Exception ignored) {
+                }
+                try {
+                    vc2.createPermissionOverride(mrole).setAllow(Permission.ALL_VOICE_PERMISSIONS).setDeny(Permission.VOICE_CONNECT, Permission.VOICE_SPEAK).queue();
+                } catch (Exception ignored){
                 }
             }
     }
