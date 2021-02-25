@@ -8,6 +8,7 @@ public class Properties implements Serializable {
     public static final long serialVersionUID = 42L;
 
     //Maven
+    public String pomFileLocation = "";
     public String mvnVersion = "";
     public String mvnGroup = "";
     public String mvnArtifact = "";

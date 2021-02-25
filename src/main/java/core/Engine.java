@@ -34,6 +34,7 @@ public class Engine {
 
     public void boot(String[] args) {
         loadProperties();
+        handlePreArgs(args);
         loadBuildData();
         loadLanguage();
         handleArgs(args);
@@ -43,16 +44,33 @@ public class Engine {
         new ConsoleCommandHandler(this);
     }
 
-    private void loadBuildData(){
+    private void handlePreArgs(String[] args) {
+        for (String ar : args) {
+            System.out.println(ar);
+            if (ar.startsWith("pom=")) {
+                ar = ar.substring(4);
+                properties.pomFileLocation = ar;
+            }
+        }
+    }
+
+    private void loadBuildData() {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = null;
-        try {
-            model = reader.read(new FileReader(System.getProperty("user.dir") + "/pom.xml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
+
+        if (properties.pomFileLocation != null) {
+            try {
+                model = reader.read(new FileReader(System.getProperty("user.dir") + properties.pomFileLocation));
+            } catch (Exception ignored) {
+            }
         }
+
+        if (model == null)
+            try {
+                model = reader.read(new FileReader(System.getProperty("user.dir") + "/pom.xml"));
+            } catch (Exception e) {
+                System.out.println("!!!CANT FIND POMFILE!!!");
+            }
         System.out.println("\n-------------------------------------------");
         System.out.println("Debug: " + properties.debug);
         System.out.println("Network Debug: " + properties.networkDebug);
@@ -61,7 +79,7 @@ public class Engine {
         properties.mvnGroup = model.getGroupId();
         properties.mvnVersion = model.getVersion();
         System.out.println("<" + properties.mvnGroup + "> " + properties.mvnArtifact + ": " + properties.mvnVersion);
-        if(!properties.mvnVersion.equals(oldVersion)){
+        if (!properties.mvnVersion.equals(oldVersion)) {
             System.out.println("Updated from: " + oldVersion + " to " + properties.mvnVersion);
         }
         System.out.println("-------------------------------------------\n\n");
