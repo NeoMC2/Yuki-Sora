@@ -197,8 +197,8 @@ public class DiscVoiceListener extends ListenerAdapter {
                                     @Override
                                     public void run() {
                                         Member m = auto.getGuild().getMemberById(member0Id);
-                                        if(auto.getMembers().size() > 1)
-                                            for (int i = 1; i < auto.getMembers().size(); i++) {
+                                        if(auto.getMembers().size() > 0)
+                                            for (int i = 0; i < auto.getMembers().size(); i++) {
                                                 try {
                                                     auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m.getVoiceState().getChannel()).queue();
                                                 } catch (Exception ignored){
