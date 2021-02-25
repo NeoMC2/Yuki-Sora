@@ -253,11 +253,18 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
             pic = (String) pics.get(ThreadLocalRandom.current().nextInt(0, pics.size() - 1));
-            to = grp.get("prn") + " " + ca[1];
+            String memberTo = "";
+            for (Member m:event.getMessage().getMentionedMembers()) {
+                memberTo += m.getNickname() + " ";
+            }
+            if(memberTo.equals(""))
+                for (int i = 1; i < ca.length; i++) {
+                    memberTo += ca[i] + " ";
+                }
+            to = grp.get("prn") + " " + memberTo;
             try {
                 color = Color.decode((String) grp.get("color"));
             } catch (Exception e) {
-
             }
         }
         EmbedBuilder b = new EmbedBuilder()
