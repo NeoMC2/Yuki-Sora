@@ -14,6 +14,8 @@ import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
@@ -163,9 +165,7 @@ public class DiscVoiceListener extends ListenerAdapter {
         return ids;
     }
 
-    private ArrayList<String> initServers = new ArrayList<>();
-
-    public void loadAutoChans(ArrayList<String> ids){
+    public void loadAutoChans(ArrayList<String> ids, DiscApplicationServer server){
         for (String s:ids) {
             VoiceChannel vc = null;
             try {
@@ -173,14 +173,15 @@ public class DiscVoiceListener extends ListenerAdapter {
             } catch (Exception e){
             }
             if(vc != null) {
-                active.add(vc);
+                if(vc.getMembers().size() == 0){
+                    vc.delete().queue();
+                } else {
+                    active.add(vc);
+                }
             }
         }
 
         for (Guild g:engine.getDiscEngine().getBotJDA().getGuilds()) {
-            if(!initServers.contains(g.getId())){
-                initServers.add(g.getId());
-                DiscApplicationServer server = DiscUtilityBase.lookForServer(g, engine);
                 if(server != null){
                     for (String id:server.getAutoChannels()) {
                         VoiceChannel auto = engine.getDiscEngine().getBotJDA().getVoiceChannelById(id);
@@ -188,19 +189,27 @@ public class DiscVoiceListener extends ListenerAdapter {
                             if(auto.getMembers().size() >0){
                                 Member m0 = null;
                                 m0 = auto.getMembers().get(0);
+                                auto.getGuild().moveVoiceMember(m0, auto.getGuild().getAfkChannel()).complete();
                                 auto.getGuild().moveVoiceMember(m0, auto).complete();
-                                if(auto.getMembers().size() > 1)
-                                    for (int i = 1; i < auto.getMembers().size(); i++) {
-                                        try {
-                                            auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m0.getVoiceState().getChannel()).queue();
-                                        } catch (Exception ignored){
-                                        }
-                                    }
+                                Timer t = new Timer();
+                                Member finalM = m0;
+                                TimerTask tt = new TimerTask() {
+                                    @Override
+                                    public void run() {
+                                        if(auto.getMembers().size() > 1)
+                                            for (int i = 1; i < auto.getMembers().size(); i++) {
+                                                try {
+                                                    auto.getGuild().moveVoiceMember(auto.getMembers().get(i), finalM.getVoiceState().getChannel()).queue();
+                                                } catch (Exception ignored){
+                                                }
+                                            }
+                                    }};
+                                t.schedule(tt, 10 * 10 * 10 * 1);
                             }
                         }
                     }
                 }
-            }
+
         }
 
     }

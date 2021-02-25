@@ -68,7 +68,6 @@ public class DiscUtilityBase {
             JSONObject req = engine.getDiscEngine().getApiManager().getServerById(guild.getId());
             if(req == null)
                 return null;
-            if(req == null)
             if(((Long) req.get("status")) == 200){
                 DiscApplicationServer ser = new DiscApplicationServer(guild);
                 ser.generateFromJSON((JSONObject) req.get("data"));

@@ -5,11 +5,16 @@ import botApplication.botApi.BotRequestHandler;
 import botApplication.discApplication.core.DiscApplicationEngine;
 import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Set;
 
 public class Engine {
@@ -28,13 +33,38 @@ public class Engine {
     private final BotRequestHandler botRequestHandler = new BotRequestHandler(this);
 
     public void boot(String[] args) {
-        loadLanguage();
         loadProperties();
+        loadBuildData();
+        loadLanguage();
         handleArgs(args);
         new Thread(new SaveThread(this)).start();
         new Thread(new ApiUpdateThread(this)).start();
         loadPics();
         new ConsoleCommandHandler(this);
+    }
+
+    private void loadBuildData(){
+        MavenXpp3Reader reader = new MavenXpp3Reader();
+        Model model = null;
+        try {
+            model = reader.read(new FileReader("pom.xml"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        }
+        System.out.println("\n-------------------------------------------");
+        System.out.println("Debug: " + properties.debug);
+        System.out.println("Network Debug: " + properties.networkDebug);
+        String oldVersion = properties.mvnVersion;
+        properties.mvnArtifact = model.getArtifactId();
+        properties.mvnGroup = model.getGroupId();
+        properties.mvnVersion = model.getVersion();
+        System.out.println("<" + properties.mvnGroup + "> " + properties.mvnArtifact + ": " + properties.mvnVersion);
+        if(!properties.mvnVersion.equals(oldVersion)){
+            System.out.println("Updated from: " + oldVersion + " to " + properties.mvnVersion);
+        }
+        System.out.println("-------------------------------------------\n\n");
     }
 
     private void handleArgs(String[] args) {
@@ -159,6 +189,7 @@ public class Engine {
     public void shutdown() {
         saveProperties();
         discApplicationEngine.getFilesHandler().saveAllBotFiles();
+        discApplicationEngine.shutdownBotApplication();
         System.exit(0);
     }
 

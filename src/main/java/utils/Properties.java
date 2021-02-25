@@ -6,6 +6,11 @@ import java.util.ArrayList;
 public class Properties implements Serializable {
 
     public static final long serialVersionUID = 42L;
+
+    //Maven
+    public String mvnVersion = "";
+    public String mvnGroup = "";
+    public String mvnArtifact = "";
     //BotMessage times
     public final int veryLongTime = 60000;
     public final int longTime = 10000;

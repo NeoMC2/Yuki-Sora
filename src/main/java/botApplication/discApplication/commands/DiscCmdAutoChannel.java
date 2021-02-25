@@ -25,6 +25,10 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
                         if (newAutoChannel != null) {
+                            if(server.getAutoChannels().contains(newAutoChannel.getId())){
+                                engine.getDiscEngine().getTextUtils().sendError("This channel is already registerd!", event.getChannel(), false);
+                                return;
+                            }
                             server.addAutoChannel(newAutoChannel.getId());
                             engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.created", user.getLang(), null), event.getChannel());
                         } else {

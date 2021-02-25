@@ -105,14 +105,11 @@ public class DiscApplicationEngine {
                     try {
                         autos = (ArrayList<String>) engine.getFileUtils().loadObject(engine.getFileUtils().home + "/listener/autochans.dat");
                     } catch (Exception e) {
-                        if(engine.getProperties().debug) {
-                            e.printStackTrace();
-                        }
                         engine.getUtilityBase().printOutput(consMsgDef + " Failed to load autochans! Maybe never saved!", true);
                     }
                     if(autos == null)
                         autos = new ArrayList<>();
-                    discVoiceListener.loadAutoChans(autos);
+                    discVoiceListener.loadAutoChans(autos, s);
 
                     System.out.println(consMsgDef + " " + s.getServerName() + " initialized");
                 }
