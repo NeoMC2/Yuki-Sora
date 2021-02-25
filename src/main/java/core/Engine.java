@@ -47,7 +47,7 @@ public class Engine {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         Model model = null;
         try {
-            model = reader.read(new FileReader("pom.xml"));
+            model = reader.read(new FileReader(System.getProperty("user.dir") + "/pom.xml"));
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
