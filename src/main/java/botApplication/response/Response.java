@@ -8,6 +8,8 @@ import com.pengrad.telegrambot.model.User;
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 
 import java.util.Date;
 
@@ -30,17 +32,21 @@ public abstract class Response {
     }
      */
 
-    public void onEmote(GuildMessageReactionAddEvent respondingEvent) {
+    public void onGuildEmote(GuildMessageReactionAddEvent respondingEvent) {
     }
 
-    public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+    public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
     }
+
+    public void onPrivateEmote(PrivateMessageReactionAddEvent respondingEvent){}
+
+    public void onPrivateMessage(PrivateMessageReceivedEvent respondingEvent){}
 
     public void onError(Exception e){
 
     }
 
     public enum ResponseTyp {
-        Discord, DiscordReact
+        Discord
     }
 }

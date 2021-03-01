@@ -25,7 +25,7 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
                         if (newAutoChannel != null) {
-                            if(server.getAutoChannels().contains(newAutoChannel.getId())){
+                            if (server.getAutoChannels().contains(newAutoChannel.getId())) {
                                 engine.getDiscEngine().getTextUtils().sendError("This channel is already registerd!", event.getChannel(), false);
                                 return;
                             }
@@ -38,6 +38,27 @@ public class DiscCmdAutoChannel implements DiscCommand {
                         engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notEnoughArgs", user.getLang(), null), event.getChannel(), false);
                     }
                     break;
+
+                case "gaming": {
+                    if (args.length >= 2) {
+                        VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
+                        if(newAutoChannel == null){
+                            engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);
+                            return;
+                        }
+                        for (String vc : server.getAutoChannels()) {
+                            if (vc.equals(newAutoChannel.getId())) {
+                                server.removeAutoChannel(vc);
+                                server.addGamingChannel(vc);
+                                break;
+                            }
+                        }
+                        engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.created", user.getLang(), null), event.getChannel());
+                    } else {
+                        engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.notEnoughArgs", user.getLang(), null), event.getChannel(), false);
+                    }
+                }
+                break;
 
                 case "remove":
                     if (args.length >= 2) {

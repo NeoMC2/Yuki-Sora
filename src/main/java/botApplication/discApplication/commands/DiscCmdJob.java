@@ -45,7 +45,7 @@ public class DiscCmdJob implements DiscCommand {
 
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject o = (JSONObject) jbss.get(id);
                             String idd = (String) o.get("_id");

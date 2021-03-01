@@ -32,7 +32,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             engine.getDiscEngine().getApiManager().healMonster((String) monster.get("_id"));
@@ -53,7 +53,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject root = null;
@@ -82,7 +82,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject res = engine.getDiscEngine().getApiManager().removeCoinsFromUser(respondingEvent.getAuthor().getId(), 5);
@@ -108,7 +108,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             engine.getDiscEngine().getApiManager().removeUserMonster((String) monster.get("_id"));
@@ -137,7 +137,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
@@ -160,7 +160,7 @@ public class DiscCmdMonster implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendSucces("Select one of your monsters\nMonsterlist:\n\n" + m1S, event.getChannel());
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                             int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                             JSONObject monster = (JSONObject) mn1.get(id);
                             JSONObject at = engine.getDiscEngine().getApiManager().getAttacksByUserMonster((String) monster.get("_id"));
@@ -170,13 +170,13 @@ public class DiscCmdMonster implements DiscCommand {
 
                             Response rr = new Response(ResponseTyp.Discord) {
                                 @Override
-                                public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                                public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                                     int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                                     JSONObject sAttack = (JSONObject) attacks.get(id);
                                     engine.getDiscEngine().getTextUtils().sendSucces("Set attack to one of your attack slots(a1,a2,a3,a4)", respondingEvent.getChannel());
                                     Response rrr = new Response(ResponseTyp.Discord) {
                                         @Override
-                                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+                                        public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                                             switch (respondingEvent.getMessage().getContentRaw().toLowerCase()) {
                                                 case "a1":
                                                     engine.getDiscEngine().getApiManager().giveMonsterAttack((String) monster.get("_id"), "a1", (String) sAttack.get("_id"));
@@ -293,7 +293,7 @@ public class DiscCmdMonster implements DiscCommand {
     private Response firstRes(FightBuilder fightBuilder, Engine engine, TextChannel textChannel) {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+            public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                 int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                 try {
 
@@ -316,7 +316,7 @@ public class DiscCmdMonster implements DiscCommand {
     private void createResponse(Engine engine, String userId, String chanId, String guildId, FightHandler fightHandler) {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+            public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                 respondingEvent.getChannel().sendMessage(fightHandler.round(respondingEvent.getMessage().getContentRaw())).queue();
                 if (!fightHandler.fightDone) {
                     createResponse(engine, fightHandler.nextPlayer(), chanId, guildId, fightHandler);

@@ -2,6 +2,7 @@ package botApplication.discApplication.listeners;
 
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscRole;
+import botApplication.discApplication.librarys.autochan.AutoChannel;
 import core.Engine;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Category;
@@ -64,7 +65,8 @@ public class DiscChannelAddListener extends ListenerAdapter {
             if (!s.isSetupMode()) {
                 return;
             }
-            for (VoiceChannel vc : DiscVoiceListener.activeAutoChannels) {
+            for (AutoChannel ac : DiscVoiceListener.activeAutoChannels) {
+                VoiceChannel vc = ac.getVc();
                 if (vc.getId().equals(event.getChannel().getId())) {
                     return;
                 }

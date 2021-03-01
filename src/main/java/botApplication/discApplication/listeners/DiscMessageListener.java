@@ -38,6 +38,7 @@ public class DiscMessageListener extends ListenerAdapter {
         boolean commandWorked = false;
 
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+            //Response
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
             }
@@ -107,6 +108,10 @@ public class DiscMessageListener extends ListenerAdapter {
         boolean commandWorked = false;
 
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
+            //Response
+            if (engine.getResponseHandler().lookForResponse(event)) {
+                return;
+            }
             engine.getUtilityBase().printOutput(" message listener received private message!", true);
             if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {
                 //command exist check

@@ -39,7 +39,7 @@ public class DungeonChannelHandler implements Serializable {
         engine.getDiscEngine().getTextUtils().sendWarining("Type in the ID of the Monster you want to go into the dungeon!", g.getTextChannelById(channelId));
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
+            public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
                 int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
                 try {
                     String m = (String)((JSONObject) mnsters.get(id)).get("_id");

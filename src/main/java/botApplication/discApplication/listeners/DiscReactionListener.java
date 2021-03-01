@@ -10,7 +10,9 @@ import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveAllEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionRemoveEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
@@ -31,6 +33,7 @@ public class DiscReactionListener extends ListenerAdapter {
         } catch (Exception ignored) {
         }
 
+        //Response
         if(engine.getResponseHandler().lookForResponse(event))
             return;
 
@@ -114,6 +117,13 @@ public class DiscReactionListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionRemoveAll(GuildMessageReactionRemoveAllEvent event) {
 
+    }
+
+    @Override
+    public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
+        //Response
+        if(engine.getResponseHandler().lookForResponse(event))
+            return;
     }
 
     private Message getMessage(TextChannel tc, String id){

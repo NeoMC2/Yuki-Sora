@@ -5,10 +5,11 @@ package botApplication.response;
 import core.Engine;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -51,23 +52,23 @@ public class ResponseHandler {
     }
      */
 
-    public void startUpdateThread(){
+    public void startUpdateThread() {
         engine.getUtilityBase().printOutput("[Response Handler] starting update Thread", true);
         Timer t = new Timer();
         TimerTask tt = new TimerTask() {
             @Override
             public void run() {
                 try {
-                    while (responses.iterator().hasNext()){
+                    while (responses.iterator().hasNext()) {
                         Response r = responses.iterator().next();
                         Instant now = new Date().toInstant();
                         now.minus(10, ChronoUnit.MINUTES);
-                        if(now.isAfter(r.creationTime.toInstant())){
+                        if (now.isAfter(r.creationTime.toInstant())) {
                             responses.iterator().remove();
                         }
                     }
-                } catch (Exception e){
-                    if(engine.getProperties().debug)
+                } catch (Exception e) {
+                    if (engine.getProperties().debug)
                         e.printStackTrace();
                     engine.getUtilityBase().printOutput("[Response Handler] updater had an error!", true);
                 }
@@ -81,30 +82,65 @@ public class ResponseHandler {
         Response re = null;
         try {
             for (Response res : r) {
-                if(res.responseTyp == Response.ResponseTyp.Discord)
-                if (update.getAuthor().getId().equals(res.discUserId)) {
-                    if (update.getChannel().getId().equals(res.discChannelId)) {
-                        re = res;
-                        engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
-                        responses.remove(res);
-                        res.onMessage(update);
-                        return true;
+                if (res.responseTyp == Response.ResponseTyp.Discord)
+                    if (update.getAuthor().getId().equals(res.discUserId)) {
+                        if (update.getChannel().getId().equals(res.discChannelId)) {
+                            re = res;
+                            engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                            responses.remove(res);
+                            res.onGuildMessage(update);
+                            return true;
+                        }
                     }
-                }
             }
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
             if (engine.getProperties().debug)
                 e.printStackTrace();
 
-            if (re != null){
-             try {
-                 re.onError(e);
-             } catch (Exception ee){
-                 engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
-                 if (engine.getProperties().debug)
-                     e.printStackTrace();
-             }
+            if (re != null) {
+                try {
+                    re.onError(e);
+                } catch (Exception ee) {
+                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
+                    if (engine.getProperties().debug)
+                        e.printStackTrace();
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public boolean lookForResponse(PrivateMessageReceivedEvent update) {
+        final ArrayList<Response> r = responses;
+        Response re = null;
+        try {
+            for (Response res : r) {
+                if (res.responseTyp == Response.ResponseTyp.Discord)
+                    if (update.getAuthor().getId().equals(res.discUserId)) {
+                        if (update.getChannel().getId().equals(res.discChannelId)) {
+                            re = res;
+                            engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                            responses.remove(res);
+                            res.onPrivateMessage(update);
+                            return true;
+                        }
+                    }
+            }
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
+            if (engine.getProperties().debug)
+                e.printStackTrace();
+
+            if (re != null) {
+                try {
+                    re.onError(e);
+                } catch (Exception ee) {
+                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
+                    if (engine.getProperties().debug)
+                        e.printStackTrace();
+                }
             }
             return false;
         }
@@ -116,26 +152,59 @@ public class ResponseHandler {
         Response re = null;
         try {
             for (Response res : r) {
-                if(res.responseTyp == Response.ResponseTyp.DiscordReact)
-                    if (update.getMember().getId().equals(res.discUserId)) {
-                        if (update.getChannel().getId().equals(res.discChannelId)) {
-                            re = res;
-                            engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
-                            responses.remove(res);
-                            res.onEmote(update);
-                            return true;
-                        }
+                if (update.getMember().getId().equals(res.discUserId)) {
+                    if (update.getChannel().getId().equals(res.discChannelId)) {
+                        re = res;
+                        engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                        responses.remove(res);
+                        res.onGuildEmote(update);
+                        return true;
                     }
+                }
             }
         } catch (Exception e) {
             engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
             if (engine.getProperties().debug)
                 e.printStackTrace();
 
-            if (re != null){
+            if (re != null) {
                 try {
                     re.onError(e);
-                } catch (Exception ee){
+                } catch (Exception ee) {
+                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
+                    if (engine.getProperties().debug)
+                        e.printStackTrace();
+                }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public boolean lookForResponse(PrivateMessageReactionAddEvent update) {
+        final ArrayList<Response> r = responses;
+        Response re = null;
+        try {
+            for (Response res : r) {
+                if (update.getUser().getId().equals(res.discUserId)) {
+                    if (update.getChannel().getId().equals(res.discChannelId)) {
+                        re = res;
+                        engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                        responses.remove(res);
+                        res.onPrivateEmote(update);
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
+            if (engine.getProperties().debug)
+                e.printStackTrace();
+
+            if (re != null) {
+                try {
+                    re.onError(e);
+                } catch (Exception ee) {
                     engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
                     if (engine.getProperties().debug)
                         e.printStackTrace();

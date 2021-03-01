@@ -5,10 +5,7 @@ import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.librarys.certification.DiscCertificationLevel;
 import core.Engine;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -189,6 +186,26 @@ public class DiscUtilityBase {
 
         s = root.get("name") + ", xp: " + getNumber(mon, "xp") + ", level: " + mon.get("level") + ", hp: " + getNumber(mon, "hp") + " [" + getNumber(mon, "maxHp") + "] dv: " + (mon.get("dv") + "\n\n**Selected Attacks**\na1: " + a1T + "\na2: " + a2T + "\na3: " + a3T + "\na4: " + a4T + "\n\n**Available Attacks**\n" + attss);
         return s;
+    }
+
+    public static String getGame(Member m) {
+        String game = "";
+        for (Activity a : m.getActivities()) {
+            if (a.getType() == Activity.ActivityType.DEFAULT) {
+                game = a.getName();
+            }
+        }
+
+        switch (game) {
+            case "Tom Clancy's Rainbow Six Siege":
+                game = "Rainbow";
+                break;
+
+            case "":
+                game = null;
+        }
+
+        return game;
     }
 
     private static int getNumber(JSONObject o, String r) {
