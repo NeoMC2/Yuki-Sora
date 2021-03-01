@@ -64,7 +64,7 @@ public class DiscChannelAddListener extends ListenerAdapter {
             if (!s.isSetupMode()) {
                 return;
             }
-            for (VoiceChannel vc : DiscVoiceListener.active) {
+            for (VoiceChannel vc : DiscVoiceListener.activeAutoChannels) {
                 if (vc.getId().equals(event.getChannel().getId())) {
                     return;
                 }

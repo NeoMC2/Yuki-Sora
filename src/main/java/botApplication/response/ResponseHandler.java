@@ -4,9 +4,15 @@ package botApplication.response;
 
 import core.Engine;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ResponseHandler {
 
@@ -45,17 +51,43 @@ public class ResponseHandler {
     }
      */
 
+    public void startUpdateThread(){
+        engine.getUtilityBase().printOutput("[Response Handler] starting update Thread", true);
+        Timer t = new Timer();
+        TimerTask tt = new TimerTask() {
+            @Override
+            public void run() {
+                try {
+                    while (responses.iterator().hasNext()){
+                        Response r = responses.iterator().next();
+                        Instant now = new Date().toInstant();
+                        now.minus(10, ChronoUnit.MINUTES);
+                        if(now.isAfter(r.creationTime.toInstant())){
+                            responses.iterator().remove();
+                        }
+                    }
+                } catch (Exception e){
+                    if(engine.getProperties().debug)
+                        e.printStackTrace();
+                    engine.getUtilityBase().printOutput("[Response Handler] updater had an error!", true);
+                }
+            }
+        };
+        t.schedule(tt, 10 * 10 * 60, 10 * 10 * 60 * 5);
+    }
+
     public boolean lookForResponse(GuildMessageReceivedEvent update) {
         final ArrayList<Response> r = responses;
         Response re = null;
         try {
             for (Response res : r) {
+                if(res.responseTyp == Response.ResponseTyp.Discord)
                 if (update.getAuthor().getId().equals(res.discUserId)) {
                     if (update.getChannel().getId().equals(res.discChannelId)) {
                         re = res;
                         engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
                         responses.remove(res);
-                        res.respondDisc(update);
+                        res.onMessage(update);
                         return true;
                     }
                 }
@@ -73,6 +105,41 @@ public class ResponseHandler {
                  if (engine.getProperties().debug)
                      e.printStackTrace();
              }
+            }
+            return false;
+        }
+        return false;
+    }
+
+    public boolean lookForResponse(GuildMessageReactionAddEvent update) {
+        final ArrayList<Response> r = responses;
+        Response re = null;
+        try {
+            for (Response res : r) {
+                if(res.responseTyp == Response.ResponseTyp.DiscordReact)
+                    if (update.getMember().getId().equals(res.discUserId)) {
+                        if (update.getChannel().getId().equals(res.discChannelId)) {
+                            re = res;
+                            engine.getUtilityBase().printOutput(consMsgDef + " !Found response -> Respond!", true);
+                            responses.remove(res);
+                            res.onEmote(update);
+                            return true;
+                        }
+                    }
+            }
+        } catch (Exception e) {
+            engine.getUtilityBase().printOutput(consMsgDef + " !!!Response called error!!!", true);
+            if (engine.getProperties().debug)
+                e.printStackTrace();
+
+            if (re != null){
+                try {
+                    re.onError(e);
+                } catch (Exception ee){
+                    engine.getUtilityBase().printOutput(consMsgDef + " !!!Response error called error!!!", true);
+                    if (engine.getProperties().debug)
+                        e.printStackTrace();
+                }
             }
             return false;
         }

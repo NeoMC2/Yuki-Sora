@@ -240,6 +240,7 @@ public class DiscApplicationFilesHandler {
         obj.put("autoChannelIds", getArrayFromArray(server.getAutoChannels()));
         obj.put("boosterRoleId", server.getBoosterRoleId());
         obj.put("boosterCategoryId", server.getBoosterCategoryId());
+        obj.put("gamingChannels", server.getGamingChannels());
 
         if(server.getDungeonQueueHandler() != null){
             obj.put("dungeonQueueMessage", server.getDungeonQueueHandler().getMsgId());

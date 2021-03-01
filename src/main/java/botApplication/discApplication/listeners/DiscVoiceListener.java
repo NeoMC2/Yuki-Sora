@@ -3,10 +3,7 @@ package botApplication.discApplication.listeners;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import core.Engine;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.PermissionOverride;
-import net.dv8tion.jda.api.entities.VoiceChannel;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
@@ -19,7 +16,7 @@ import java.util.TimerTask;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
-    public static ArrayList<VoiceChannel> active = new ArrayList<>();
+    public static ArrayList<VoiceChannel> activeAutoChannels = new ArrayList<>();
     private final Engine engine;
 
     /* Feature deleted by member request
@@ -41,8 +38,16 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         for (String vcI : server.getAutoChannels()) {
             if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getGuild().getVoiceChannelById(vcI);
-                setupVc(vc, event.getGuild(), event.getMember());
+                VoiceChannel vc = event.getChannelJoined();
+                setupVc(vc, event.getGuild(), event.getMember(), null);
+                return;
+            }
+        }
+
+        for (String vcI : server.getGamingChannels()) {
+            if (vcI.equals(event.getChannelJoined().getId())) {
+                VoiceChannel vc = event.getChannelJoined();
+                setupVc(vc, event.getGuild(), event.getMember(), event.getEntity().getActivities().);
                 return;
             }
         }
@@ -64,8 +69,8 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         for (String vcI : server.getAutoChannels()) {
             if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getGuild().getVoiceChannelById(vcI);
-                setupVc(vc, event.getGuild(), event.getMember());
+                VoiceChannel vc = event.getChannelJoined();
+                setupVc(vc, event.getGuild(), event.getMember(), null);
             }
         }
 
@@ -88,7 +93,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             }
         }
 
-        for (VoiceChannel vc : active) {
+        for (VoiceChannel vc : activeAutoChannels) {
             if (vc.getId().equals(event.getChannel().getId())) {
                 server.removeAutoChannel(vc.getId());
             }
@@ -132,8 +137,14 @@ public class DiscVoiceListener extends ListenerAdapter {
     }
      */
 
-    private void setupVc(VoiceChannel vc, Guild gc, Member m) {
-        VoiceChannel nvc = gc.createVoiceChannel(vc.getName() + " [AC]")
+    private void setupVc(VoiceChannel vc, Guild gc, Member m, String customName) {
+        String name = "";
+        if(customName != null)
+            name = customName;
+        else
+            name = vc.getName();
+
+        VoiceChannel nvc = gc.createVoiceChannel(customName + " [AC]")
                 .setBitrate(vc.getBitrate())
                 .setUserlimit(vc.getUserLimit())
                 .complete();
@@ -147,19 +158,19 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
         gc.moveVoiceMember(m, nvc).complete();
 
-        active.add(nvc);
+        activeAutoChannels.add(nvc);
     }
 
     private void testActiveVC(VoiceChannel vc) {
-        if (active.contains(vc) && vc.getMembers().size() == 0) {
-            active.remove(vc);
+        if (activeAutoChannels.contains(vc) && vc.getMembers().size() == 0) {
+            activeAutoChannels.remove(vc);
             vc.delete().queue();
         }
     }
 
     public ArrayList<String> getAutoChanList(){
         ArrayList<String> ids = new ArrayList<>();
-        for (VoiceChannel vc:active) {
+        for (VoiceChannel vc: activeAutoChannels) {
             ids.add(vc.getId());
         }
         return ids;
@@ -176,7 +187,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                 if(vc.getMembers().size() == 0){
                     vc.delete().queue();
                 } else {
-                    active.add(vc);
+                    activeAutoChannels.add(vc);
                 }
             }
         }
@@ -212,6 +223,14 @@ public class DiscVoiceListener extends ListenerAdapter {
                 }
 
         }
+    }
 
+    private void playingGame(VoiceChannel vc){
+        for(Member m: vc.getMembers()){
+            for (Activity ac:m.getActivities()) {
+                //TODO: is this right?
+                ac.asRichPresence().getName();
+            }
+        }
     }
 }

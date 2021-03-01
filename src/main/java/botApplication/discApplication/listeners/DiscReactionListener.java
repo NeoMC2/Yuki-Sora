@@ -31,6 +31,9 @@ public class DiscReactionListener extends ListenerAdapter {
         } catch (Exception ignored) {
         }
 
+        if(engine.getResponseHandler().lookForResponse(event))
+            return;
+
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s == null) {
             return;

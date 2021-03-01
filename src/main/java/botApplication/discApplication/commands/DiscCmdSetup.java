@@ -357,7 +357,7 @@ public class DiscCmdSetup implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.setup.mod.deinstall", user.getLang(), null), event.getChannel(), "Deinstalation", Color.blue);
                     Response deinstallResponse = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                             switch (respondingEvent.getMessage().getContentRaw()) {
                                 case "y":
                                 case "yes":
@@ -392,7 +392,7 @@ public class DiscCmdSetup implements DiscCommand {
                     engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.setup.mod.install", user.getLang(), null), event.getChannel(), "Setup", Color.blue);
                     Response setupResponse = new Response(Response.ResponseTyp.Discord) {
                         @Override
-                        public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                        public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                             switch (respondingEvent.getMessage().getContentRaw()) {
                                 case "y":
                                 case "yes":
@@ -450,14 +450,14 @@ public class DiscCmdSetup implements DiscCommand {
         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.setup.info.startSetup", user.getLang(), null), event.getChannel(), "Setup", Color.MAGENTA);
         Response startResponse = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                 switch (respondingEvent.getMessage().getContentRaw()) {
                     case "man":
                         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.setup.info.createRole", user.getLang(), null), respondingEvent.getChannel(), "Setup", Color.MAGENTA);
 
                         Response memberResponse = new Response(Response.ResponseTyp.Discord) {
                             @Override
-                            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                                 if (respondingEvent.getGuild().getRoleById(respondingEvent.getMessage().getContentRaw()) == null) {
                                     engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("general.error.404role", user.getLang(), null), respondingEvent.getChannel(), "Setup error", Color.RED);
                                     return;
@@ -472,7 +472,7 @@ public class DiscCmdSetup implements DiscCommand {
 
                                 Response gamerResponse = new Response(ResponseTyp.Discord) {
                                     @Override
-                                    public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                                    public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                                         if (respondingEvent.getGuild().getRoleById(respondingEvent.getMessage().getContentRaw()) == null) {
                                             engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("general.error.404role", user.getLang(), null), respondingEvent.getChannel(), "Setup error", Color.RED);
                                             return;
@@ -486,7 +486,7 @@ public class DiscCmdSetup implements DiscCommand {
                                         engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("cmd.setup.info.createCertChannel", user.getLang(), null), event.getChannel(), "Setup", Color.MAGENTA);
                                         Response channelResponse = new Response(ResponseTyp.Discord) {
                                             @Override
-                                            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+                                            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                                                 if (respondingEvent.getGuild().getTextChannelById(respondingEvent.getMessage().getContentRaw()) == null) {
                                                     engine.getDiscEngine().getTextUtils().sendCustomMessage(engine.lang("general.error.404channel", user.getLang(), null), respondingEvent.getChannel(), "Setup error", Color.RED);
                                                     return;

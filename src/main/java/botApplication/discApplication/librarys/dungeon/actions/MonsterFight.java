@@ -37,7 +37,7 @@ public class MonsterFight implements DungeonAction, Serializable {
     private void createResponse(Engine engine, String userId, String chanId, String guildId) {
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                 String re;
                 re = fightHandler.round(respondingEvent.getMessage().getContentRaw());
                 EmbedBuilder b = new EmbedBuilder().setColor(Color.GREEN).setDescription(re).setThumbnail(fightHandler.getRoundImage()).setTitle(fightHandler.getAgainst());

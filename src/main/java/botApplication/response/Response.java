@@ -7,12 +7,15 @@ import com.pengrad.telegrambot.model.User;
  */
 
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
+
+import java.util.Date;
 
 public abstract class Response {
 
     //public User teleResponseUser;
     //public Chat teleResponseChat;
-    public int creationTime = 0;
+    public Date creationTime = new Date();
     public String discGuildId;
     public String discChannelId;
     public String discUserId;
@@ -27,7 +30,10 @@ public abstract class Response {
     }
      */
 
-    public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+    public void onEmote(GuildMessageReactionAddEvent respondingEvent) {
+    }
+
+    public void onMessage(GuildMessageReceivedEvent respondingEvent) {
     }
 
     public void onError(Exception e){
@@ -35,6 +41,6 @@ public abstract class Response {
     }
 
     public enum ResponseTyp {
-        Discord
+        Discord, DiscordReact
     }
 }

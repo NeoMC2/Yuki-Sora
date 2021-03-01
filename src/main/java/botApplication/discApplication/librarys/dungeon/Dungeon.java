@@ -98,7 +98,7 @@ public class Dungeon {
         Dungeon d = this;
         Response r = new Response(Response.ResponseTyp.Discord) {
             @Override
-            public void respondDisc(GuildMessageReceivedEvent respondingEvent) {
+            public void onMessage(GuildMessageReceivedEvent respondingEvent) {
                 String msg = respondingEvent.getMessage().getContentRaw().toLowerCase();
                 if (msg.equals("end") || msg.equals("leave") || msg.equals("stop")) {
                     caveActionFinished(true);

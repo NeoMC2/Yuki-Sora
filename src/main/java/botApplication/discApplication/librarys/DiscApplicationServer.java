@@ -48,6 +48,7 @@ public class DiscApplicationServer implements Serializable {
     private String memberCountCategoryId = "";
 
     private ArrayList<String> autoChannels = new ArrayList<>();
+    private ArrayList<String> gamingChannels = new ArrayList<>();
     private DungeonQueueHandler dungeonQueueHandler;
 
     private String baitChannel;
@@ -76,6 +77,7 @@ public class DiscApplicationServer implements Serializable {
         vipRoleId = (String) obj.get("vipRoleId");
         defaultRoles = jsonArrayToArray((JSONArray) obj.get("roleIds"));
         autoChannels = jsonArrayToArray((JSONArray) obj.get("autoChannelIds"));
+        gamingChannels = jsonArrayToArray((JSONArray) obj.get("gamingChannels"));
 
         try {
             boosterRoleId = (String) obj.get("boosterRoleId");
@@ -407,5 +409,19 @@ public class DiscApplicationServer implements Serializable {
     public void setBoosterCategoryId(String boosterCategoryId) {
         edit = true;
         this.boosterCategoryId = boosterCategoryId;
+    }
+
+    public ArrayList<String> getGamingChannels() {
+        return gamingChannels;
+    }
+
+    public void addGamingChannel(String id){
+        edit = true;
+        gamingChannels.add(id);
+    }
+
+    public void removeGamingChannel(String id){
+        edit = true;
+        gamingChannels.remove(id);
     }
 }
