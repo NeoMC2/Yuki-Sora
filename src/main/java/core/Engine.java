@@ -45,13 +45,15 @@ public class Engine {
     }
 
     private void handlePreArgs(String[] args) {
+        System.out.print("args: ");
         for (String ar : args) {
-            System.out.println(ar);
+            System.out.print(ar + ",");
             if (ar.startsWith("pom=")) {
                 ar = ar.substring(4);
                 properties.pomFileLocation = ar;
             }
         }
+        System.out.println();
     }
 
     private void loadBuildData() {
