@@ -174,7 +174,10 @@ public class DiscVoiceListener extends ListenerAdapter {
         while (iterator.hasNext()){
             AutoChannel ac = iterator.next();
             VoiceChannel vc = ac.getVc();
-            if (m.getVoiceState().getChannel().getId().equals(vc.getId())) {
+            VoiceChannel svc = m.getVoiceState().getChannel();
+            if(svc == null)
+                return null;
+            if (svc.getId().equals(vc.getId())) {
                 return ac;
             }
         }
