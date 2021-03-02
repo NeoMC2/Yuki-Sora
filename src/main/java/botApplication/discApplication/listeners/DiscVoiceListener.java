@@ -6,20 +6,16 @@ import botApplication.discApplication.utils.DiscUtilityBase;
 import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.events.channel.voice.VoiceChannelDeleteEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceJoinEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceLeaveEvent;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
-import net.dv8tion.jda.api.events.message.guild.react.GuildMessageReactionAddEvent;
 import net.dv8tion.jda.api.events.message.priv.react.PrivateMessageReactionAddEvent;
-import net.dv8tion.jda.api.events.user.UserActivityEndEvent;
 import net.dv8tion.jda.api.events.user.UserActivityStartEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.*;
 
@@ -39,29 +35,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
-        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
-        if (server == null) {
-            engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
-            return;
-        }
-
-        for (String vcI : server.getAutoChannels()) {
-            if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getChannelJoined();
-                AutoChannel ac = new AutoChannel().createAutoChan(vc, event.getGuild(), event.getEntity());
-                activeAutoChannels.add(ac);
-                return;
-            }
-        }
-
-        for (String vcI : server.getGamingChannels()) {
-            if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getChannelJoined();
-                AutoChannel ac = new AutoChannel().createGamingChan(vc, event.getGuild(), event.getEntity());
-                activeAutoChannels.add(ac);
-                return;
-            }
-        }
+        if (checkVc(event.getGuild(), event.getChannelJoined(), event.getEntity())) return;
     }
 
     @Override
@@ -72,33 +46,38 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     @Override
     public void onGuildVoiceMove(GuildVoiceMoveEvent event) {
-        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
-        if (server == null) {
-            engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
-            return;
-        }
-
-        for (String vcI : server.getAutoChannels()) {
-            if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getChannelJoined();
-                AutoChannel ac = new AutoChannel().createAutoChan(vc, event.getGuild(), event.getEntity());
-                activeAutoChannels.add(ac);
-                return;
-            }
-        }
-
-        for (String vcI : server.getGamingChannels()) {
-            if (vcI.equals(event.getChannelJoined().getId())) {
-                VoiceChannel vc = event.getChannelJoined();
-                AutoChannel ac = new AutoChannel().createGamingChan(vc, event.getGuild(), event.getEntity());
-                activeAutoChannels.add(ac);
-                return;
-            }
-        }
+        if (checkVc(event.getGuild(), event.getChannelJoined(), event.getEntity())) return;
 
         VoiceChannel vc = event.getChannelLeft();
         testActiveVC(vc);
 
+    }
+
+    private boolean checkVc(Guild guild, VoiceChannel channelJoined, Member entity) {
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(guild, engine);
+        if (server == null) {
+            engine.getUtilityBase().printOutput("[Guild Voice Join] !!!Fatal Server error!!!", true);
+            return true;
+        }
+
+        for (String vcI : server.getAutoChannels()) {
+            if (vcI.equals(channelJoined.getId())) {
+                VoiceChannel vc = channelJoined;
+                AutoChannel ac = new AutoChannel().createAutoChan(vc, guild, entity);
+                activeAutoChannels.add(ac);
+                return true;
+            }
+        }
+
+        for (String vcI : server.getGamingChannels()) {
+            if (vcI.equals(channelJoined.getId())) {
+                VoiceChannel vc = channelJoined;
+                AutoChannel ac = new AutoChannel().createGamingChan(vc, guild, entity);
+                activeAutoChannels.add(ac);
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -112,6 +91,7 @@ public class DiscVoiceListener extends ListenerAdapter {
         for (String vc : server.getAutoChannels()) {
             if (vc.equals(event.getChannel().getId())) {
                 server.removeAutoChannel(vc);
+                server.removeGamingChannel(vc);
             }
         }
 
