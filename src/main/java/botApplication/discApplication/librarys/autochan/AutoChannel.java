@@ -1,8 +1,10 @@
 package botApplication.discApplication.librarys.autochan;
 
-import botApplication.discApplication.listeners.DiscVoiceListener;
 import botApplication.discApplication.utils.DiscUtilityBase;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.PermissionOverride;
+import net.dv8tion.jda.api.entities.VoiceChannel;
 
 public class AutoChannel {
     private VoiceChannel vc;

@@ -17,7 +17,10 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DiscVoiceListener extends ListenerAdapter {
 
@@ -200,6 +203,36 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
     }
      */
+
+
+    public boolean renameAutoChannelByUser(User user, String newName){
+        boolean done = false;
+        for (Guild g:engine.getDiscEngine().getBotJDA().getGuilds()) {
+            for(VoiceChannel vc:g.getVoiceChannels()){
+                for(Member m: vc.getMembers()){
+                    if(m.getUser().getId().equals(user.getId())){
+                        for (AutoChannel ac:activeAutoChannels) {
+                            if(ac.getVc().getId().equals(vc.getId())){
+                                vc.getManager().setName(newName + " [AC]");
+                                done = true;
+                                break;
+                            }
+                        }
+                        if(done)
+                            break;
+                    }
+                    if(done)
+                        break;
+                }
+                if(done)
+                    break;
+            }
+            if(done)
+                break;
+        }
+        return done;
+    }
+
 
     private void testActiveVC(VoiceChannel vc) {
         Iterator<AutoChannel> iterator = activeAutoChannels.iterator();

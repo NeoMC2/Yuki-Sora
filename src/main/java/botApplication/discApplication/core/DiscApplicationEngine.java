@@ -15,7 +15,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import javax.security.auth.login.LoginException;
@@ -215,6 +214,8 @@ public class DiscApplicationEngine {
         setupRoles.remove(guildId);
         setupRoles.put(guildId, arr);
     }
+
+
 
     public DiscCmdVote getVoteCmd() {
         return voteCmd;

@@ -5,7 +5,6 @@ import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler
 import core.Engine;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.internal.handle.VoiceServerUpdateHandler;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 

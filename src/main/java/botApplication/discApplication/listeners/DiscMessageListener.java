@@ -43,10 +43,10 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
 
-            if(event.getMessage().getContentRaw().startsWith("?")){
+            if (event.getMessage().getContentRaw().startsWith("?")) {
                 try {
                     sendTopic(event);
-                } catch (Exception e){
+                } catch (Exception e) {
                 }
                 return;
             }
@@ -61,7 +61,7 @@ public class DiscMessageListener extends ListenerAdapter {
             }
 
             //Specific VIP commands
-            if(event.getMessage().getContentRaw().startsWith("!")){
+            if (event.getMessage().getContentRaw().startsWith("!")) {
                 sendVIPCommand(event);
                 return;
             }
@@ -107,12 +107,17 @@ public class DiscMessageListener extends ListenerAdapter {
         }
         boolean commandWorked = false;
 
+        //Specific commands
+        if (event.getMessage().getContentRaw().startsWith("!")) {
+            sendSpecificPrivateCommand(event.getMessage().getContentRaw(), event.getChannel(), event.getAuthor());
+            return;
+        }
+
         if (!event.getAuthor().getId().equals(event.getJDA().getSelfUser().getId())) {
             //Response
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
             }
-            engine.getUtilityBase().printOutput(" message listener received private message!", true);
             if (event.getMessage().getContentRaw().startsWith(engine.getProperties().discBotApplicationPrefix)) {
                 //command exist check
                 for (int i = 0; engine.getDiscEngine().getCommandHandler().commandIvokes.size() > i; i++) {
@@ -123,9 +128,32 @@ public class DiscMessageListener extends ListenerAdapter {
                     }
                 }
                 if (!commandWorked) {
-                    engine.getDiscEngine().getTextUtils().sendError("DicCommand " + event.getMessage().getContentRaw() + "  existiert nicht!\n\nSchreibe **" + engine.getProperties().discBotApplicationPrefix + "help** um eine auflistung der Commands zu erhalten.", event.getChannel(), engine.getProperties().middleTime, true);
+                    engine.getDiscEngine().getTextUtils().sendError("Command " + event.getMessage().getContentRaw() + "  does not exist!\n\nWrite **" + engine.getProperties().discBotApplicationPrefix + "help** to get a general overview of the commands.", event.getChannel(), engine.getProperties().middleTime, true);
                 }
             }
+        }
+    }
+
+    private void sendSpecificPrivateCommand(String cmd, PrivateChannel channel, User user) {
+        cmd = cmd.substring(1);
+        String[] cmds = cmd.split(" ");
+        switch (cmds[0]) {
+            case "rename":
+            case "rn":
+                String newName = "";
+                if (cmds.length > 1)
+                    for (int i = 1; i < cmds.length; i++) {
+                        newName += cmds[i] + " ";
+                    }
+                else {
+                    engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", channel, false);
+                    return;
+                }
+                if (engine.getDiscEngine().discVoiceListener.renameAutoChannelByUser(user, newName))
+                    engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", channel);
+                else
+                    engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", channel, false);
+                break;
         }
     }
 
@@ -156,7 +184,7 @@ public class DiscMessageListener extends ListenerAdapter {
                 }
             }
 
-            switch (message.toLowerCase()){
+            switch (message.toLowerCase()) {
                 case "was liebt hanna":
                 case "was mag hanna":
                 case "was sucht hanna":
@@ -173,8 +201,8 @@ public class DiscMessageListener extends ListenerAdapter {
                     return;
             }
 
-            if(event.getAuthor().getId().equals("510872452654694410")){
-                if(event.getMessage().getContentRaw().equals("was will ich"))
+            if (event.getAuthor().getId().equals("510872452654694410")) {
+                if (event.getMessage().getContentRaw().equals("was will ich"))
                     sendNormalText(event, ":cookie: :cookie: **!KEKSE!** :cookie: :cookie:");
             }
         }
@@ -210,7 +238,7 @@ public class DiscMessageListener extends ListenerAdapter {
         }
     }
 
-    private void sendTopic(GuildMessageReceivedEvent event){
+    private void sendTopic(GuildMessageReceivedEvent event) {
         JSONObject res = (JSONObject) engine.getDiscEngine().getApiManager().getRandomTopic(event.getMessage().getContentRaw().substring(1), event.getChannel().isNSFW()).get("data");
         String title = (String) res.get("topic");
         String des = (String) res.get("description");
@@ -259,10 +287,10 @@ public class DiscMessageListener extends ListenerAdapter {
             }
             pic = (String) pics.get(ThreadLocalRandom.current().nextInt(0, pics.size() - 1));
             String memberTo = "";
-            for (Member m:event.getMessage().getMentionedMembers()) {
+            for (Member m : event.getMessage().getMentionedMembers()) {
                 memberTo += m.getNickname() + " ";
             }
-            if(memberTo.equals(""))
+            if (memberTo.equals(""))
                 for (int i = 1; i < ca.length; i++) {
                     memberTo += ca[i] + " ";
                 }
@@ -280,14 +308,14 @@ public class DiscMessageListener extends ListenerAdapter {
         event.getChannel().sendMessage(b.build()).queue();
     }
 
-    private void sendVIPCommand(GuildMessageReceivedEvent e){
+    private void sendVIPCommand(GuildMessageReceivedEvent e) {
         DiscApplicationServer server = DiscUtilityBase.lookForServer(e.getGuild(), engine);
         DiscApplicationUser user = DiscUtilityBase.lookForUserById(e.getAuthor(), engine);
 
         try {
-            if(!user.isBooster())
+            if (!user.isBooster())
                 return;
-        } catch (Exception ignored){
+        } catch (Exception ignored) {
         }
 
         String[] inv1 = e.getMessage().getContentRaw().split(" ");
@@ -298,57 +326,57 @@ public class DiscMessageListener extends ListenerAdapter {
         VoiceChannel vc = null;
         String args1 = "";
 
-        if(inv1.length > 1)
+        if (inv1.length > 1)
             for (int i = 1; i < inv1.length; i++) {
                 args1 += inv1[i];
-                if(i + 1 != inv1.length)
+                if (i + 1 != inv1.length)
                     args1 += " ";
             }
 
-        if(tc == null)
+        if (tc == null)
             vc = getVc(e, user);
 
-        if((vc == null && tc == null) || (vc != null && tc != null)){
+        if ((vc == null && tc == null) || (vc != null && tc != null)) {
             engine.getDiscEngine().getTextUtils().sendError("No channel was found, please try to specify which channel you mean.", e.getChannel(), false);
             return;
         }
 
-        switch (invoke){
+        switch (invoke) {
             case "inv":
-                if(tc != null){
-                    for (Member m:mem) {
+                if (tc != null) {
+                    for (Member m : mem) {
                         tc.createPermissionOverride(m).setAllow(textPermissions).queue();
                     }
-                } else if(vc != null){
-                    for (Member m:mem) {
+                } else if (vc != null) {
+                    for (Member m : mem) {
                         vc.createPermissionOverride(m).setAllow(voicePermissions).queue();
                     }
                 }
                 break;
 
             case "rem":
-                if(tc != null){
-                    for (Member m:mem) {
+                if (tc != null) {
+                    for (Member m : mem) {
                         tc.getManager().removePermissionOverride(m).queue();
                     }
-                } else if(vc != null){
-                    for (Member m:mem) {
+                } else if (vc != null) {
+                    for (Member m : mem) {
                         vc.getManager().removePermissionOverride(m).queue();
                     }
                 }
                 break;
 
             case "vc":
-                if(tc != null){
-                    for (String s:user.getBoosterChans()) {
-                        if(tc.getId().equals(s)){
+                if (tc != null) {
+                    for (String s : user.getBoosterChans()) {
+                        if (tc.getId().equals(s)) {
                             VoiceChannel v;
 
                             try {
                                 v = e.getGuild().createVoiceChannel(tc.getName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
-                            } catch (Exception er){
+                            } catch (Exception er) {
                                 engine.getDiscEngine().getTextUtils().sendError("Can't change channel!", e.getChannel(), false);
-                                if(engine.getProperties().debug)
+                                if (engine.getProperties().debug)
                                     er.printStackTrace();
                                 return;
                             }
@@ -357,11 +385,11 @@ public class DiscMessageListener extends ListenerAdapter {
                             user.setEdit(true);
                             user.addBoosterChan(v.getId());
 
-                            for (PermissionOverride po:tc.getMemberPermissionOverrides()) {
+                            for (PermissionOverride po : tc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(voicePermissions).setDeny(po.getDenied()).complete();
-                                } catch (Exception er){
-                                    if(engine.getProperties().debug)
+                                } catch (Exception er) {
+                                    if (engine.getProperties().debug)
                                         er.printStackTrace();
                                 }
                             }
@@ -369,25 +397,25 @@ public class DiscMessageListener extends ListenerAdapter {
                             break;
                         }
                     }
-                } else if(vc != null){
+                } else if (vc != null) {
                     engine.getDiscEngine().getTextUtils().sendError("This channel is a Voice Channel already!", e.getChannel(), false);
                     return;
                 }
                 break;
 
             case "tc":
-                if(tc != null){
+                if (tc != null) {
                     engine.getDiscEngine().getTextUtils().sendError("This channel is a Voice Channel already!", e.getChannel(), false);
                     return;
-                } else if(vc != null){
-                    for (String s:user.getBoosterChans()) {
-                        if(vc.getId().equals(s)){
+                } else if (vc != null) {
+                    for (String s : user.getBoosterChans()) {
+                        if (vc.getId().equals(s)) {
                             TextChannel v;
                             try {
                                 v = e.getGuild().createTextChannel(vc.getName(), e.getGuild().getCategoryById(server.getBoosterCategoryId())).complete();
-                            } catch (Exception er){
+                            } catch (Exception er) {
                                 engine.getDiscEngine().getTextUtils().sendError("Can't change channel!", e.getChannel(), false);
-                                if(engine.getProperties().debug)
+                                if (engine.getProperties().debug)
                                     er.printStackTrace();
                                 return;
                             }
@@ -396,11 +424,11 @@ public class DiscMessageListener extends ListenerAdapter {
                             user.setEdit(true);
                             user.addBoosterChan(v.getId());
 
-                            for (PermissionOverride po:vc.getMemberPermissionOverrides()) {
+                            for (PermissionOverride po : vc.getMemberPermissionOverrides()) {
                                 try {
                                     v.putPermissionOverride(po.getMember()).setAllow(textPermissions).complete();
-                                } catch (Exception er){
-                                    if(engine.getProperties().debug)
+                                } catch (Exception er) {
+                                    if (engine.getProperties().debug)
                                         er.printStackTrace();
                                 }
                             }
@@ -412,17 +440,17 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "name":
-                if(tc != null){
+                if (tc != null) {
                     try {
                         tc.getManager().setName(args1).queue();
-                    } catch (Exception er){
-                       engine.getDiscEngine().getTextUtils().sendError("This name is invalid!", e.getChannel(), false);
-                       return;
+                    } catch (Exception er) {
+                        engine.getDiscEngine().getTextUtils().sendError("This name is invalid!", e.getChannel(), false);
+                        return;
                     }
-                } else if (vc != null){
+                } else if (vc != null) {
                     try {
                         vc.getManager().setName(args1).queue();
-                    } catch (Exception er){
+                    } catch (Exception er) {
                         engine.getDiscEngine().getTextUtils().sendError("This name is invalid!", e.getChannel(), false);
                         return;
                     }
@@ -431,28 +459,28 @@ public class DiscMessageListener extends ListenerAdapter {
         }
         try {
             engine.getDiscEngine().getTextUtils().sendSucces("Updated your channel!", e.getChannel());
-        } catch (Exception er){
+        } catch (Exception er) {
         }
     }
 
-    private TextChannel getTc(GuildMessageReceivedEvent event, DiscApplicationUser user){
+    private TextChannel getTc(GuildMessageReceivedEvent event, DiscApplicationUser user) {
         TextChannel tc = null;
 
-        if(user.getBoosterChans().size() == 1){
+        if (user.getBoosterChans().size() == 1) {
             tc = event.getGuild().getTextChannelById(user.getBoosterChans().get(0));
         }
-        if(tc == null)
-        try {
-            tc = event.getMessage().getMentionedChannels().get(0);
-        } catch (Exception e){
-        }
+        if (tc == null)
+            try {
+                tc = event.getMessage().getMentionedChannels().get(0);
+            } catch (Exception e) {
+            }
 
         return tc;
     }
 
-    private VoiceChannel getVc(GuildMessageReceivedEvent event, DiscApplicationUser user){
+    private VoiceChannel getVc(GuildMessageReceivedEvent event, DiscApplicationUser user) {
         VoiceChannel vc = null;
-        if(user.getBoosterChans().size() == 1){
+        if (user.getBoosterChans().size() == 1) {
             vc = event.getGuild().getVoiceChannelById(user.getBoosterChans().get(0));
         }
         return vc;

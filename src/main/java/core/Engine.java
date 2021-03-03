@@ -7,14 +7,12 @@ import botApplication.discApplication.utils.NetworkManager;
 import botApplication.response.ResponseHandler;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.json.simple.JSONObject;
 import utils.FileUtils;
 import utils.Properties;
 import utils.UtilityBase;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.Set;
 
 public class Engine {
