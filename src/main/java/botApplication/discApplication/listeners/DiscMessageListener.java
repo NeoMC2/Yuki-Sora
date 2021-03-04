@@ -140,19 +140,7 @@ public class DiscMessageListener extends ListenerAdapter {
         switch (cmds[0]) {
             case "rename":
             case "rn":
-                String newName = "";
-                if (cmds.length > 1)
-                    for (int i = 1; i < cmds.length; i++) {
-                        newName += cmds[i] + " ";
-                    }
-                else {
-                    engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", channel, false);
-                    return;
-                }
-                if (engine.getDiscEngine().discVoiceListener.renameAutoChannelByUser(user, newName))
-                    engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", channel);
-                else
-                    engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", channel, false);
+                renameAutoChannel(cmds, user, null, channel);
                 break;
         }
     }
@@ -459,25 +447,38 @@ public class DiscMessageListener extends ListenerAdapter {
 
             case "rn":
             case "rename":
-                String newName = "";
-                if (inv1.length > 1)
-                    for (int i = 1; i < inv1.length; i++) {
-                        newName += inv1[i] + " ";
-                    }
-                else {
-                    engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", e.getChannel(), false);
-                    return;
-                }
-                if (engine.getDiscEngine().discVoiceListener.renameAutoChannelByUser(e.getAuthor(), newName))
-                    engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", e.getChannel());
-                else
-                    engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", e.getChannel(), false);
+                renameAutoChannel(inv1, e.getAuthor(), e.getChannel(), null);
                 break;
         }
         try {
             engine.getDiscEngine().getTextUtils().sendSucces("Updated your channel!", e.getChannel());
         } catch (Exception er) {
         }
+    }
+
+    private void renameAutoChannel(String[] args, User user, TextChannel tc, PrivateChannel pc) {
+        String newName = "";
+        if (args.length > 1) {
+            for (int i = 1; i < args.length; i++) {
+                newName += args[i] + " ";
+            }
+            newName = newName.substring(0, newName.length() - 1);
+        } else {
+            if (tc == null)
+                engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", pc, false);
+            else
+                engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", tc, false);
+            return;
+        }
+        if (engine.getDiscEngine().discVoiceListener.renameAutoChannelByUser(user, newName))
+            if (tc == null)
+                engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", pc);
+            else
+                engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", tc);
+        else if (tc == null)
+            engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", pc, false);
+        else
+            engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", tc, false);
     }
 
     private TextChannel getTc(GuildMessageReceivedEvent event, DiscApplicationUser user) {

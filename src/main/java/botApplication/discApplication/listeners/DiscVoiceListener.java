@@ -213,7 +213,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             AutoChannel ac = getAutoChan(m);
             if (ac == null)
                 continue;
-            ac.getVc().getManager().setName(newName);
+            ac.getVc().getManager().setName(newName).queue();
             return true;
         }
         return false;
