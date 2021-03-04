@@ -456,6 +456,23 @@ public class DiscMessageListener extends ListenerAdapter {
                     }
                 }
                 break;
+
+            case "rn":
+            case "rename":
+                String newName = "";
+                if (inv1.length > 1)
+                    for (int i = 1; i < inv1.length; i++) {
+                        newName += inv1[i] + " ";
+                    }
+                else {
+                    engine.getDiscEngine().getTextUtils().sendError("You have to give a name for the channel!", e.getChannel(), false);
+                    return;
+                }
+                if (engine.getDiscEngine().discVoiceListener.renameAutoChannelByUser(e.getAuthor(), newName))
+                    engine.getDiscEngine().getTextUtils().sendSucces("The channel was renamed to `" + newName + "`", e.getChannel());
+                else
+                    engine.getDiscEngine().getTextUtils().sendError("You are not in a valid autochannel!", e.getChannel(), false);
+                break;
         }
         try {
             engine.getDiscEngine().getTextUtils().sendSucces("Updated your channel!", e.getChannel());

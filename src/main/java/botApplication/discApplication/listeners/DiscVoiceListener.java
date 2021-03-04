@@ -206,31 +206,17 @@ public class DiscVoiceListener extends ListenerAdapter {
 
 
     public boolean renameAutoChannelByUser(User user, String newName) {
-        boolean done = false;
         for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
-            for (VoiceChannel vc : g.getVoiceChannels()) {
-                for (Member m : vc.getMembers()) {
-                    if (m.getUser().getId().equals(user.getId())) {
-                        for (AutoChannel ac : activeAutoChannels) {
-                            if (ac.getVc().getId().equals(vc.getId())) {
-                                vc.getManager().setName(newName + " [AC]");
-                                done = true;
-                                break;
-                            }
-                        }
-                        if (done)
-                            break;
-                    }
-                    if (done)
-                        break;
-                }
-                if (done)
-                    break;
-            }
-            if (done)
-                break;
+            Member m = g.getMember(user);
+            if (m == null)
+                continue;
+            AutoChannel ac = getAutoChan(m);
+            if (ac == null)
+                continue;
+            ac.getVc().getManager().setName(newName);
+            return true;
         }
-        return done;
+        return false;
     }
 
 
