@@ -99,7 +99,7 @@ public class DiscVoiceListener extends ListenerAdapter {
         }
 
         Iterator<AutoChannel> iterator = activeAutoChannels.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             AutoChannel ac = iterator.next();
             VoiceChannel vc = ac.getVc();
             if (vc.getId().equals(event.getChannel().getId())) {
@@ -134,7 +134,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                                     //haken-Emoji
                                     case "✅":
                                         ac.getVc().getManager().setName(game + " [AC]").queue();
-                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10*10*10*10);
+                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10 * 10 * 10 * 10);
                                         msg.delete().queue();
                                         break;
 
@@ -154,11 +154,11 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     private AutoChannel getAutoChan(Member m) {
         Iterator<AutoChannel> iterator = activeAutoChannels.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             AutoChannel ac = iterator.next();
             VoiceChannel vc = ac.getVc();
             VoiceChannel svc = m.getVoiceState().getChannel();
-            if(svc == null)
+            if (svc == null)
                 return null;
             if (svc.getId().equals(vc.getId())) {
                 return ac;
@@ -205,29 +205,29 @@ public class DiscVoiceListener extends ListenerAdapter {
      */
 
 
-    public boolean renameAutoChannelByUser(User user, String newName){
+    public boolean renameAutoChannelByUser(User user, String newName) {
         boolean done = false;
-        for (Guild g:engine.getDiscEngine().getBotJDA().getGuilds()) {
-            for(VoiceChannel vc:g.getVoiceChannels()){
-                for(Member m: vc.getMembers()){
-                    if(m.getUser().getId().equals(user.getId())){
-                        for (AutoChannel ac:activeAutoChannels) {
-                            if(ac.getVc().getId().equals(vc.getId())){
+        for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
+            for (VoiceChannel vc : g.getVoiceChannels()) {
+                for (Member m : vc.getMembers()) {
+                    if (m.getUser().getId().equals(user.getId())) {
+                        for (AutoChannel ac : activeAutoChannels) {
+                            if (ac.getVc().getId().equals(vc.getId())) {
                                 vc.getManager().setName(newName + " [AC]");
                                 done = true;
                                 break;
                             }
                         }
-                        if(done)
+                        if (done)
                             break;
                     }
-                    if(done)
+                    if (done)
                         break;
                 }
-                if(done)
+                if (done)
                     break;
             }
-            if(done)
+            if (done)
                 break;
         }
         return done;
@@ -236,7 +236,7 @@ public class DiscVoiceListener extends ListenerAdapter {
 
     private void testActiveVC(VoiceChannel vc) {
         Iterator<AutoChannel> iterator = activeAutoChannels.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             AutoChannel ac = iterator.next();
             VoiceChannel vcc = ac.getVc();
             if (vc.getId().equals(vcc.getId()) && vc.getMembers().size() == 0) {
@@ -272,33 +272,32 @@ public class DiscVoiceListener extends ListenerAdapter {
             }
         }
 
-        for (Guild g : engine.getDiscEngine().getBotJDA().getGuilds()) {
-            if (server != null) {
-                for (String id : server.getAutoChannels()) {
-                    VoiceChannel auto = engine.getDiscEngine().getBotJDA().getVoiceChannelById(id);
-                    if (auto != null) {
-                        if (auto.getMembers().size() > 0) {
-                            Member m0 = null;
-                            m0 = auto.getMembers().get(0);
-                            auto.getGuild().moveVoiceMember(m0, auto.getGuild().getAfkChannel()).complete();
-                            auto.getGuild().moveVoiceMember(m0, auto).complete();
-                            Timer t = new Timer();
-                            String member0Id = m0.getId();
-                            TimerTask tt = new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Member m = auto.getGuild().getMemberById(member0Id);
-                                    if (auto.getMembers().size() > 0)
-                                        for (int i = 0; i < auto.getMembers().size(); i++) {
-                                            try {
-                                                auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m.getVoiceState().getChannel()).queue();
-                                            } catch (Exception ignored) {
-                                            }
+        //Is in (voice create channel)
+        if (server != null) {
+            for (String id : server.getAutoChannels()) {
+                VoiceChannel auto = engine.getDiscEngine().getBotJDA().getVoiceChannelById(id);
+                if (auto != null) {
+                    if (auto.getMembers().size() > 0) {
+                        Member m0 = null;
+                        m0 = auto.getMembers().get(0);
+                        auto.getGuild().moveVoiceMember(m0, auto.getGuild().getAfkChannel()).complete();
+                        auto.getGuild().moveVoiceMember(m0, auto).complete();
+                        Timer t = new Timer();
+                        String member0Id = m0.getId();
+                        TimerTask tt = new TimerTask() {
+                            @Override
+                            public void run() {
+                                Member m = auto.getGuild().getMemberById(member0Id);
+                                if (auto.getMembers().size() > 0)
+                                    for (int i = 0; i < auto.getMembers().size(); i++) {
+                                        try {
+                                            auto.getGuild().moveVoiceMember(auto.getMembers().get(i), m.getVoiceState().getChannel()).queue();
+                                        } catch (Exception ignored) {
                                         }
-                                }
-                            };
-                            t.schedule(tt, 10 * 10 * 10 * 2);
-                        }
+                                    }
+                            }
+                        };
+                        t.schedule(tt, 10 * 10 * 10 * 2);
                     }
                 }
             }
