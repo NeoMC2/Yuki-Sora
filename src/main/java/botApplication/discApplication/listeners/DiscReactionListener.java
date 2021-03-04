@@ -107,7 +107,6 @@ public class DiscReactionListener extends ListenerAdapter {
                 //Game-Emoji
                 case "❌":
                 case "✅":
-                case "\uD83C\uDFAE":
                     engine.getDiscEngine().getCertificationHandler().removeCertification(event.getMember(), event.getGuild());
                     break;
             }

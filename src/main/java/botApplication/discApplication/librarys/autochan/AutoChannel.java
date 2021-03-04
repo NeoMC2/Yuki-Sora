@@ -39,6 +39,15 @@ public class AutoChannel {
     }
 
     private VoiceChannel createNewAutoChannel(VoiceChannel vc, Guild gc, Member m, String name) {
+        if(m == null || vc == null)
+            return null;
+        else if(m.getVoiceState() == null)
+            return null;
+        else if(m.getVoiceState().getChannel() == null)
+            return null;
+        else if(!m.getVoiceState().getChannel().getId().equals(vc.getId()))
+            return null;
+
         VoiceChannel nvc = gc.createVoiceChannel(name + " [AC]")
                 .setBitrate(vc.getBitrate())
                 .setUserlimit(vc.getUserLimit())
@@ -51,7 +60,11 @@ public class AutoChannel {
         for (PermissionOverride or : vc.getPermissionOverrides()) {
             nvc.createPermissionOverride(or.getRole()).setAllow(or.getAllowed()).setDeny(or.getDenied()).complete();
         }
-        gc.moveVoiceMember(m, nvc).complete();
+        try {
+            gc.moveVoiceMember(m, nvc).complete();
+        } catch (Exception e){
+            nvc.delete().queue();
+        }
         return nvc;
     }
 
