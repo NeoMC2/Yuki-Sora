@@ -64,13 +64,8 @@ public class DiscCmdAutoChannel implements DiscCommand {
                     if (args.length >= 2) {
                         VoiceChannel newAutoChannel = event.getGuild().getVoiceChannelById(args[1]);
                         if (newAutoChannel != null) {
-                            newAutoChannel.getManager().setTopic("").complete();
-                            for (String vc : server.getAutoChannels()) {
-                                if (vc.equals(newAutoChannel.getId())) {
-                                    server.removeAutoChannel(vc);
-                                    break;
-                                }
-                            }
+                            server.removeAutoChannel(newAutoChannel.getId());
+                            server.removeGamingChannel(newAutoChannel.getId());
                             engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.autochan.success.removed", user.getLang(), null), event.getChannel());
                         } else {
                             engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404channel", user.getLang(), null), event.getChannel(), false);

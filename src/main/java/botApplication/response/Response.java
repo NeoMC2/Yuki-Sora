@@ -42,9 +42,7 @@ public abstract class Response {
 
     public void onPrivateMessage(PrivateMessageReceivedEvent respondingEvent){}
 
-    public void onError(Exception e){
-
-    }
+    public void onError(Exception e){}
 
     public enum ResponseTyp {
         Discord

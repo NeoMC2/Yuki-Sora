@@ -41,7 +41,15 @@
       <url>https://jcenter.bintray.com</url>
     </repository>
   </repositories>
-  <properties>
+    <dependencies>
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>4.2.0_229</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>

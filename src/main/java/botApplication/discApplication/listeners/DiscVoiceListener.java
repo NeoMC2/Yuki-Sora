@@ -53,7 +53,6 @@ public class DiscVoiceListener extends ListenerAdapter {
 
         VoiceChannel vc = event.getChannelLeft();
         testActiveVC(vc);
-
     }
 
     private boolean checkVc(Guild guild, VoiceChannel channelJoined, Member entity) {
@@ -133,8 +132,13 @@ public class DiscVoiceListener extends ListenerAdapter {
                                 switch (respondingEvent.getReactionEmote().getName()) {
                                     //haken-Emoji
                                     case "✅":
-                                        ac.getVc().getManager().setName(game + " [AC]").queue();
-                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10 * 10 * 10 * 10);
+                                        try {
+                                            ac.getVc().getManager().setName(game + " [AC]").queue();
+                                        } catch (Exception e){
+                                            msg.delete().queue();
+                                            break;
+                                        }
+                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10*10*10*10);
                                         msg.delete().queue();
                                         break;
 
