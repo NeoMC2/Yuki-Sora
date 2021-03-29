@@ -7,12 +7,14 @@ import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import javax.annotation.Nonnull;
 import java.awt.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -43,7 +45,7 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
 
-            if (event.getMessage().getContentRaw().startsWith("?")) {
+            if (event.getMessage().getContentRaw().startsWith("?tp")||event.getMessage().getContentRaw().startsWith("?topic")) {
                 try {
                     sendTopic(event);
                 } catch (Exception e) {
@@ -227,7 +229,14 @@ public class DiscMessageListener extends ListenerAdapter {
     }
 
     private void sendTopic(GuildMessageReceivedEvent event) {
-        JSONObject res = (JSONObject) engine.getDiscEngine().getApiManager().getRandomTopic(event.getMessage().getContentRaw().substring(1), event.getChannel().isNSFW()).get("data");
+        String msg = event.getMessage().getContentRaw();
+        String[] msgs = msg.split(" ");
+        String search = "";
+        for (int i = 1; i < msgs.length; i++) {
+            search += msgs[i] + " ";
+        }
+        search = search.substring(0, search.length() -1);
+        JSONObject res = (JSONObject) engine.getDiscEngine().getApiManager().getRandomTopic(search, event.getChannel().isNSFW()).get("data");
         String title = (String) res.get("topic");
         String des = (String) res.get("description");
         EmbedBuilder b = new EmbedBuilder().setColor(Color.ORANGE).setAuthor(title).setDescription(des);

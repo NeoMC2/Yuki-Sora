@@ -88,6 +88,7 @@ public class BotRequestHandler {
 
                 PrivateChannel pc = engine.getDiscEngine().getBotJDA().openPrivateChannelById(usr.getId()).complete();
                 engine.getDiscEngine().getTextUtils().sendCustomMessage(msg, pc, title, c);
+                break;
             }
         }
         return null;
