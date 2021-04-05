@@ -1,14 +1,17 @@
-Yuki-Sora patched to Patch_4.3
+Yuki-Sora patched to 5.0.0_1
 
 New features
-• Yuki can give you topics to talk about
+• Gaming channels rename themselves to the most played game in the channel (1/2)
 •
 •
 
 Bugfix
-• JSON null error
-• gif command shows only one space of the name added
+•
+•
 •
 
 Improvements
-• Import fix
+• Switched JDA repository
+• Switched to JDA Version 4.2.1_253
+• Monster command is now private as well
+•

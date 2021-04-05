@@ -11,6 +11,7 @@ public class AutoChannel {
     private AutoChannelType type;
     private Member createdBy;
     private boolean askedForChange = false;
+    private boolean wasRenamedByMember = false;
 
     public void rename(String name){
         vc.getManager().setName(name + " [AC]").queue();
@@ -102,6 +103,14 @@ public class AutoChannel {
 
     public void setAskedForChange(boolean askedForChange) {
         this.askedForChange = askedForChange;
+    }
+
+    public boolean isWasRenamedByMember() {
+        return wasRenamedByMember;
+    }
+
+    public void setWasRenamedByMember(boolean wasRenamedByMember) {
+        this.wasRenamedByMember = wasRenamedByMember;
     }
 
     public enum AutoChannelType {

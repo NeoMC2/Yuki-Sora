@@ -154,23 +154,25 @@ public class DiscVoiceListener extends ListenerAdapter {
                         engine.getResponseHandler().makeResponse(response);
                     }
                 } else {
-                    ArrayList<String> games = new ArrayList<>();
-                    for (Member m : ac.getVc().getMembers()) {
-                        games.add(DiscUtilityBase.getGame(m));
-                    }
-                    String most = "";
-                    int mostI = 0;
-                    for (String s : games) {
-                        int i = games.indexOf(s);
-                        if (i > mostI) {
-                            most = s;
-                            mostI = i;
-                            games.removeIf(e -> e.equals(s));
+                    if(!ac.isWasRenamedByMember()){
+                        ArrayList<String> games = new ArrayList<>();
+                        for (Member m : ac.getVc().getMembers()) {
+                            games.add(DiscUtilityBase.getGame(m));
                         }
-                    }
+                        String most = "";
+                        int mostI = 0;
+                        for (String s : games) {
+                            int i = games.indexOf(s);
+                            if (i > mostI) {
+                                most = s;
+                                mostI = i;
+                                games.removeIf(e -> e.equals(s));
+                            }
+                        }
 
-                    if (ac.getVc().getMembers().size() / 2 > mostI)
-                        ac.rename(most);
+                        if (ac.getVc().getMembers().size() / 2 > mostI)
+                            ac.rename(most);
+                    }
                 }
         }
     }
@@ -237,6 +239,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             if (ac == null)
                 continue;
             ac.rename(newName);
+            ac.setWasRenamedByMember(true);
             return true;
         }
         return false;
