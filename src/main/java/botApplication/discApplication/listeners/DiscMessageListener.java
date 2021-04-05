@@ -309,12 +309,6 @@ public class DiscMessageListener extends ListenerAdapter {
         DiscApplicationServer server = DiscUtilityBase.lookForServer(e.getGuild(), engine);
         DiscApplicationUser user = DiscUtilityBase.lookForUserById(e.getAuthor(), engine);
 
-        try {
-            if (!user.isBooster())
-                return;
-        } catch (Exception ignored) {
-        }
-
         String[] inv1 = e.getMessage().getContentRaw().split(" ");
         String invoke = inv1[0].substring(1);
         List<Member> mem = e.getMessage().getMentionedMembers();
@@ -340,6 +334,8 @@ public class DiscMessageListener extends ListenerAdapter {
 
         switch (invoke) {
             case "inv":
+                if(!user.isBooster())
+                    return;
                 if (tc != null) {
                     for (Member m : mem) {
                         tc.createPermissionOverride(m).setAllow(textPermissions).queue();
@@ -352,6 +348,8 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "rem":
+                if(!user.isBooster())
+                    return;
                 if (tc != null) {
                     for (Member m : mem) {
                         tc.getManager().removePermissionOverride(m).queue();
@@ -364,6 +362,8 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "vc":
+                if(!user.isBooster())
+                    return;
                 if (tc != null) {
                     for (String s : user.getBoosterChans()) {
                         if (tc.getId().equals(s)) {
@@ -401,6 +401,8 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "tc":
+                if(!user.isBooster())
+                    return;
                 if (tc != null) {
                     engine.getDiscEngine().getTextUtils().sendError("This channel is a Voice Channel already!", e.getChannel(), false);
                     return;
@@ -437,6 +439,8 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "name":
+                if(!user.isBooster())
+                    return;
                 if (tc != null) {
                     try {
                         tc.getManager().setName(args1).queue();

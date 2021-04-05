@@ -154,25 +154,28 @@ public class DiscVoiceListener extends ListenerAdapter {
                         engine.getResponseHandler().makeResponse(response);
                     }
                 } else {
-                    if(!ac.isWasRenamedByMember()){
-                        ArrayList<String> games = new ArrayList<>();
-                        for (Member m : ac.getVc().getMembers()) {
-                            games.add(DiscUtilityBase.getGame(m));
-                        }
-                        String most = "";
-                        int mostI = 0;
-                        for (String s : games) {
-                            int i = games.indexOf(s);
-                            if (i > mostI) {
-                                most = s;
-                                mostI = i;
-                                games.removeIf(e -> e.equals(s));
+                    if (ac.getVc().getMembers().size() > 2)
+                        if (!ac.isWasRenamedByMember()) {
+                            ArrayList<String> games = new ArrayList<>();
+                            for (Member m : ac.getVc().getMembers()) {
+                                String g = DiscUtilityBase.getGame(m);
+                                if (g.length() >= 1)
+                                    games.add(g);
                             }
-                        }
+                            String most = "";
+                            int mostI = 0;
+                            for (String s : games) {
+                                int i = games.indexOf(s);
+                                if (i > mostI) {
+                                    most = s;
+                                    mostI = i;
+                                    games.removeIf(e -> e.equals(s));
+                                }
+                            }
 
-                        if (ac.getVc().getMembers().size() / 2 > mostI)
-                            ac.rename(most);
-                    }
+                            if (ac.getVc().getMembers().size() / 2 > mostI)
+                                ac.rename(most);
+                        }
                 }
         }
     }
