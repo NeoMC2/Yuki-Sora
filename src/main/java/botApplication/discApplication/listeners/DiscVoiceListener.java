@@ -113,7 +113,7 @@ public class DiscVoiceListener extends ListenerAdapter {
         AutoChannel ac = getAutoChan(event.getMember());
         if (ac != null) {
             if (ac.getType() == AutoChannel.AutoChannelType.Gaming)
-                if (ac.getCreatedBy().getId().equals(event.getUser().getId()))
+                if (ac.getCreatedBy().getId().equals(event.getUser().getId())) {
                     if (!ac.isAskedForChange()) {
                         String game = DiscUtilityBase.getGame(event.getMember());
                         if (game == null)
@@ -133,12 +133,12 @@ public class DiscVoiceListener extends ListenerAdapter {
                                     //haken-Emoji
                                     case "✅":
                                         try {
-                                            ac.getVc().getManager().setName(game + " [AC]").queue();
-                                        } catch (Exception e){
+                                            ac.rename(game);
+                                        } catch (Exception e) {
                                             msg.delete().queue();
                                             break;
                                         }
-                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10*10*10*10);
+                                        engine.getDiscEngine().getTextUtils().sendSucces("Successfully changed channel name!", respondingEvent.getChannel(), 10 * 10 * 10 * 10);
                                         msg.delete().queue();
                                         break;
 
@@ -153,6 +153,25 @@ public class DiscVoiceListener extends ListenerAdapter {
                         response.discChannelId = pc.getId();
                         engine.getResponseHandler().makeResponse(response);
                     }
+                } else {
+                    ArrayList<String> games = new ArrayList<>();
+                    for (Member m : ac.getVc().getMembers()) {
+                        games.add(DiscUtilityBase.getGame(m));
+                    }
+                    String most = "";
+                    int mostI = 0;
+                    for (String s : games) {
+                        int i = games.indexOf(s);
+                        if (i > mostI) {
+                            most = s;
+                            mostI = i;
+                            games.removeIf(e -> e.equals(s));
+                        }
+                    }
+
+                    if (ac.getVc().getMembers().size() / 2 > mostI)
+                        ac.rename(most);
+                }
         }
     }
 
@@ -217,7 +236,7 @@ public class DiscVoiceListener extends ListenerAdapter {
             AutoChannel ac = getAutoChan(m);
             if (ac == null)
                 continue;
-            ac.getVc().getManager().setName(newName + " [AC]").queue();
+            ac.rename(newName);
             return true;
         }
         return false;

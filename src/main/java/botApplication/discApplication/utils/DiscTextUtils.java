@@ -414,6 +414,19 @@ public class DiscTextUtils {
     }
 
     /**
+     * outdated!
+     *
+     * @param txt     Text which will be send
+     * @param channel Text channel destination
+     */
+    public void sendSucces(String txt, MessageChannel channel) {
+        Message msg;
+        msg = channel.sendMessage(
+                new EmbedBuilder().setColor(Color.GREEN).setDescription(txt).build()
+        ).complete();
+    }
+
+    /**
      * @param txt      Text which will be send
      * @param channel  Text channel destination
      * @param dellTime time which is needed to delete this message

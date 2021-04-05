@@ -12,6 +12,10 @@ public class AutoChannel {
     private Member createdBy;
     private boolean askedForChange = false;
 
+    public void rename(String name){
+        vc.getManager().setName(name + " [AC]").queue();
+    }
+
     public AutoChannel recreate(VoiceChannel vc, AutoChannelType type) {
         this.vc = vc;
         this.type = type;

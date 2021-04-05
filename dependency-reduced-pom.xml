@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>mindcollaps.yukisora</groupId>
   <artifactId>Yuki-Sora</artifactId>
-  <version>PATCH_4.4</version>
+  <version>5.0.0</version>
   <build>
     <plugins>
       <plugin>
@@ -36,20 +36,12 @@
   </build>
   <repositories>
     <repository>
-      <id>jcenter</id>
-      <name>jcenter-bintray</name>
-      <url>https://jcenter.bintray.com</url>
+      <id>dv8tion</id>
+      <name>m2-dv8tion</name>
+      <url>https://m2.dv8tion.net/releases</url>
     </repository>
   </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>4.2.0_229</version>
-            <scope>compile</scope>
-        </dependency>
-    </dependencies>
-    <properties>
+  <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
