@@ -154,7 +154,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                         engine.getResponseHandler().makeResponse(response);
                     }
                 } else {
-                    if (ac.getVc().getMembers().size() > 2)
+                    if (ac.getVc().getMembers().size() >= 2)
                         if (!ac.isWasRenamedByMember()) {
                             ArrayList<String> games = new ArrayList<>();
                             for (Member m : ac.getVc().getMembers()) {

@@ -311,6 +311,22 @@ public class DiscMessageListener extends ListenerAdapter {
 
         String[] inv1 = e.getMessage().getContentRaw().split(" ");
         String invoke = inv1[0].substring(1);
+        boolean done = false;
+
+        switch (invoke){
+            case "rn":
+            case "rename":
+                renameAutoChannel(inv1, e.getAuthor(), e.getChannel(), null);
+                done = true;
+                break;
+        }
+
+        if(done)
+            return;
+
+        if(!user.isBooster())
+            return;
+
         List<Member> mem = e.getMessage().getMentionedMembers();
         e.getMessage().getMentionedRoles().forEach(a -> mem.addAll(a.getGuild().getMembersWithRoles(a)));
         TextChannel tc = getTc(e, user);
@@ -348,8 +364,6 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "rem":
-                if(!user.isBooster())
-                    return;
                 if (tc != null) {
                     for (Member m : mem) {
                         tc.getManager().removePermissionOverride(m).queue();
@@ -362,8 +376,6 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "vc":
-                if(!user.isBooster())
-                    return;
                 if (tc != null) {
                     for (String s : user.getBoosterChans()) {
                         if (tc.getId().equals(s)) {
@@ -401,8 +413,6 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "tc":
-                if(!user.isBooster())
-                    return;
                 if (tc != null) {
                     engine.getDiscEngine().getTextUtils().sendError("This channel is a Voice Channel already!", e.getChannel(), false);
                     return;
@@ -439,8 +449,6 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
 
             case "name":
-                if(!user.isBooster())
-                    return;
                 if (tc != null) {
                     try {
                         tc.getManager().setName(args1).queue();
@@ -456,11 +464,6 @@ public class DiscMessageListener extends ListenerAdapter {
                         return;
                     }
                 }
-                break;
-
-            case "rn":
-            case "rename":
-                renameAutoChannel(inv1, e.getAuthor(), e.getChannel(), null);
                 break;
         }
         try {
