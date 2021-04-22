@@ -111,7 +111,7 @@ public class FileUtils {
                 engine.getUtilityBase().printOutput("[file utils create File Dirs] cant create file dirs", true);
             }
         }
-        createfiles(file);
+        createFiles(file);
     }
 
     private void createFiles(File file) {
