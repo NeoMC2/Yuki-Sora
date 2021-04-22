@@ -102,7 +102,7 @@ public class DiscCmdMusic implements DiscCommand {
             } else if (req.get("status").equals("400")) {
                 responseChannel.sendMessage(new EmbedBuilder().setDescription((String) req.get("response")).setColor(Color.RED).build()).queue();
             }
-        return (String) req.get("response");
+        return (String) req.get("response").replace("\\\"","\"");
     }
 
     private String argsToString(String[] ar) {

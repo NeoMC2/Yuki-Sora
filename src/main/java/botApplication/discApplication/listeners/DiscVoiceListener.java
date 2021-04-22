@@ -159,7 +159,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                             ArrayList<String> games = new ArrayList<>();
                             for (Member m : ac.getVc().getMembers()) {
                                 String g = DiscUtilityBase.getGame(m);
-                                if (g.length() >= 1)
+                                if (g.length() > 1)
                                     games.add(g);
                             }
                             String most = "";
@@ -173,7 +173,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                                 }
                             }
 
-                            if (ac.getVc().getMembers().size() / 2 > mostI)
+                            if (games.size() / 2 > mostI)
                                 ac.rename(most);
                         }
                 }
