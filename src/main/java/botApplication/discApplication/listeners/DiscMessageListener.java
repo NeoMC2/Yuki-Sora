@@ -579,6 +579,7 @@ public class DiscMessageListener extends ListenerAdapter {
             if(bannedUntil != null){
                 Date now = new Date();
                 if(now.after(bannedUntil)){
+                    msgs = 0;
                     bannedUntil = null;
                 } else {
                     return true;
