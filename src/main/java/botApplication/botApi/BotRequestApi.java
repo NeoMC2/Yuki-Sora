@@ -15,7 +15,6 @@ public class BotRequestApi {
 
     private final Engine engine;
 
-
     private HttpServer server;
 
     public BotRequestApi(Engine engine) {

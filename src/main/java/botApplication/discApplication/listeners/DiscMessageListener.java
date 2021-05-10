@@ -16,6 +16,15 @@ import org.json.simple.JSONObject;
 
 import javax.annotation.Nonnull;
 import java.awt.*;
+import java.nio.file.WatchKey;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,6 +34,8 @@ public class DiscMessageListener extends ListenerAdapter {
 
     private final Permission[] textPermissions = {Permission.MESSAGE_READ, Permission.VIEW_CHANNEL, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_WRITE, Permission.MESSAGE_TTS};
     private final Permission[] voicePermissions = {Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.VOICE_STREAM, Permission.VOICE_USE_VAD};
+
+    private HashMap<String, WatchedUser> watchedUserStringHashMap = new HashMap<>();
 
     public DiscMessageListener(Engine engine) {
         this.engine = engine;
@@ -45,7 +56,15 @@ public class DiscMessageListener extends ListenerAdapter {
                 return;
             }
 
-            if (event.getMessage().getContentRaw().startsWith("?tp")||event.getMessage().getContentRaw().startsWith("?topic")) {
+
+
+            if (event.getMessage().getContentRaw().startsWith("?tp") || event.getMessage().getContentRaw().startsWith("?topic")) {
+                //test command ban
+                if(testWatch(event.getMember(), event.getChannel())){
+                    event.getMessage().delete().queue();
+                    return;
+                }
+
                 try {
                     sendTopic(event);
                 } catch (Exception e) {
@@ -64,6 +83,12 @@ public class DiscMessageListener extends ListenerAdapter {
 
             //Specific VIP commands
             if (event.getMessage().getContentRaw().startsWith("!")) {
+                //test command ban
+                if(testWatch(event.getMember(), event.getChannel())){
+                    event.getMessage().delete().queue();
+                    return;
+                }
+
                 sendVIPCommand(event);
                 return;
             }
@@ -81,6 +106,12 @@ public class DiscMessageListener extends ListenerAdapter {
                     //command exist check
                     for (int i = 0; engine.getDiscEngine().getCommandHandler().commandIvokes.size() > i; i++) {
                         if (event.getMessage().getContentRaw().contains(engine.getDiscEngine().getCommandHandler().commandIvokes.get(i))) {
+                            //test command ban
+                            if(testWatch(event.getMember(), event.getChannel())){
+                                event.getMessage().delete().queue();
+                                return;
+                            }
+
                             sendGuildCommand(event);
                             //event.getMessage().delete().queue();
                             commandWorked = true;
@@ -134,6 +165,21 @@ public class DiscMessageListener extends ListenerAdapter {
                 }
             }
         }
+    }
+
+    private boolean testWatch(Member m, TextChannel tc){
+        if(watchedUserStringHashMap.containsKey(m.getId())){
+            WatchedUser user = watchedUserStringHashMap.get(m.getId());
+            if(user.testMessage()){
+                engine.getDiscEngine().getTextUtils().sendWarining(":no_entry_sign: You are currently banned from sending commands to the bot! :no_entry_sign:\n\nTime banned: `" + user.getTimeBanned() + "`",tc, 10*10*10*6);
+                return true;
+            }
+        } else {
+            WatchedUser user = new WatchedUser();
+            user.testMessage();
+            watchedUserStringHashMap.put(m.getId(), user);
+        }
+        return false;
     }
 
     private void sendSpecificPrivateCommand(String cmd, PrivateChannel channel, User user) {
@@ -235,7 +281,7 @@ public class DiscMessageListener extends ListenerAdapter {
         for (int i = 1; i < msgs.length; i++) {
             search += msgs[i] + " ";
         }
-        search = search.substring(0, search.length() -1);
+        search = search.substring(0, search.length() - 1);
         JSONObject res = (JSONObject) engine.getDiscEngine().getApiManager().getRandomTopic(search, event.getChannel().isNSFW()).get("data");
         String title = (String) res.get("topic");
         String des = (String) res.get("description");
@@ -313,7 +359,7 @@ public class DiscMessageListener extends ListenerAdapter {
         String invoke = inv1[0].substring(1);
         boolean done = false;
 
-        switch (invoke){
+        switch (invoke) {
             case "rn":
             case "rename":
                 renameAutoChannel(inv1, e.getAuthor(), e.getChannel(), null);
@@ -321,10 +367,10 @@ public class DiscMessageListener extends ListenerAdapter {
                 break;
         }
 
-        if(done)
+        if (done)
             return;
 
-        if(!user.isBooster())
+        if (!user.isBooster())
             return;
 
         List<Member> mem = e.getMessage().getMentionedMembers();
@@ -350,7 +396,7 @@ public class DiscMessageListener extends ListenerAdapter {
 
         switch (invoke) {
             case "inv":
-                if(!user.isBooster())
+                if (!user.isBooster())
                     return;
                 if (tc != null) {
                     for (Member m : mem) {
@@ -518,5 +564,102 @@ public class DiscMessageListener extends ListenerAdapter {
             vc = event.getGuild().getVoiceChannelById(user.getBoosterChans().get(0));
         }
         return vc;
+    }
+
+    private class WatchedUser {
+
+        private int msgs;
+
+        // 0 = unauffällig, 1 = 1 min ban,2 = 5 min ban, 3 = 4 Stunden ban, 4 = 24 h ban
+        private int level;
+        private Date bannedUntil;
+        private Date lastWrite;
+
+        public boolean testMessage(){
+            if(bannedUntil != null){
+                Date now = new Date();
+                if(now.after(bannedUntil)){
+                    bannedUntil = null;
+                } else {
+                    return true;
+                }
+            }
+
+            boolean ban = false;
+            if(lastWrite != null) {
+                Instant later = new Date().toInstant();
+                later = later.plusSeconds(5);
+
+                if(lastWrite.before(Date.from(later))){
+                    msgs++;
+                    if(msgs > 3){
+                        ban = true;
+                        ban();
+                    }
+                } else {
+                    msgs = 0;
+                }
+            }
+
+            lastWrite = new Date();
+            return ban;
+        }
+
+        public void ban() {
+            lastWrite = null;
+            msgs = 0;
+
+            if (level == 0) {
+                level = 1;
+            } else if (level == 1) {
+                level = 2;
+            } else if (level == 2) {
+                level = 3;
+            } else if (level == 3) {
+                level = 4;
+            }
+
+            if (level == 1) {
+                setBannedUntil(60);
+            } else if (level == 2) {
+                setBannedUntil(60*5);
+            } else if (level == 3) {
+                setBannedUntil(60*60*4);
+            } else if(level == 4){
+                setBannedUntil(60*60*24);
+            }
+        }
+
+        private void setBannedUntil(int seconds){
+            Date d = new Date();
+            Instant i = d.toInstant();
+            i = i.plusSeconds(seconds);
+            bannedUntil = Date.from(i);
+        }
+
+        public String getTimeBanned(){
+            if(bannedUntil == null){
+                return "no time found";
+            }
+            Instant now = Instant.now();
+            Instant event = bannedUntil.toInstant();
+
+            Duration diff = Duration.between(now, event);
+            long hours = diff.toHours();
+            long minutes = diff.toMinutes() - hours * 60;
+            long seconds = diff.getSeconds() - minutes * 60;
+
+            return hours + ":" + minutes + ":" + seconds;
+        }
+
+        @Override
+        public String toString() {
+            return "WatchedUser{" +
+                    "msgs=" + msgs +
+                    ", level=" + level +
+                    ", bannedUntil=" + bannedUntil +
+                    ", lastWrite=" + lastWrite +
+                    '}';
+        }
     }
 }

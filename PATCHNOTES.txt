@@ -1,7 +1,7 @@
-Yuki-Sora patched to 5.0.0_1
+Yuki-Sora patched to 5.0.0_5
 
 New features
-• Gaming channels rename themselves to the most played game in the channel (1/2)
+• Command ban
 •
 •
 
@@ -11,7 +11,7 @@ Bugfix
 •
 
 Improvements
-• Switched JDA repository
-• Switched to JDA Version 4.2.1_253
-• Monster command is now private as well
+•
+•
+•
 •
