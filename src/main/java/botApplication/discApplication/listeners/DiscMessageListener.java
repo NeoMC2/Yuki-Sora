@@ -588,10 +588,7 @@ public class DiscMessageListener extends ListenerAdapter {
 
             boolean ban = false;
             if(lastWrite != null) {
-                Instant later = new Date().toInstant();
-                later = later.plusSeconds(5);
-
-                if(lastWrite.before(Date.from(later))){
+                if(Instant.now().isBefore(lastWrite.toInstant().plusSeconds(5))){
                     msgs++;
                     if(msgs > 3){
                         ban = true;
