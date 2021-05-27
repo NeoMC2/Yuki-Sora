@@ -1,7 +1,7 @@
 Yuki-Sora patched to 5.0.0_5
 
 New features
-• Command ban
+• User info
 •
 •
 

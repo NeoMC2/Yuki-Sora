@@ -306,6 +306,13 @@ public class ApiManager {
         return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getRandomTopic", req.toJSONString(), apiToken));
     }
 
+    public JSONObject getUserLevelInfo(String id, String img){
+        JSONObject req = new JSONObject();
+        req.put("id", id);
+        req.put("img", img);
+        return engine.getFileUtils().convertStringToJson(engine.getNetworkManager().post(api + "/getLevelInfo", req.toJSONString(), apiToken));
+    }
+
     private JSONObject getErrorJson(){
         JSONObject o = new JSONObject();
         o.put("status", 400);

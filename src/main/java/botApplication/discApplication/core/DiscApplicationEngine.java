@@ -138,6 +138,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("m", new DiscCmdMusic());
         commandHandler.createNewCommand("item", new DiscCmdItem());
         commandHandler.createNewCommand("myid", new DiscCmdMyId());
+        commandHandler.createNewCommand("info", new DiscCmdInfo());
     }
 
     private void addBotListeners() {
