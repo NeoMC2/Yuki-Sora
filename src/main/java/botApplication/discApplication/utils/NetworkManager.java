@@ -45,8 +45,8 @@ public class NetworkManager {
             }
             return null;
         }
-        connection.setConnectTimeout(5000);
-        connection.setReadTimeout(5000);
+        connection.setConnectTimeout(10000);
+        connection.setReadTimeout(10000);
         if (apiToken != null) {
             addApiToken(apiToken, connection);
             connection.setRequestProperty("Content-Type", "application/json");

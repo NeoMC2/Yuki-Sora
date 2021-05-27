@@ -1,4 +1,4 @@
-Yuki-Sora patched to 5.0.0_5
+Yuki-Sora patched to 5.0.0_006
 
 New features
 • User info

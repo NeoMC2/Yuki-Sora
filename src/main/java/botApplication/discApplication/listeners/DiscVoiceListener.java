@@ -159,6 +159,8 @@ public class DiscVoiceListener extends ListenerAdapter {
                             ArrayList<String> games = new ArrayList<>();
                             for (Member m : ac.getVc().getMembers()) {
                                 String g = DiscUtilityBase.getGame(m);
+                                if(g == null)
+                                    continue;
                                 if (g.length() > 1)
                                     games.add(g);
                             }
