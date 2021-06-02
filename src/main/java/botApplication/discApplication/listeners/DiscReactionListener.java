@@ -1,5 +1,6 @@
 package botApplication.discApplication.listeners;
 
+import botApplication.discApplication.commands.DiscCmdContest;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import botApplication.discApplication.librarys.poll.Poll;
@@ -20,6 +21,8 @@ public class DiscReactionListener extends ListenerAdapter {
 
     private final Engine engine;
 
+    private String ignore = "";
+
     public DiscReactionListener(Engine engine) {
         this.engine = engine;
     }
@@ -34,8 +37,21 @@ public class DiscReactionListener extends ListenerAdapter {
         }
 
         //Response
-        if(engine.getResponseHandler().lookForResponse(event))
+        if (engine.getResponseHandler().lookForResponse(event))
             return;
+
+        //Contest
+        DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+
+        if (contest != null) {
+            if (contest.isVoter(event.getUserId())||contest.isOpen()) {
+                ignore = event.getUserId();
+                event.getReaction().removeReaction(event.getUser()).queue();
+            } else {
+                contest.addUserVoted(event.getUserId());
+            }
+            return;
+        }
 
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s == null) {
@@ -44,7 +60,7 @@ public class DiscReactionListener extends ListenerAdapter {
 
         Poll p = getPoll(event.getMessageId(), event.getGuild().getId());
         if (p != null) {
-            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), getMessage(event.getChannel(), event.getMessageId()) , engine);
+            p.update(event.getReactionEmote().getName(), 1, event.getGuild(), event.getMember(), getMessage(event.getChannel(), event.getMessageId()), engine);
             return;
         }
         DungeonQueueHandler qh = getDungeonQueueHandler(s, event.getMessageId());
@@ -87,6 +103,18 @@ public class DiscReactionListener extends ListenerAdapter {
             }
         } catch (Exception ignored) {
         }
+
+        //Contest
+        DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+
+        if (contest != null) {
+            if (contest.isVoter(event.getUserId())&&!event.getUserId().equals(ignore)) {
+                contest.removeUserVoted(event.getUserId());
+            }
+            ignore = "";
+            return;
+        }
+
         DiscApplicationServer s = engine.getDiscEngine().getFilesHandler().getServerById(event.getGuild().getId());
         if (s == null) {
             return;
@@ -121,14 +149,14 @@ public class DiscReactionListener extends ListenerAdapter {
     @Override
     public void onPrivateMessageReactionAdd(@NotNull PrivateMessageReactionAddEvent event) {
         //Response
-        if(engine.getResponseHandler().lookForResponse(event))
+        if (engine.getResponseHandler().lookForResponse(event))
             return;
     }
 
-    private Message getMessage(TextChannel tc, String id){
+    private Message getMessage(TextChannel tc, String id) {
         List<Message> messages = tc.getHistory().retrievePast(5).complete();
-        for(Message msg : messages){
-            if(msg.getId().equals(id))
+        for (Message msg : messages) {
+            if (msg.getId().equals(id))
                 return msg;
         }
         return null;

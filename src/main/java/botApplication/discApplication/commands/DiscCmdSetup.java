@@ -110,7 +110,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     case "queue":
                                         String textChannel = args[3];
                                         TextChannel tc;
-                                        if (textChannel.toLowerCase().equals("new")) {
+                                        if (textChannel.equalsIgnoreCase("new")) {
                                             tc = event.getGuild().createTextChannel("dungeonqueue").complete();
                                         } else
                                             tc = event.getGuild().getTextChannelById(textChannel);
@@ -138,13 +138,13 @@ public class DiscCmdSetup implements DiscCommand {
                                         String roleTxt = args[4];
                                         String textChannelTxt = args[3];
                                         Role r;
-                                        if (roleTxt.toLowerCase().equals("new"))
+                                        if (roleTxt.equalsIgnoreCase("new"))
                                             r = event.getGuild().createRole().setName("dungeon").setColor(Color.GRAY).complete();
                                         else
                                             r = event.getGuild().getRoleById(roleTxt);
 
                                         TextChannel ttc;
-                                        if (textChannelTxt.toLowerCase().equals("new"))
+                                        if (textChannelTxt.equalsIgnoreCase("new"))
                                             ttc = event.getGuild().createTextChannel("dungeon").complete();
                                         else
                                             ttc = event.getGuild().getTextChannelById(textChannelTxt);
@@ -177,7 +177,7 @@ public class DiscCmdSetup implements DiscCommand {
                             case "chanrole":
                             case "chr":
                             case "cr":
-                                if (args[2].toLowerCase().equals("list")) {
+                                if (args[2].equalsIgnoreCase("list")) {
                                     String msg = "";
                                     try {
                                         for (DiscRole.RoleType rtpy : engine.getDiscEngine().getSetupRoles().get(event.getGuild().getId())) {
@@ -190,7 +190,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     }
                                     engine.getDiscEngine().getTextUtils().sendSucces("**List**\n\n" + msg, event.getChannel());
                                     return;
-                                } else if (args[2].toLowerCase().equals("public") || args[2].toLowerCase().equals("all")) {
+                                } else if (args[2].equalsIgnoreCase("public") || args[2].equalsIgnoreCase("all")) {
                                     ArrayList<DiscRole.RoleType> pblic = new ArrayList<>();
                                     pblic.addAll(Arrays.asList(publicType));
                                     engine.getDiscEngine().addSetupRole(event.getGuild().getId(), pblic);
@@ -253,7 +253,7 @@ public class DiscCmdSetup implements DiscCommand {
                             case "defroles":
                             case "dr":
                             case "drole":
-                                if (args[2].toLowerCase().equals("list")) {
+                                if (args[2].equalsIgnoreCase("list")) {
                                     String msg = "";
                                     try {
                                         for (String rtpy : server.getDefaultRoles()) {
@@ -267,7 +267,7 @@ public class DiscCmdSetup implements DiscCommand {
                                     engine.getDiscEngine().getTextUtils().sendSucces("**List**\n\n" + msg, event.getChannel());
                                     return;
                                 }
-                                if (args[2].toLowerCase().equals("add")) {
+                                if (args[2].equalsIgnoreCase("add")) {
                                     Role g = event.getGuild().getRoleById(args[3]);
                                     if (g == null) {
                                         engine.getUtilityBase().printOutput(engine.lang("general.error.404role", user.getLang(), null), true);
@@ -283,7 +283,7 @@ public class DiscCmdSetup implements DiscCommand {
                                         }
                                         engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.setup.succes.roleDefined", user.getLang(), null), event.getChannel());
                                     }
-                                } else if (args[2].toLowerCase().equals("remove")) {
+                                } else if (args[2].equalsIgnoreCase("remove")) {
                                     server.getDefaultRoles().remove(args[3]);
                                     engine.getDiscEngine().getTextUtils().sendSucces("removed!", event.getChannel());
                                 }

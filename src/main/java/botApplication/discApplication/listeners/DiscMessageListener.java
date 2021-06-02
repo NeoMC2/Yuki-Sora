@@ -1,5 +1,6 @@
 package botApplication.discApplication.listeners;
 
+import botApplication.discApplication.commands.DiscCmdContest;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.utils.DiscUtilityBase;
@@ -7,22 +8,18 @@ import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.channel.priv.PrivateChannelCreateEvent;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import javax.annotation.Nonnull;
 import java.awt.*;
-import java.nio.file.WatchKey;
+import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +32,7 @@ public class DiscMessageListener extends ListenerAdapter {
     private final Permission[] textPermissions = {Permission.MESSAGE_READ, Permission.VIEW_CHANNEL, Permission.MESSAGE_ADD_REACTION, Permission.MESSAGE_HISTORY, Permission.MESSAGE_ATTACH_FILES, Permission.MESSAGE_EMBED_LINKS, Permission.MESSAGE_EXT_EMOJI, Permission.MESSAGE_WRITE, Permission.MESSAGE_TTS};
     private final Permission[] voicePermissions = {Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT, Permission.VOICE_SPEAK, Permission.VOICE_STREAM, Permission.VOICE_USE_VAD};
 
-    private HashMap<String, WatchedUser> watchedUserStringHashMap = new HashMap<>();
+    private final HashMap<String, WatchedUser> watchedUserStringHashMap = new HashMap<>();
 
     public DiscMessageListener(Engine engine) {
         this.engine = engine;
@@ -54,6 +51,22 @@ public class DiscMessageListener extends ListenerAdapter {
             //Response
             if (engine.getResponseHandler().lookForResponse(event)) {
                 return;
+            }
+
+            //Contest
+            DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+
+            if (contest != null) {
+                if(contest.isParticipant(event.getAuthor().getId()))
+                    event.getMessage().delete().queue();
+                else {
+                    if(event.getMessage().getAttachments().size() == 0 || !contest.isOpen())
+                        event.getMessage().delete().queue();
+                    else {
+                        event.getMessage().addReaction("\u2705").queue();
+                        contest.addUserParticipate(event.getAuthor().getId());
+                    }
+                }
             }
 
 

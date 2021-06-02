@@ -178,6 +178,8 @@ public class DiscApplicationFilesHandler {
             }
             engine.getUtilityBase().printOutput("ERROR IN SAVE OWO - Votes", false);
         }
+
+        engine.getDiscEngine().getContestCmd().saveContests(engine);
     }
 
     public void saveAllBotFiles() {

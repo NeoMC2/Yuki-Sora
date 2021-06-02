@@ -36,9 +36,13 @@ public class DiscApplicationEngine {
     private DiscCertificationHandler certificationHandler;
     private JDABuilder builder;
     private JDA botJDA;
-    private DiscCmdVote voteCmd;
     private HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles = new HashMap<>();
 
+    //Commands
+    private DiscCmdVote voteCmd;
+    private DiscCmdContest contestCmd;
+
+    //Listeners
     public DiscBoostListener discBoostListener;
     public DiscVoiceListener discVoiceListener;
 
@@ -123,6 +127,7 @@ public class DiscApplicationEngine {
     private void initPreCmds() {
         engine.getUtilityBase().printOutput(consMsgDef + " !Init pre CMDS!", false);
         voteCmd = new DiscCmdVote(engine);
+        contestCmd = new DiscCmdContest(engine);
     }
 
     private void addBotCommands() {
@@ -139,6 +144,7 @@ public class DiscApplicationEngine {
         commandHandler.createNewCommand("item", new DiscCmdItem());
         commandHandler.createNewCommand("myid", new DiscCmdMyId());
         commandHandler.createNewCommand("info", new DiscCmdInfo());
+        commandHandler.createNewCommand("contest", contestCmd);
     }
 
     private void addBotListeners() {
@@ -206,6 +212,10 @@ public class DiscApplicationEngine {
 
     public HashMap<String, ArrayList<DiscRole.RoleType>> getSetupRoles() {
         return setupRoles;
+    }
+
+    public DiscCmdContest getContestCmd() {
+        return contestCmd;
     }
 
     public void setSetupRoles(HashMap<String, ArrayList<DiscRole.RoleType>> setupRoles) {

@@ -11,7 +11,7 @@ import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import org.codehaus.plexus.util.FileUtils;
 import org.json.simple.JSONObject;
 
-import java.io.*;
+import java.io.File;
 import java.net.URL;
 
 public class DiscCmdInfo implements DiscCommand{

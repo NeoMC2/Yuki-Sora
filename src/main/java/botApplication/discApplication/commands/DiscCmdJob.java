@@ -21,7 +21,7 @@ public class DiscCmdJob implements DiscCommand {
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
         if (args.length > 0) {
-            if (args[0].toLowerCase().equals("list")) {
+            if (args[0].equalsIgnoreCase("list")) {
                 JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
                 JSONArray jbss = (JSONArray) jbs.get("data");
                 String jbS = "";
