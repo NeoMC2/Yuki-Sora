@@ -1,7 +1,7 @@
-Yuki-Sora patched to 5.0.0_006
+Yuki-Sora patched to 5.0.0_007
 
 New features
-• User info
+• Art contest
 •
 •
 
