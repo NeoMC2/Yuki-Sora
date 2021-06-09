@@ -27,7 +27,7 @@ public class DiscApplicationEngine {
 
     private final String consMsgDef = "[Discord application]";
     private final Engine engine;
-    private final DiscCommandHandler commandHandler = new DiscCommandHandler();
+    private DiscCommandHandler commandHandler;
     private final DiscCommandParser commandParser = new DiscCommandParser();
     private boolean isRunning = false;
     private ApiManager apiManager;
@@ -64,6 +64,8 @@ public class DiscApplicationEngine {
         engine.getUtilityBase().printOutput(consMsgDef + " !Bot start initialized!", false);
         isRunning = true;
 
+        commandHandler = new DiscCommandHandler(engine);
+
         initPreCmds();
 
         textUtils = new DiscTextUtils(engine);
@@ -74,7 +76,6 @@ public class DiscApplicationEngine {
         builder.setStatus(OnlineStatus.ONLINE);
         builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_PRESENCES);
         builder.enableCache(CacheFlag.CLIENT_STATUS, CacheFlag.VOICE_STATE, CacheFlag.ACTIVITY);
-        addBotCommands();
         addBotListeners();
         try {
             botJDA = builder.build();
@@ -87,6 +88,7 @@ public class DiscApplicationEngine {
             return;
         }
 
+        addBotCommands();
         apiManager = new ApiManager(engine);
         filesHandler = new DiscApplicationFilesHandler(engine);
         filesHandler.loadAllBotFiles();
@@ -132,19 +134,20 @@ public class DiscApplicationEngine {
 
     private void addBotCommands() {
         engine.getUtilityBase().printOutput(consMsgDef + " !Add commands!", false);
-        commandHandler.createNewCommand("setup", new DiscCmdSetup(engine));
-        commandHandler.createNewCommand("autochan", new DiscCmdAutoChannel());
-        commandHandler.createNewCommand("vote", voteCmd);
-        commandHandler.createNewCommand("rps", new DiscCmdRockPaperScissors());
-        commandHandler.createNewCommand("help", new DiscCmdHelp());
-        commandHandler.createNewCommand("job", new DiscCmdJob());
-        commandHandler.createNewCommand("wallet", new DiscCmdWallet());
-        commandHandler.createNewCommand("monster", new DiscCmdMonster());
-        commandHandler.createNewCommand("m", new DiscCmdMusic());
-        commandHandler.createNewCommand("item", new DiscCmdItem());
-        commandHandler.createNewCommand("myid", new DiscCmdMyId());
-        commandHandler.createNewCommand("info", new DiscCmdInfo());
-        commandHandler.createNewCommand("contest", contestCmd);
+        commandHandler.createNewCommand(new DiscCmdSetup(engine));
+        commandHandler.createNewCommand(new DiscCmdAutoChannel());
+        commandHandler.createNewCommand(voteCmd);
+        commandHandler.createNewCommand(new DiscCmdRockPaperScissors());
+        commandHandler.createNewCommand(new DiscCmdHelp());
+        commandHandler.createNewCommand(new DiscCmdJob());
+        commandHandler.createNewCommand(new DiscCmdWallet());
+        commandHandler.createNewCommand(new DiscCmdMonster());
+        commandHandler.createNewCommand(new DiscCmdMusic());
+        commandHandler.createNewCommand(new DiscCmdItem());
+        commandHandler.createNewCommand(new DiscCmdMyId());
+        commandHandler.createNewCommand(new DiscCmdInfo());
+        commandHandler.createNewCommand(contestCmd);
+        commandHandler.registerSlashCommands();
     }
 
     private void addBotListeners() {

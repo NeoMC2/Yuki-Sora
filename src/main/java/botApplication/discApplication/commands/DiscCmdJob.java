@@ -4,9 +4,14 @@ import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.response.Response;
 import core.Engine;
-import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import net.dv8tion.jda.api.interactions.commands.build.SubcommandData;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -20,6 +25,58 @@ public class DiscCmdJob implements DiscCommand {
 
     @Override
     public void actionServer(String[] args, GuildMessageReceivedEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        event.getChannel().sendMessage(perform(user, engine, args, event.getChannel(), event.getGuild(), event.getAuthor())).queue();
+    }
+
+    @Override
+    public boolean calledPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine) {
+        return true;
+    }
+
+    @Override
+    public void actionPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine) {
+        event.getChannel().sendMessage(perform(user, engine, args, event.getChannel(), null, event.getAuthor())).queue();
+    }
+
+    @Override
+    public boolean calledSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        return true;
+    }
+
+    @Override
+    public void actionSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        if (args[0].equals("take"))
+            event.getChannel().sendMessage(perform(user, engine, args, event.getChannel(), event.getGuild(), event.getUser())).queue();
+        else
+            event.getHook().sendMessageEmbeds(perform(user, engine, args, event.getChannel(), event.getGuild(), event.getUser())).queue();
+    }
+
+    @Override
+    public String help(Engine engine, DiscApplicationUser user) {
+        return engine.lang("cmd.job.help", user.getLang(), null);
+    }
+
+    @NotNull
+    @Override
+    public CommandData getCommand() {
+        return new CommandData(getInvoke(), "Work and manage your job").addSubcommands(
+                new SubcommandData("work", "Go to work"),
+                new SubcommandData("take", "Take a job"),
+                new SubcommandData("info", "Shows information about your job")
+        );
+    }
+
+    @Override
+    public String getInvoke() {
+        return "job";
+    }
+
+    @Override
+    public void actionTelegram(Member member, Engine engine, DiscApplicationUser user, String[] args) {
+
+    }
+
+    private MessageEmbed perform(DiscApplicationUser user, Engine engine, String[] args, MessageChannel channel, Guild g, User usr) {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("list")) {
                 JSONObject jbs = engine.getDiscEngine().getApiManager().getJobs();
@@ -29,8 +86,7 @@ public class DiscCmdJob implements DiscCommand {
                     JSONObject ob = (JSONObject) o;
                     jbS += "Work as " + ob.get("doing") + " at " + ob.get("jobName") + " [" + ob.get("shortName") + "]\n";
                 }
-                engine.getDiscEngine().getTextUtils().sendSucces(jbS, event.getChannel());
-                return;
+                return new EmbedBuilder().setColor(Color.GREEN).setDescription(jbS).build();
             }
             switch (args[0].toLowerCase()) {
                 case "take":
@@ -41,35 +97,35 @@ public class DiscCmdJob implements DiscCommand {
                         JSONObject ob = (JSONObject) jbss.get(i);
                         jbS += "[" + i + "] Work as " + ob.get("doing") + " at " + ob.get("jobName") + "[" + ob.get("shortName") + "]\n";
                     }
-                    engine.getDiscEngine().getTextUtils().sendCustomMessage(jbS, event.getChannel(), "Jobs", Color.blue);
 
                     Response r = new Response(Response.ResponseTyp.Discord) {
                         @Override
                         public void onGuildMessage(GuildMessageReceivedEvent respondingEvent) {
-                            int id = Integer.parseInt(respondingEvent.getMessage().getContentRaw());
-                            JSONObject o = (JSONObject) jbss.get(id);
-                            String idd = (String) o.get("_id");
-                            engine.getDiscEngine().getApiManager().giveUserAJob(respondingEvent.getAuthor().getId(), idd, "trainee");
-                            engine.getDiscEngine().getTextUtils().sendSucces("You work as " + o.get("doing") + " at " + o.get("jobName"), respondingEvent.getChannel());
+                            stepTwo(engine, respondingEvent.getAuthor(), respondingEvent.getMessage().getContentRaw(), jbss, respondingEvent.getChannel());
+                        }
+
+                        @Override
+                        public void onPrivateMessage(PrivateMessageReceivedEvent respondingEvent) {
+                            stepTwo(engine, respondingEvent.getAuthor(), respondingEvent.getMessage().getContentRaw(), jbss, respondingEvent.getChannel());
                         }
                     };
-                    r.discChannelId = event.getChannel().getId();
-                    r.discGuildId = event.getGuild().getId();
-                    r.discUserId = event.getAuthor().getId();
+                    r.discChannelId = channel.getId();
+                    if (g != null)
+                        r.discGuildId = g.getId();
+                    r.discUserId = usr.getId();
                     engine.getResponseHandler().makeResponse(r);
-                    break;
+                    return new EmbedBuilder().setColor(Color.BLUE).setDescription(jbS).setAuthor("Jobs").build();
 
                 case "work":
                     JSONObject workRes = engine.getDiscEngine().getApiManager().work(user.getUserId());
                     if (((Long) workRes.get("status")) == 200) {
-                        engine.getDiscEngine().getTextUtils().sendSucces("You've got " + (workRes.get("data") + " weboos"), event.getChannel());
+                        return new EmbedBuilder().setColor(Color.GREEN).setDescription("You've got " + (workRes.get("data") + " weboos")).build();
                     } else {
-                        engine.getDiscEngine().getTextUtils().sendError((String) workRes.get("message"), event.getChannel(), true);
+                        return new EmbedBuilder().setColor(Color.RED).setDescription((String) workRes.get("message")).build();
                     }
-                    break;
 
                 case "info":
-                    JSONObject infRes = engine.getDiscEngine().getApiManager().getUserJobAndJobFromUser(event.getAuthor().getId());
+                    JSONObject infRes = engine.getDiscEngine().getApiManager().getUserJobAndJobFromUser(usr.getId());
                     if (((Long) infRes.get("status")) == 200) {
                         JSONObject o = (JSONObject) infRes.get("job");
                         JSONObject ujb = (JSONObject) infRes.get("uJob");
@@ -94,7 +150,7 @@ public class DiscCmdJob implements DiscCommand {
                                 break;
                         }
 
-                        engine.getDiscEngine().getTextUtils().sendSucces("You work as " + o.get("doing") + " at " + o.get("jobName") + " [" + o.get("shortName") + "]. You are " + ujb.get("jobPosition") + " and earn " + earning + ". You have " + ujb.get("jobXP") + " xp and " + ujb.get("jobLevel") + " level! You are at " + (ujb.get("jobStreak") + ":fire:") , event.getChannel());
+                        return new EmbedBuilder().setColor(Color.GREEN).setDescription("You work as " + o.get("doing") + " at " + o.get("jobName") + " [" + o.get("shortName") + "]. You are " + ujb.get("jobPosition") + " and earn " + earning + ". You have " + ujb.get("jobXP") + " xp and " + ujb.get("jobLevel") + " level! You are at " + (ujb.get("jobStreak") + ":fire:")).build();
                     } else {
 
                     }
@@ -102,33 +158,20 @@ public class DiscCmdJob implements DiscCommand {
 
                 case "quit":
                     engine.getDiscEngine().getApiManager().removeUserAJob(user.getUserId());
-                    engine.getDiscEngine().getTextUtils().sendSucces(engine.lang("cmd.work.success.quitJob", user.getLang(), null), event.getChannel());
-                    break;
+                    return new EmbedBuilder().setColor(Color.GREEN).setDescription(engine.lang("cmd.work.success.quitJob", user.getLang(), null)).build();
 
                 default:
-                    engine.getDiscEngine().getTextUtils().sendError(engine.lang("general.error.404cmdArg", user.getLang(), null), event.getChannel(), false);
-                    break;
+                    return new EmbedBuilder().setColor(Color.GREEN).setDescription(engine.lang("general.error.404cmdArg", user.getLang(), null)).build();
             }
         }
+        return new EmbedBuilder().setColor(Color.GREEN).setDescription(engine.lang("general.error.404cmdArg", user.getLang(), null)).build();
     }
 
-    @Override
-    public boolean calledPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine) {
-        return false;
-    }
-
-    @Override
-    public void actionPrivate(String[] args, PrivateMessageReceivedEvent event, DiscApplicationUser user, Engine engine) {
-
-    }
-
-    @Override
-    public String help(Engine engine, DiscApplicationUser user) {
-        return engine.lang("cmd.job.help", user.getLang(), null);
-    }
-
-    @Override
-    public void actionTelegram(Member member, Engine engine, DiscApplicationUser user, String[] args) {
-
+    private void stepTwo(Engine engine, User user, String message, JSONArray jbss, MessageChannel channel) {
+        int id = Integer.parseInt(message);
+        JSONObject o = (JSONObject) jbss.get(id);
+        String idd = (String) o.get("_id");
+        engine.getDiscEngine().getApiManager().giveUserAJob(user.getId(), idd, "trainee");
+        engine.getDiscEngine().getTextUtils().sendSucces("You work as " + o.get("doing") + " at " + o.get("jobName"), channel);
     }
 }

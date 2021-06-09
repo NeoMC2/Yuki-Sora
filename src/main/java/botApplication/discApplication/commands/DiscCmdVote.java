@@ -8,8 +8,10 @@ import core.Engine;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
 import java.awt.*;
 import java.io.Serializable;
@@ -133,6 +135,9 @@ public class DiscCmdVote implements DiscCommand {
                                         switch (aSpec) {
                                             case "emoji":
                                                 pollAnswer.setAnswerEmoji(aCont.replace(" ", ""));
+                                                if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji(), false).size() > 0){
+                                                    pollAnswer.setEmojiServerEmote(true);
+                                                }
                                                 break;
                                             case "answer":
                                                 pollAnswer.setAnswer(aCont);
@@ -195,8 +200,28 @@ public class DiscCmdVote implements DiscCommand {
     }
 
     @Override
+    public boolean calledSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        return false;
+    }
+
+    @Override
+    public void actionSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+
+    }
+
+    @Override
     public String help(Engine engine, DiscApplicationUser user) {
         return engine.lang("cmd.vote.help", user.getLang(), null);
+    }
+
+    @Override
+    public CommandData getCommand() {
+        return null;
+    }
+
+    @Override
+    public String getInvoke() {
+        return "vote";
     }
 
     @Override

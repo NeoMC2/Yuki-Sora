@@ -159,7 +159,7 @@ public class DiscVoiceListener extends ListenerAdapter {
                             ArrayList<String> games = new ArrayList<>();
                             for (Member m : ac.getVc().getMembers()) {
                                 String g = DiscUtilityBase.getGame(m);
-                                if(g == null)
+                                if (g == null)
                                     continue;
                                 if (g.length() > 1)
                                     games.add(g);
@@ -176,7 +176,8 @@ public class DiscVoiceListener extends ListenerAdapter {
                             }
 
                             if (games.size() / 2 > mostI)
-                                ac.rename(most);
+                                if (most.length() > 1)
+                                    ac.rename(most);
                         }
                 }
         }
@@ -319,15 +320,6 @@ public class DiscVoiceListener extends ListenerAdapter {
                 }
             }
 
-        }
-    }
-
-    private void playingGame(VoiceChannel vc) {
-        for (Member m : vc.getMembers()) {
-            for (Activity ac : m.getActivities()) {
-                //TODO: is this right?
-                ac.asRichPresence().getName();
-            }
         }
     }
 }

@@ -1,6 +1,6 @@
 package botApplication.discApplication.listeners;
 
-import botApplication.discApplication.commands.DiscCmdContest;
+import botApplication.discApplication.librarys.Contest;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.dungeon.queue.DungeonQueueHandler;
 import botApplication.discApplication.librarys.poll.Poll;
@@ -41,7 +41,7 @@ public class DiscReactionListener extends ListenerAdapter {
             return;
 
         //Contest
-        DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+        Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
 
         if (contest != null) {
             if (contest.isVoter(event.getUserId())||contest.isOpen()) {
@@ -105,7 +105,7 @@ public class DiscReactionListener extends ListenerAdapter {
         }
 
         //Contest
-        DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+        Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
 
         if (contest != null) {
             if (contest.isVoter(event.getUserId())&&!event.getUserId().equals(ignore)) {

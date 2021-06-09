@@ -8,8 +8,11 @@ import botApplication.response.Response;
 import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
+import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -168,8 +171,29 @@ public class DiscCmdMonster implements DiscCommand {
     }
 
     @Override
+    public boolean calledSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        return false;
+    }
+
+    @Override
+    public void actionSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+
+    }
+
+    @Override
     public String help(Engine engine, DiscApplicationUser user) {
         return engine.lang("cmd.pokemon.help", user.getLang(), null);
+    }
+
+    @NotNull
+    @Override
+    public CommandData getCommand() {
+        return new CommandData(getInvoke(), "Manage your monsters");
+    }
+
+    @Override
+    public String getInvoke() {
+        return "monster";
     }
 
     @Override

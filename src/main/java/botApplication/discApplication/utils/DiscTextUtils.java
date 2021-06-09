@@ -213,14 +213,7 @@ public class DiscTextUtils {
         }
     }
 
-    public void sendHelp(String txt, TextChannel channel) {
-        Message msg;
-        msg = channel.sendMessage(
-                new EmbedBuilder().setColor(Color.BLUE).setTitle("!Hilfe!").setDescription(txt).build()
-        ).complete();
-    }
-
-    public void sendHelp(String txt, PrivateChannel channel) {
+    public void sendHelp(String txt, MessageChannel channel) {
         Message msg;
         msg = channel.sendMessage(
                 new EmbedBuilder().setColor(Color.BLUE).setTitle("!Hilfe!").setDescription(txt).build()

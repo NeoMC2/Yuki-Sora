@@ -8,6 +8,7 @@ public class PollAnswer implements Serializable {
 
     private String answer;
     private String answerEmoji;
+    private boolean isEmojiServerEmote = false;
     private int place = 0;
     private int count = 0;
     private String role = "";
@@ -59,5 +60,13 @@ public class PollAnswer implements Serializable {
 
     public void setLang(String lang) {
         this.lang = lang;
+    }
+
+    public boolean isEmojiServerEmote() {
+        return isEmojiServerEmote;
+    }
+
+    public void setEmojiServerEmote(boolean emojiServerEmote) {
+        isEmojiServerEmote = emojiServerEmote;
     }
 }

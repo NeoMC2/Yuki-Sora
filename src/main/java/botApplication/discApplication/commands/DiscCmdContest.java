@@ -1,23 +1,26 @@
 package botApplication.discApplication.commands;
 
+import botApplication.discApplication.librarys.Contest;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.utils.DiscUtilityBase;
 import botApplication.response.Response;
 import core.Engine;
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 
-import java.io.Serializable;
-import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DiscCmdContest implements DiscCommand {
 
@@ -140,7 +143,7 @@ public class DiscCmdContest implements DiscCommand {
     }
 
     private void close(Contest contest, Engine engine, TextChannel tc) {
-        if (contest.isOpen) {
+        if (contest.isOpen()) {
             contest.setOpen(false);
             engine.getDiscEngine().getTextUtils().sendError("The submission of your works has now ended! You can vote for the best now!", tc, false);
         } else {
@@ -202,8 +205,28 @@ public class DiscCmdContest implements DiscCommand {
     }
 
     @Override
+    public boolean calledSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        return false;
+    }
+
+    @Override
+    public void actionSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+
+    }
+
+    @Override
     public String help(Engine engine, DiscApplicationUser user) {
         return null;
+    }
+
+    @Override
+    public CommandData getCommand() {
+        return null;
+    }
+
+    @Override
+    public String getInvoke() {
+        return "contest";
     }
 
     @Override
@@ -227,125 +250,5 @@ public class DiscCmdContest implements DiscCommand {
                 return c;
         }
         return null;
-    }
-
-    public class Contest implements Serializable {
-
-        public static final long serialVersionUID = 42L;
-
-        private String tc;
-        private String guild;
-        private int reward;
-        private ArrayList<String> usersParticipate = new ArrayList<>();
-        private ArrayList<String> userVoted = new ArrayList<>();
-        private Date contestEnd;
-        private boolean isOpen = true;
-
-        public Contest(TextChannel tc, int reward, Date contestEnd) {
-            this.tc = tc.getId();
-            this.guild = tc.getGuild().getId();
-            this.reward = reward;
-            this.contestEnd = contestEnd;
-        }
-
-        public boolean isParticipant(String user) {
-            for (String s : usersParticipate) {
-                if (user.equals(s))
-                    return true;
-            }
-            return false;
-        }
-
-        public boolean isVoter(String user) {
-            for (String s : userVoted) {
-                if (user.equals(s))
-                    return true;
-            }
-            return false;
-        }
-
-        public void addUserParticipate(String user) {
-            usersParticipate.add(user);
-        }
-
-        public void addUserVoted(String user) {
-            userVoted.add(user);
-        }
-
-        public void removeUserVoted(String user) {
-            userVoted.remove(user);
-        }
-
-        public void removeUserParticipate(String user) {
-            usersParticipate.remove(user);
-        }
-
-        public TextChannel getTextChannel(Guild g) {
-            return g.getTextChannelById(tc);
-        }
-
-        public TextChannel getTextChannel(JDA jda) {
-            return getGuild(jda).getTextChannelById(tc);
-        }
-
-        public Guild getGuild(JDA jda) {
-            return jda.getGuildById(guild);
-        }
-
-        public String getTc() {
-            return tc;
-        }
-
-        public void setTc(String tc) {
-            this.tc = tc;
-        }
-
-        public String getGuild() {
-            return guild;
-        }
-
-        public void setGuild(String guild) {
-            this.guild = guild;
-        }
-
-        public int getReward() {
-            return reward;
-        }
-
-        public void setReward(int reward) {
-            this.reward = reward;
-        }
-
-        public ArrayList<String> getUsersParticipate() {
-            return usersParticipate;
-        }
-
-        public void setUsersParticipate(ArrayList<String> usersParticipate) {
-            this.usersParticipate = usersParticipate;
-        }
-
-        public ArrayList<String> getUserVoted() {
-            return userVoted;
-        }
-
-        public void setUserVoted(ArrayList<String> userVoted) {
-            this.userVoted = userVoted;
-        }
-
-        public Date getContestEnd() {
-            return contestEnd;
-        }
-
-        public void setContestEnd(Date contestEnd) {
-            this.contestEnd = contestEnd;
-        }
-
-        public boolean isOpen() {
-            return isOpen;
-        }
-
-        public void setOpen(boolean open) {
-            isOpen = open;
-        }
     }
 }

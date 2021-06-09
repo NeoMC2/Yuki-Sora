@@ -1,6 +1,6 @@
 package botApplication.discApplication.listeners;
 
-import botApplication.discApplication.commands.DiscCmdContest;
+import botApplication.discApplication.librarys.Contest;
 import botApplication.discApplication.librarys.DiscApplicationServer;
 import botApplication.discApplication.librarys.DiscApplicationUser;
 import botApplication.discApplication.utils.DiscUtilityBase;
@@ -8,16 +8,16 @@ import core.Engine;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import org.jetbrains.annotations.NotNull;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.awt.*;
-import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Date;
@@ -54,7 +54,7 @@ public class DiscMessageListener extends ListenerAdapter {
             }
 
             //Contest
-            DiscCmdContest.Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
+            Contest contest = engine.getDiscEngine().getContestCmd().checkChannel(engine, event.getChannel());
 
             if (contest != null) {
                 if(contest.isParticipant(event.getAuthor().getId()))
@@ -193,6 +193,35 @@ public class DiscMessageListener extends ListenerAdapter {
             watchedUserStringHashMap.put(m.getId(), user);
         }
         return false;
+    }
+
+    @Override
+    public void onSlashCommand(@NotNull SlashCommandEvent event) {
+        event.deferReply().queue();
+        sendSlashCommand(event);
+    }
+
+    private void sendSlashCommand(SlashCommandEvent event) {
+
+        String invoke = event.getName();
+
+        String args = event.getCommandPath().substring(invoke.length() + 1);
+        if(event.getOptions() != null){
+            for (OptionMapping mapping:event.getOptions()) {
+                args += " " + mapping.getAsString();
+            }
+        }
+
+        DiscApplicationUser user = DiscUtilityBase.lookForUserById(event.getUser(), engine);
+        DiscApplicationServer server = DiscUtilityBase.lookForServer(event.getGuild(), engine);
+
+        String[] arg = args.split(" ");
+
+        try {
+            engine.getDiscEngine().getCommandHandler().handleSlashCommand(invoke, arg, event, server, user, engine);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void sendSpecificPrivateCommand(String cmd, PrivateChannel channel, User user) {

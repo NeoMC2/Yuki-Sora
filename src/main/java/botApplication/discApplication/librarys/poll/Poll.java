@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.*;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Poll implements Serializable {
 
@@ -103,8 +104,8 @@ public class Poll implements Serializable {
                     if (message == null)
                         pa.setCount(0);
                     else {
-                        for (MessageReaction mr :message.getReactions()){
-                            if(mr.getReactionEmote().getName().equals(pa.getAnswerEmoji())){
+                        for (MessageReaction mr : message.getReactions()) {
+                            if (mr.getReactionEmote().getName().equals(pa.getAnswerEmoji())) {
                                 pa.setCount(mr.getCount() - 1);
                                 break;
                             }
@@ -191,9 +192,14 @@ public class Poll implements Serializable {
         Message msg = update("0x33333", -1000, g, null, null, engine);
         for (PollAnswer pa : answers) {
             try {
-                t.addReactionById(msg.getId(), pa.getAnswerEmoji()).complete();
+                if (pa.isEmojiServerEmote()) {
+                    List<Emote> es = g.getEmotesByName(pa.getAnswerEmoji(), false);
+                    if (es.size() > 0)
+                        t.addReactionById(msg.getId(), es.get(0)).complete();
+                } else
+                    t.addReactionById(msg.getId(), pa.getAnswerEmoji()).complete();
             } catch (Exception e) {
-                engine.getUtilityBase().printOutput("Error while reacting with emoji: " + pa.getAnswerEmoji(), true);
+                engine.getDiscEngine().getTextUtils().sendError("Error while reating with emoji: " + pa.getAnswerEmoji(), t, true);
             }
         }
         messageId = msg.getId();

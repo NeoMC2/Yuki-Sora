@@ -1,17 +1,17 @@
-Yuki-Sora patched to 5.0.0_007
+Yuki-Sora patched to 5.0.0_008
 
 New features
-• Art contest
+• Slash commands
 •
 •
 
 Bugfix
-•
+• A fix in the vote command
 •
 •
 
 Improvements
-•
+• JDA updated to 4.2.1_275
 •
 •
 •

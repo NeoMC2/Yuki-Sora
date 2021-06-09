@@ -6,8 +6,10 @@ import core.Engine;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import org.codehaus.plexus.util.FileUtils;
 import org.json.simple.JSONObject;
 
@@ -44,8 +46,28 @@ public class DiscCmdInfo implements DiscCommand{
     }
 
     @Override
+    public boolean calledSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+        return false;
+    }
+
+    @Override
+    public void actionSlash(String[] args, SlashCommandEvent event, DiscApplicationServer server, DiscApplicationUser user, Engine engine) {
+
+    }
+
+    @Override
     public String help(Engine engine, DiscApplicationUser user) {
         return null;
+    }
+
+    @Override
+    public CommandData getCommand() {
+        return null;
+    }
+
+    @Override
+    public String getInvoke() {
+        return "info";
     }
 
     @Override
