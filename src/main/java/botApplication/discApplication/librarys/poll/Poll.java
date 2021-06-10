@@ -113,7 +113,12 @@ public class Poll implements Serializable {
                     }
 
                 }
-                des = des + pa.getAnswerEmoji() + " " + pa.getAnswer() + " ```Votes:" + pa.getCount() + "```" + "\n";
+
+                if(pa.isEmojiServerEmote()) {
+                    des += getEmoteString(g, pa.getAnswerEmoji()) + " " + pa.getAnswer() + " ```Votes:" + pa.getCount() + "```" + "\n";
+                }
+                    else
+                des += pa.getAnswerEmoji() + " " + pa.getAnswer() + " ```Votes:" + pa.getCount() + "```" + "\n";
             }
             ans = new EmbedBuilder()
                     .setAuthor(heading, null, null)
@@ -124,6 +129,9 @@ public class Poll implements Serializable {
             Role r = null;
             for (int i = 0; i < answers.size(); i++) {
                 PollAnswer pa = answers.get(i);
+                if(pa.isEmojiServerEmote())
+                    des = des + getEmoteString(g, pa.getAnswerEmoji()) + " " + pa.getAnswer() + "\n";
+                    else
                 des = des + pa.getAnswerEmoji() + " " + pa.getAnswer() + "\n";
                 if (answer.equals(pa.getAnswerEmoji())) {
                     r = g.getRoleById(pa.getRole());
@@ -187,21 +195,35 @@ public class Poll implements Serializable {
         answers.add(pa);
     }
 
-    public void create(Guild g, Engine engine) {
-        TextChannel t = g.getTextChannelById(channel);
+    public boolean create(Guild g, Engine engine, TextChannel command) {
+        TextChannel t;
+        try {
+            t = g.getTextChannelById(channel);
+        } catch (Exception e){
+            engine.getDiscEngine().getTextUtils().sendError("The channel wasn't found", command, true);
+            return false;
+        }
         Message msg = update("0x33333", -1000, g, null, null, engine);
         for (PollAnswer pa : answers) {
             try {
                 if (pa.isEmojiServerEmote()) {
-                    List<Emote> es = g.getEmotesByName(pa.getAnswerEmoji(), false);
+                    List<Emote> es = g.getEmotesByName(pa.getAnswerEmoji().replace(":", ""), false);
                     if (es.size() > 0)
                         t.addReactionById(msg.getId(), es.get(0)).complete();
                 } else
                     t.addReactionById(msg.getId(), pa.getAnswerEmoji()).complete();
             } catch (Exception e) {
-                engine.getDiscEngine().getTextUtils().sendError("Error while reating with emoji: " + pa.getAnswerEmoji(), t, true);
+                engine.getDiscEngine().getTextUtils().sendError("Error while reating with emoji: " + pa.getAnswerEmoji(), command, true);
+                return false;
             }
         }
         messageId = msg.getId();
+        return true;
+    }
+
+    private String getEmoteString(Guild g, String emote){
+        Emote em = g.getEmotesByName(emote.replace(":", ""), false).get(0);
+
+        return em.getAsMention();
     }
 }

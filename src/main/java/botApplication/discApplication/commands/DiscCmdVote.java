@@ -68,14 +68,14 @@ public class DiscCmdVote implements DiscCommand {
                             }
 
 
-                            poll.create(event.getGuild(), engine);
+                            poll.create(event.getGuild(), engine, event.getChannel());
                             polls.add(poll);
                             engine.getDiscEngine().getTextUtils().sendSucces("New vote created!", event.getChannel());
                         }
                         return;
                     }
                     int ansCounter = 1;
-                    String unFString = event.getMessage().getContentRaw();
+                    String unFString = event.getMessage().getContentDisplay();
                     String[] cmArgs = unFString.split("§");
                     Poll poll = new Poll(event.getGuild().getId());
                     poll.setCreator(event.getMember().getUser().getId());
@@ -134,9 +134,9 @@ public class DiscCmdVote implements DiscCommand {
 
                                         switch (aSpec) {
                                             case "emoji":
-                                                pollAnswer.setAnswerEmoji(aCont.replace(" ", ""));
+                                                pollAnswer.setAnswerEmoji(aCont);
                                                 try{
-                                                    if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji(), false).size() > 0){
+                                                    if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji().replace(":", ""), false).size() > 0){
                                                         pollAnswer.setEmojiServerEmote(true);
                                                     }
                                                 } catch (Exception e){
@@ -170,7 +170,8 @@ public class DiscCmdVote implements DiscCommand {
                                 break;
                         }
                     }
-                    poll.create(event.getGuild(), engine);
+                    if(!poll.create(event.getGuild(), engine, event.getChannel()))
+                        return;
                     polls.add(poll);
                     engine.getDiscEngine().getTextUtils().sendSucces("New vote created!", event.getChannel());
                     break;
