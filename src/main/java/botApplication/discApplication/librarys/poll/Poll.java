@@ -207,7 +207,7 @@ public class Poll implements Serializable {
         for (PollAnswer pa : answers) {
             try {
                 if (pa.isEmojiServerEmote()) {
-                    List<Emote> es = g.getEmotesByName(pa.getAnswerEmoji().replace(":", ""), false);
+                    List<Emote> es = g.getEmotesByName(pa.getAnswerEmoji(), false);
                     if (es.size() > 0)
                         t.addReactionById(msg.getId(), es.get(0)).complete();
                 } else
@@ -222,7 +222,7 @@ public class Poll implements Serializable {
     }
 
     private String getEmoteString(Guild g, String emote){
-        Emote em = g.getEmotesByName(emote.replace(":", ""), false).get(0);
+        Emote em = g.getEmotesByName(emote, false).get(0);
 
         return em.getAsMention();
     }

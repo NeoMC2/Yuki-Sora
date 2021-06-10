@@ -138,6 +138,7 @@ public class DiscCmdVote implements DiscCommand {
                                                 try{
                                                     if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji().replace(":", ""), false).size() > 0){
                                                         pollAnswer.setEmojiServerEmote(true);
+                                                        pollAnswer.setAnswerEmoji(pollAnswer.getAnswerEmoji().replace(":", ""));
                                                     }
                                                 } catch (Exception e){
                                                 }
