@@ -17,6 +17,8 @@ import net.dv8tion.jda.api.interactions.commands.build.CommandData;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Timer;
@@ -190,7 +192,8 @@ public class DiscCmdContest implements DiscCommand {
             };
 
             Timer t = new Timer();
-            t.schedule(tt, 10 * 10 * 60 * 5);
+            Instant time = Instant.now().plus(2, ChronoUnit.HOURS);
+            t.schedule(tt, Date.from(time));
         }
     }
 
