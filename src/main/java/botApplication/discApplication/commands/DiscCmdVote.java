@@ -135,8 +135,11 @@ public class DiscCmdVote implements DiscCommand {
                                         switch (aSpec) {
                                             case "emoji":
                                                 pollAnswer.setAnswerEmoji(aCont.replace(" ", ""));
-                                                if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji(), false).size() > 0){
-                                                    pollAnswer.setEmojiServerEmote(true);
+                                                try{
+                                                    if(event.getGuild().getEmotesByName(pollAnswer.getAnswerEmoji(), false).size() > 0){
+                                                        pollAnswer.setEmojiServerEmote(true);
+                                                    }
+                                                } catch (Exception e){
                                                 }
                                                 break;
                                             case "answer":
